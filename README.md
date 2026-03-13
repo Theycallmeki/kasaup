@@ -1,4 +1,4 @@
-# Kasaup Marketplace Backend
+# Kasaup Marketplace 
 
 Kasaup is a **service marketplace platform** where customers can discover local service providers, browse services, and book appointments.
 
