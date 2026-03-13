@@ -8,9 +8,9 @@ class Service(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    provider_id = Column(Integer, ForeignKey("providers.id"))
+    provider_id = Column(Integer, ForeignKey("providers.id"), nullable=False)
 
-    category_id = Column(Integer, ForeignKey("categories.id"))
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
 
     name = Column(String, nullable=False)
 

@@ -3,7 +3,6 @@ from datetime import datetime
 
 
 class AppointmentCreate(BaseModel):
-    user_id: int
     provider_id: int
     appointment_time: datetime
     status: str = "pending"

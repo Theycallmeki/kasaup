@@ -26,6 +26,7 @@ class ProviderUpdate(BaseModel):
 
 class ProviderResponse(BaseModel):
     id: int
+    owner_id: int
     shop_name: str
     description: str | None
     phone: str | None
