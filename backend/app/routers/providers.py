@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.models.providers import Provider
+from app.models.service import Service
+from app.models.category import Category
 from app.models.users import User
 from app.schemas.providers import ProviderCreate, ProviderUpdate, ProviderResponse
 from app.core.dependencies import require_provider
@@ -41,6 +43,33 @@ def get_provider(provider_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Provider not found")
 
     return provider
+
+
+@router.get("/{provider_id}/profile")
+def get_provider_profile(provider_id: int, db: Session = Depends(get_db)):
+    provider = db.query(Provider).filter(Provider.id == provider_id).first()
+
+    if not provider:
+        raise HTTPException(status_code=404, detail="Provider not found")
+
+    services = db.query(Service).filter(Service.provider_id == provider_id).all()
+
+    categories = (
+        db.query(Category)
+        .join(Service, Service.category_id == Category.id)
+        .filter(Service.provider_id == provider_id)
+        .all()
+    )
+
+    return {
+        "provider": provider,
+        "services": services,
+        "categories": categories,
+        "rating": {
+            "rating": provider.rating,
+            "total_reviews": provider.total_reviews
+        }
+    }
 
 
 @router.put("/{provider_id}", response_model=ProviderResponse)

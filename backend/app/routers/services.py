@@ -6,7 +6,7 @@ from app.models.service import Service
 from app.models.providers import Provider
 from app.models.users import User
 from app.schemas.service import ServiceCreate, ServiceUpdate, ServiceResponse
-from app.core.dependencies import require_provider
+from app.core.dependencies import require_provider, get_current_user
 
 router = APIRouter(dependencies=[Depends(require_provider)])
 
@@ -37,6 +37,17 @@ def create_service(
 @router.get("/", response_model=list[ServiceResponse])
 def get_services(db: Session = Depends(get_db)):
     return db.query(Service).all()
+
+
+@router.get("/category/{category_id}", response_model=list[ServiceResponse])
+def get_services_by_category(
+    category_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    services = db.query(Service).filter(Service.category_id == category_id).all()
+
+    return services
 
 
 @router.get("/{service_id}", response_model=ServiceResponse)

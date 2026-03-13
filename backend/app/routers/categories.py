@@ -3,8 +3,10 @@ from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.models.category import Category
+from app.models.service import Service
 from app.schemas.category import CategoryCreate, CategoryUpdate, CategoryResponse
-from app.core.dependencies import require_admin
+from app.schemas.service import ServiceResponse
+from app.core.dependencies import require_admin, get_current_user
 
 router = APIRouter(dependencies=[Depends(require_admin)])
 
@@ -32,6 +34,15 @@ def get_category(category_id: int, db: Session = Depends(get_db)):
     if not category:
         raise HTTPException(status_code=404, detail="Category not found")
     return category
+
+
+@router.get("/{category_id}/services", response_model=list[ServiceResponse], dependencies=[Depends(get_current_user)])
+def get_category_services(
+    category_id: int,
+    db: Session = Depends(get_db)
+):
+    services = db.query(Service).filter(Service.category_id == category_id).all()
+    return services
 
 
 @router.put("/{category_id}", response_model=CategoryResponse)
