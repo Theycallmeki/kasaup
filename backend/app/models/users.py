@@ -17,7 +17,7 @@ class User(Base):
 
     phone = Column(String)
 
-    role = Column(String, default="customer")
+    role = Column(String, nullable=False, default="customer")
 
     created_at = Column(DateTime, default=datetime.utcnow)
 

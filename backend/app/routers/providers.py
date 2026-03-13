@@ -4,9 +4,9 @@ from sqlalchemy.orm import Session
 from app.db import get_db
 from app.models.providers import Provider
 from app.schemas.providers import ProviderCreate, ProviderUpdate, ProviderResponse
-from app.core.dependencies import get_current_user
+from app.core.dependencies import require_provider
 
-router = APIRouter(dependencies=[Depends(get_current_user)])
+router = APIRouter(dependencies=[Depends(require_provider)])
 
 
 @router.post("/", response_model=ProviderResponse)

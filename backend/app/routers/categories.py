@@ -4,9 +4,9 @@ from sqlalchemy.orm import Session
 from app.db import get_db
 from app.models.category import Category
 from app.schemas.category import CategoryCreate, CategoryUpdate, CategoryResponse
-from app.core.dependencies import get_current_user
+from app.core.dependencies import require_admin
 
-router = APIRouter(dependencies=[Depends(get_current_user)])
+router = APIRouter(dependencies=[Depends(require_admin)])
 
 
 @router.post("/", response_model=CategoryResponse)

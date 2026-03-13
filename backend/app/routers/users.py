@@ -5,7 +5,7 @@ from app.db import get_db
 from app.models.users import User
 from app.schemas.users import UserCreate, UserUpdate, UserResponse
 from app.core.security import hash_password
-from app.core.dependencies import get_current_user
+from app.core.dependencies import require_admin
 
 router = APIRouter()
 
@@ -24,13 +24,13 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     return new_user
 
 
-@router.get("/", response_model=list[UserResponse], dependencies=[Depends(get_current_user)])
+@router.get("/", response_model=list[UserResponse], dependencies=[Depends(require_admin)])
 def get_users(db: Session = Depends(get_db)):
     users = db.query(User).all()
     return users
 
 
-@router.get("/{user_id}", response_model=UserResponse, dependencies=[Depends(get_current_user)])
+@router.get("/{user_id}", response_model=UserResponse, dependencies=[Depends(require_admin)])
 def get_user(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
 
@@ -40,7 +40,7 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
     return user
 
 
-@router.put("/{user_id}", response_model=UserResponse, dependencies=[Depends(get_current_user)])
+@router.put("/{user_id}", response_model=UserResponse, dependencies=[Depends(require_admin)])
 def update_user(user_id: int, user: UserUpdate, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.id == user_id).first()
 
@@ -58,7 +58,7 @@ def update_user(user_id: int, user: UserUpdate, db: Session = Depends(get_db)):
     return db_user
 
 
-@router.delete("/{user_id}", dependencies=[Depends(get_current_user)])
+@router.delete("/{user_id}", dependencies=[Depends(require_admin)])
 def delete_user(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
 
