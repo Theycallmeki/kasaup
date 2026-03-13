@@ -7,7 +7,8 @@ from app.routers import (
     providers,
     services,
     categories,
-    appointments
+    appointments,
+    provider_availability
 )
 
 app = FastAPI(
@@ -27,6 +28,7 @@ app.include_router(providers.router, prefix="/providers", tags=["Providers"])
 app.include_router(services.router, prefix="/services", tags=["Services"])
 app.include_router(categories.router, prefix="/categories", tags=["Categories"])
 app.include_router(appointments.router, prefix="/appointments", tags=["Appointments"])
+app.include_router(provider_availability.router, prefix="/availability", tags=["Provider Availability"])
 
 
 @app.get("/")

@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from datetime import datetime, timedelta, time
 
 from app.db import get_db
 from app.models.appointment import Appointment
 from app.models.providers import Provider
+from app.models.provider_availability import ProviderAvailability
 from app.models.users import User
 from app.schemas.appointment import (
     AppointmentCreate,
@@ -11,6 +13,7 @@ from app.schemas.appointment import (
     AppointmentResponse,
 )
 from app.core.dependencies import get_current_user
+from app.services.booking_service import create_booking
 
 router = APIRouter(dependencies=[Depends(get_current_user)])
 
@@ -26,18 +29,18 @@ def create_appointment(
     if not provider:
         raise HTTPException(status_code=404, detail="Provider not found")
 
-    new_appointment = Appointment(
-        user_id=current_user.id,
-        provider_id=appointment.provider_id,
-        appointment_time=appointment.appointment_time,
-        status=appointment.status
-    )
+    try:
+        booking = create_booking(
+            db=db,
+            user_id=current_user.id,
+            provider_id=appointment.provider_id,
+            appointment_time=appointment.appointment_time,
+            status=appointment.status
+        )
+        return booking
 
-    db.add(new_appointment)
-    db.commit()
-    db.refresh(new_appointment)
-
-    return new_appointment
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.get("/", response_model=list[AppointmentResponse])
@@ -51,6 +54,65 @@ def get_appointments(
         return db.query(Appointment).filter(Appointment.provider_id.in_(provider_ids)).all()
 
     return db.query(Appointment).filter(Appointment.user_id == current_user.id).all()
+
+
+@router.get("/providers/{provider_id}/available-slots")
+def get_available_slots(
+    provider_id: int,
+    db: Session = Depends(get_db)
+):
+    provider = db.query(Provider).filter(Provider.id == provider_id).first()
+
+    if not provider:
+        raise HTTPException(status_code=404, detail="Provider not found")
+
+    start = datetime.now().replace(minute=0, second=0, microsecond=0)
+    end = start + timedelta(days=7)
+
+    availability = db.query(ProviderAvailability).filter(
+        ProviderAvailability.provider_id == provider_id
+    ).all()
+
+    if not availability:
+        return {"available_slots": []}
+
+    appointments = (
+        db.query(Appointment)
+        .filter(
+            Appointment.provider_id == provider_id,
+            Appointment.appointment_time >= start,
+            Appointment.appointment_time <= end
+        )
+        .all()
+    )
+
+    booked_times = {a.appointment_time for a in appointments}
+
+    slots = []
+    current = start
+
+    while current <= end:
+        weekday = current.weekday()
+
+        day_availability = [
+            a for a in availability if a.day_of_week == weekday
+        ]
+
+        for avail in day_availability:
+            slot_time = current.replace(
+                hour=avail.start_time.hour,
+                minute=avail.start_time.minute
+            )
+
+            while slot_time.time() < avail.end_time:
+                if slot_time not in booked_times and slot_time >= start:
+                    slots.append(slot_time)
+
+                slot_time += timedelta(hours=1)
+
+        current += timedelta(days=1)
+
+    return {"available_slots": slots}
 
 
 @router.get("/{appointment_id}", response_model=AppointmentResponse)
