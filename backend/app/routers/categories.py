@@ -6,12 +6,12 @@ from app.models.category import Category
 from app.models.service import Service
 from app.schemas.category import CategoryCreate, CategoryUpdate, CategoryResponse
 from app.schemas.service import ServiceResponse
-from app.core.dependencies import require_admin, get_current_user
+from app.core.dependencies import require_admin
 
-router = APIRouter(dependencies=[Depends(require_admin)])
+router = APIRouter()
 
 
-@router.post("/", response_model=CategoryResponse)
+@router.post("/", response_model=CategoryResponse, dependencies=[Depends(require_admin)])
 def create_category(
     category: CategoryCreate,
     db: Session = Depends(get_db)
@@ -35,16 +35,14 @@ def get_categories(
 @router.get("/{category_id}", response_model=CategoryResponse)
 def get_category(category_id: int, db: Session = Depends(get_db)):
     category = db.query(Category).filter(Category.id == category_id).first()
+
     if not category:
         raise HTTPException(status_code=404, detail="Category not found")
+
     return category
 
 
-@router.get(
-    "/{category_id}/services",
-    response_model=list[ServiceResponse],
-    dependencies=[Depends(get_current_user)]
-)
+@router.get("/{category_id}/services", response_model=list[ServiceResponse])
 def get_category_services(
     category_id: int,
     limit: int = 20,
@@ -58,7 +56,7 @@ def get_category_services(
     return services
 
 
-@router.put("/{category_id}", response_model=CategoryResponse)
+@router.put("/{category_id}", response_model=CategoryResponse, dependencies=[Depends(require_admin)])
 def update_category(
     category_id: int,
     category: CategoryUpdate,
@@ -76,7 +74,7 @@ def update_category(
     return db_category
 
 
-@router.delete("/{category_id}")
+@router.delete("/{category_id}", dependencies=[Depends(require_admin)])
 def delete_category(
     category_id: int,
     db: Session = Depends(get_db)

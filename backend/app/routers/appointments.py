@@ -16,10 +16,10 @@ from app.schemas.appointment import (
 from app.core.dependencies import get_current_user
 from app.services.booking_service import create_booking
 
-router = APIRouter(dependencies=[Depends(get_current_user)])
+router = APIRouter()
 
 
-@router.post("/", response_model=AppointmentResponse)
+@router.post("/", response_model=AppointmentResponse, dependencies=[Depends(get_current_user)])
 def create_appointment(
     appointment: AppointmentCreate,
     db: Session = Depends(get_db),
@@ -40,17 +40,19 @@ def create_appointment(
             db=db,
             user_id=current_user.id,
             provider_id=appointment.provider_id,
+            service_id=appointment.service_id,  
             appointment_time=appointment.appointment_time,
             duration_minutes=service.duration_minutes,
             status=appointment.status
         )
+
         return booking
 
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/", response_model=list[AppointmentResponse])
+@router.get("/", response_model=list[AppointmentResponse], dependencies=[Depends(get_current_user)])
 def get_appointments(
     limit: int = 20,
     offset: int = 0,
@@ -193,7 +195,7 @@ def get_service_available_slots(
     return {"available_slots": slots}
 
 
-@router.get("/{appointment_id}", response_model=AppointmentResponse)
+@router.get("/{appointment_id}", response_model=AppointmentResponse, dependencies=[Depends(get_current_user)])
 def get_appointment(
     appointment_id: int,
     db: Session = Depends(get_db),
@@ -220,7 +222,7 @@ def get_appointment(
     return appointment
 
 
-@router.put("/{appointment_id}", response_model=AppointmentResponse)
+@router.put("/{appointment_id}", response_model=AppointmentResponse, dependencies=[Depends(get_current_user)])
 def update_appointment(
     appointment_id: int,
     appointment: AppointmentUpdate,
@@ -244,7 +246,9 @@ def update_appointment(
     if current_user.role == "customer" and db_appointment.user_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized")
 
-    for key, value in appointment.dict(exclude_unset=True).items():
+    update_data = appointment.dict(exclude_unset=True)
+
+    for key, value in update_data.items():
         setattr(db_appointment, key, value)
 
     db.commit()
@@ -253,7 +257,7 @@ def update_appointment(
     return db_appointment
 
 
-@router.delete("/{appointment_id}")
+@router.delete("/{appointment_id}", dependencies=[Depends(get_current_user)])
 def delete_appointment(
     appointment_id: int,
     db: Session = Depends(get_db),

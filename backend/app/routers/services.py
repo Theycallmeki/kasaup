@@ -6,13 +6,13 @@ from app.models.service import Service
 from app.models.providers import Provider
 from app.models.users import User
 from app.schemas.service import ServiceCreate, ServiceUpdate, ServiceResponse
-from app.core.dependencies import require_provider, get_current_user
+from app.core.dependencies import require_provider
 from app.services.service_search_service import search_services
 
-router = APIRouter(dependencies=[Depends(require_provider)])
+router = APIRouter()
 
 
-@router.post("/", response_model=ServiceResponse)
+@router.post("/", response_model=ServiceResponse, dependencies=[Depends(require_provider)])
 def create_service(
     service: ServiceCreate,
     db: Session = Depends(get_db),
@@ -80,8 +80,7 @@ def get_services_by_category(
     category_id: int,
     limit: int = 20,
     offset: int = 0,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    db: Session = Depends(get_db)
 ):
     services = db.query(Service).filter(
         Service.category_id == category_id
@@ -100,7 +99,7 @@ def get_service(service_id: int, db: Session = Depends(get_db)):
     return service
 
 
-@router.put("/{service_id}", response_model=ServiceResponse)
+@router.put("/{service_id}", response_model=ServiceResponse, dependencies=[Depends(require_provider)])
 def update_service(
     service_id: int,
     service: ServiceUpdate,
@@ -117,7 +116,9 @@ def update_service(
     if provider.owner_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized")
 
-    for key, value in service.dict().items():
+    update_data = service.dict(exclude_unset=True)
+
+    for key, value in update_data.items():
         setattr(db_service, key, value)
 
     db.commit()
@@ -126,7 +127,7 @@ def update_service(
     return db_service
 
 
-@router.delete("/{service_id}")
+@router.delete("/{service_id}", dependencies=[Depends(require_provider)])
 def delete_service(
     service_id: int,
     db: Session = Depends(get_db),

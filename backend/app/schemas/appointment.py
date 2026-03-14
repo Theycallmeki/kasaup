@@ -4,6 +4,7 @@ from datetime import datetime
 
 class AppointmentCreate(BaseModel):
     provider_id: int
+    service_id: int
     appointment_time: datetime
     status: str = "pending"
 
@@ -17,6 +18,7 @@ class AppointmentResponse(BaseModel):
     id: int
     user_id: int
     provider_id: int
+    service_id: int
     appointment_time: datetime
     status: str
 

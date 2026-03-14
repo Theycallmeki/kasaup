@@ -12,6 +12,8 @@ class Appointment(Base):
 
     provider_id = Column(Integer, ForeignKey("providers.id"), nullable=False)
 
+    service_id = Column(Integer, ForeignKey("services.id"), nullable=False)
+
     appointment_time = Column(DateTime)
 
     status = Column(String)
@@ -19,3 +21,5 @@ class Appointment(Base):
     user = relationship("User", back_populates="appointments")
 
     provider = relationship("Provider", back_populates="appointments")
+
+    service = relationship("Service")

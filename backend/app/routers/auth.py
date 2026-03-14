@@ -51,7 +51,7 @@ def login(data: LoginRequest, response: Response, db: Session = Depends(get_db))
 
 
 @router.post("/refresh")
-def refresh_token(request: Request, response: Response):
+def refresh_token(request: Request, response: Response, db: Session = Depends(get_db)):
     refresh_token = request.cookies.get("refresh_token")
 
     if not refresh_token:
@@ -65,8 +65,16 @@ def refresh_token(request: Request, response: Response):
 
         user_id = payload.get("user_id")
 
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Invalid token")
+
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid refresh token")
+
+    user = db.query(User).filter(User.id == user_id).first()
+
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
 
     new_access_token = create_access_token({"user_id": user_id})
 

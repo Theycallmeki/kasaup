@@ -12,10 +12,10 @@ from app.schemas.provider_availability import (
 )
 from app.core.dependencies import require_provider
 
-router = APIRouter(dependencies=[Depends(require_provider)])
+router = APIRouter()
 
 
-@router.post("/", response_model=ProviderAvailabilityResponse)
+@router.post("/", response_model=ProviderAvailabilityResponse, dependencies=[Depends(require_provider)])
 def create_availability(
     availability: ProviderAvailabilityCreate,
     db: Session = Depends(get_db),
@@ -50,7 +50,7 @@ def get_availability(
     return availability
 
 
-@router.put("/{availability_id}", response_model=ProviderAvailabilityResponse)
+@router.put("/{availability_id}", response_model=ProviderAvailabilityResponse, dependencies=[Depends(require_provider)])
 def update_availability(
     availability_id: int,
     availability: ProviderAvailabilityUpdate,
@@ -71,7 +71,9 @@ def update_availability(
     if provider.owner_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized")
 
-    for key, value in availability.dict(exclude_unset=True).items():
+    update_data = availability.dict(exclude_unset=True)
+
+    for key, value in update_data.items():
         setattr(db_availability, key, value)
 
     db.commit()
@@ -80,7 +82,7 @@ def update_availability(
     return db_availability
 
 
-@router.delete("/{availability_id}")
+@router.delete("/{availability_id}", dependencies=[Depends(require_provider)])
 def delete_availability(
     availability_id: int,
     db: Session = Depends(get_db),

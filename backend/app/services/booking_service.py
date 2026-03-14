@@ -9,6 +9,7 @@ def create_booking(
     db: Session,
     user_id: int,
     provider_id: int,
+    service_id: int,
     appointment_time: datetime,
     duration_minutes: int,
     status: str = "pending"
@@ -51,6 +52,7 @@ def create_booking(
     new_booking = Appointment(
         user_id=user_id,
         provider_id=provider_id,
+        service_id=service_id,   # ✅ added
         appointment_time=appointment_time,
         status=status
     )

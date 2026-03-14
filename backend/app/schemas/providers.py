@@ -26,19 +26,19 @@ class ProviderUpdate(BaseModel):
 
 class ProviderResponse(BaseModel):
     id: int
-    owner_id: int
+    owner_id: int | None = None
     shop_name: str
-    description: str | None
-    phone: str | None
-    email: str | None
-    address: str | None
+    description: str | None = None
+    phone: str | None = None
+    email: str | None = None
+    address: str | None = None
     latitude: float
     longitude: float
     offers_home_service: bool
-    rating: float
-    total_reviews: int
-    is_verified: bool
-    created_at: datetime
+    rating: float | None = None
+    total_reviews: int | None = None
+    is_verified: bool | None = None
+    created_at: datetime | None = None
 
     class Config:
         from_attributes = True

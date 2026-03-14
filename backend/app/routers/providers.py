@@ -10,10 +10,10 @@ from app.schemas.providers import ProviderCreate, ProviderUpdate, ProviderRespon
 from app.core.dependencies import require_provider
 from app.services.location_service import is_within_philippines, find_nearby_providers
 
-router = APIRouter(dependencies=[Depends(require_provider)])
+router = APIRouter()
 
 
-@router.post("/", response_model=ProviderResponse)
+@router.post("/", response_model=ProviderResponse, dependencies=[Depends(require_provider)])
 def create_provider(
     provider: ProviderCreate,
     db: Session = Depends(get_db),
@@ -111,7 +111,7 @@ def get_provider_profile(provider_id: int, db: Session = Depends(get_db)):
     }
 
 
-@router.put("/{provider_id}", response_model=ProviderResponse)
+@router.put("/{provider_id}", response_model=ProviderResponse, dependencies=[Depends(require_provider)])
 def update_provider(
     provider_id: int,
     provider: ProviderUpdate,
@@ -141,7 +141,7 @@ def update_provider(
     return db_provider
 
 
-@router.delete("/{provider_id}")
+@router.delete("/{provider_id}", dependencies=[Depends(require_provider)])
 def delete_provider(
     provider_id: int,
     db: Session = Depends(get_db),

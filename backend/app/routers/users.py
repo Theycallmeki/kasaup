@@ -12,6 +12,11 @@ router = APIRouter()
 
 @router.post("/", response_model=UserResponse)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    existing = db.query(User).filter(User.email == user.email).first()
+
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
     user_data = user.dict()
     user_data["password"] = hash_password(user.password)
 
@@ -26,8 +31,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 
 @router.get("/", response_model=list[UserResponse], dependencies=[Depends(require_admin)])
 def get_users(db: Session = Depends(get_db)):
-    users = db.query(User).all()
-    return users
+    return db.query(User).all()
 
 
 @router.get("/{user_id}", response_model=UserResponse, dependencies=[Depends(require_admin)])
@@ -48,6 +52,9 @@ def update_user(user_id: int, user: UserUpdate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
 
     update_data = user.dict(exclude_unset=True)
+
+    if "password" in update_data:
+        update_data["password"] = hash_password(update_data["password"])
 
     for key, value in update_data.items():
         setattr(db_user, key, value)
