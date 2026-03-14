@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from app.models.appointment import Appointment
 from app.models.provider_availability import ProviderAvailability
@@ -10,19 +10,23 @@ def create_booking(
     user_id: int,
     provider_id: int,
     appointment_time: datetime,
+    duration_minutes: int,
     status: str = "pending"
 ):
-    existing = (
-        db.query(Appointment)
-        .filter(
-            Appointment.provider_id == provider_id,
-            Appointment.appointment_time == appointment_time
-        )
-        .first()
-    )
+    end_time = appointment_time + timedelta(minutes=duration_minutes)
 
-    if existing:
-        raise ValueError("Time slot already booked")
+    existing = db.query(Appointment).filter(
+        Appointment.provider_id == provider_id
+    ).all()
+
+    for booking in existing:
+        booking_end = booking.appointment_time + timedelta(minutes=duration_minutes)
+
+        if (
+            appointment_time < booking_end and
+            end_time > booking.appointment_time
+        ):
+            raise ValueError("Time slot overlaps with another appointment")
 
     weekday = appointment_time.weekday()
 

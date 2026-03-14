@@ -2,6 +2,19 @@ import math
 from sqlalchemy.orm import Session
 from app.models.providers import Provider
 
+PH_MIN_LAT = 4.5
+PH_MAX_LAT = 21.5
+
+PH_MIN_LNG = 116
+PH_MAX_LNG = 127
+
+
+def is_within_philippines(lat: float, lng: float) -> bool:
+    return (
+        PH_MIN_LAT <= lat <= PH_MAX_LAT and
+        PH_MIN_LNG <= lng <= PH_MAX_LNG
+    )
+
 
 def haversine_distance(lat1, lon1, lat2, lon2):
     R = 6371
@@ -22,6 +35,9 @@ def haversine_distance(lat1, lon1, lat2, lon2):
 
 
 def find_nearby_providers(db: Session, lat: float, lng: float, radius: float):
+    if not is_within_philippines(lat, lng):
+        raise ValueError("Search location must be inside the Philippines")
+
     providers = db.query(Provider).all()
 
     results = []
@@ -37,5 +53,7 @@ def find_nearby_providers(db: Session, lat: float, lng: float, radius: float):
                 "provider": provider,
                 "distance_km": round(distance, 2)
             })
+
+    results.sort(key=lambda x: x["distance_km"])
 
     return results

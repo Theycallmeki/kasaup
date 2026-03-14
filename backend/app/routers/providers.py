@@ -8,6 +8,7 @@ from app.models.category import Category
 from app.models.users import User
 from app.schemas.providers import ProviderCreate, ProviderUpdate, ProviderResponse
 from app.core.dependencies import require_provider
+from app.services.location_service import is_within_philippines, find_nearby_providers
 
 router = APIRouter(dependencies=[Depends(require_provider)])
 
@@ -18,6 +19,9 @@ def create_provider(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_provider)
 ):
+    if not is_within_philippines(provider.latitude, provider.longitude):
+        raise HTTPException(status_code=400, detail="Provider location must be inside the Philippines")
+
     new_provider = Provider(
         owner_id=current_user.id,
         **provider.dict()
@@ -33,6 +37,19 @@ def create_provider(
 @router.get("/", response_model=list[ProviderResponse])
 def get_providers(db: Session = Depends(get_db)):
     return db.query(Provider).all()
+
+
+@router.get("/nearby")
+def get_nearby(
+    lat: float,
+    lng: float,
+    radius: float = 10,
+    db: Session = Depends(get_db)
+):
+    try:
+        return find_nearby_providers(db, lat, lng, radius)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.get("/{provider_id}", response_model=ProviderResponse)
@@ -87,7 +104,13 @@ def update_provider(
     if db_provider.owner_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized")
 
-    for key, value in provider.dict().items():
+    update_data = provider.dict(exclude_unset=True)
+
+    if "latitude" in update_data and "longitude" in update_data:
+        if not is_within_philippines(update_data["latitude"], update_data["longitude"]):
+            raise HTTPException(status_code=400, detail="Provider location must be inside the Philippines")
+
+    for key, value in update_data.items():
         setattr(db_provider, key, value)
 
     db.commit()

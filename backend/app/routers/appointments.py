@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta
 
 from app.db import get_db
 from app.models.appointment import Appointment
 from app.models.providers import Provider
 from app.models.provider_availability import ProviderAvailability
+from app.models.service import Service
 from app.models.users import User
 from app.schemas.appointment import (
     AppointmentCreate,
@@ -29,12 +30,18 @@ def create_appointment(
     if not provider:
         raise HTTPException(status_code=404, detail="Provider not found")
 
+    service = db.query(Service).filter(Service.id == appointment.service_id).first()
+
+    if not service:
+        raise HTTPException(status_code=404, detail="Service not found")
+
     try:
         booking = create_booking(
             db=db,
             user_id=current_user.id,
             provider_id=appointment.provider_id,
             appointment_time=appointment.appointment_time,
+            duration_minutes=service.duration_minutes,
             status=appointment.status
         )
         return booking
@@ -51,9 +58,14 @@ def get_appointments(
     if current_user.role == "provider":
         providers = db.query(Provider).filter(Provider.owner_id == current_user.id).all()
         provider_ids = [p.id for p in providers]
-        return db.query(Appointment).filter(Appointment.provider_id.in_(provider_ids)).all()
 
-    return db.query(Appointment).filter(Appointment.user_id == current_user.id).all()
+        return db.query(Appointment).filter(
+            Appointment.provider_id.in_(provider_ids)
+        ).all()
+
+    return db.query(Appointment).filter(
+        Appointment.user_id == current_user.id
+    ).all()
 
 
 @router.get("/providers/{provider_id}/available-slots")
@@ -121,7 +133,9 @@ def get_appointment(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    appointment = db.query(Appointment).filter(Appointment.id == appointment_id).first()
+    appointment = db.query(Appointment).filter(
+        Appointment.id == appointment_id
+    ).first()
 
     if not appointment:
         raise HTTPException(status_code=404, detail="Appointment not found")
@@ -130,7 +144,10 @@ def get_appointment(
         raise HTTPException(status_code=403, detail="Not authorized")
 
     if current_user.role == "provider":
-        provider = db.query(Provider).filter(Provider.id == appointment.provider_id).first()
+        provider = db.query(Provider).filter(
+            Provider.id == appointment.provider_id
+        ).first()
+
         if provider.owner_id != current_user.id:
             raise HTTPException(status_code=403, detail="Not authorized")
 
@@ -144,12 +161,16 @@ def update_appointment(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    db_appointment = db.query(Appointment).filter(Appointment.id == appointment_id).first()
+    db_appointment = db.query(Appointment).filter(
+        Appointment.id == appointment_id
+    ).first()
 
     if not db_appointment:
         raise HTTPException(status_code=404, detail="Appointment not found")
 
-    provider = db.query(Provider).filter(Provider.id == db_appointment.provider_id).first()
+    provider = db.query(Provider).filter(
+        Provider.id == db_appointment.provider_id
+    ).first()
 
     if current_user.role == "provider" and provider.owner_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized")
@@ -172,12 +193,16 @@ def delete_appointment(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    appointment = db.query(Appointment).filter(Appointment.id == appointment_id).first()
+    appointment = db.query(Appointment).filter(
+        Appointment.id == appointment_id
+    ).first()
 
     if not appointment:
         raise HTTPException(status_code=404, detail="Appointment not found")
 
-    provider = db.query(Provider).filter(Provider.id == appointment.provider_id).first()
+    provider = db.query(Provider).filter(
+        Provider.id == appointment.provider_id
+    ).first()
 
     if current_user.role == "provider" and provider.owner_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized")
