@@ -57,6 +57,15 @@ def search(
     )
 
 
+@router.get("/provider/{provider_id}", response_model=list[ServiceResponse])
+def get_services_by_provider(
+    provider_id: int,
+    db: Session = Depends(get_db)
+):
+    services = db.query(Service).filter(Service.provider_id == provider_id).all()
+    return services
+
+
 @router.get("/category/{category_id}", response_model=list[ServiceResponse])
 def get_services_by_category(
     category_id: int,

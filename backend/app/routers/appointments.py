@@ -127,6 +127,70 @@ def get_available_slots(
     return {"available_slots": slots}
 
 
+@router.get("/services/{service_id}/available-slots")
+def get_service_available_slots(
+    service_id: int,
+    db: Session = Depends(get_db)
+):
+    service = db.query(Service).filter(Service.id == service_id).first()
+
+    if not service:
+        raise HTTPException(status_code=404, detail="Service not found")
+
+    provider = db.query(Provider).filter(Provider.id == service.provider_id).first()
+
+    if not provider:
+        raise HTTPException(status_code=404, detail="Provider not found")
+
+    start = datetime.now().replace(minute=0, second=0, microsecond=0)
+    end = start + timedelta(days=7)
+
+    availability = db.query(ProviderAvailability).filter(
+        ProviderAvailability.provider_id == provider.id
+    ).all()
+
+    if not availability:
+        return {"available_slots": []}
+
+    appointments = (
+        db.query(Appointment)
+        .filter(
+            Appointment.provider_id == provider.id,
+            Appointment.appointment_time >= start,
+            Appointment.appointment_time <= end
+        )
+        .all()
+    )
+
+    booked_times = {a.appointment_time for a in appointments}
+
+    slots = []
+    current = start
+
+    while current <= end:
+        weekday = current.weekday()
+
+        day_availability = [
+            a for a in availability if a.day_of_week == weekday
+        ]
+
+        for avail in day_availability:
+            slot_time = current.replace(
+                hour=avail.start_time.hour,
+                minute=avail.start_time.minute
+            )
+
+            while slot_time.time() < avail.end_time:
+                if slot_time not in booked_times and slot_time >= start:
+                    slots.append(slot_time)
+
+                slot_time += timedelta(minutes=service.duration_minutes)
+
+        current += timedelta(days=1)
+
+    return {"available_slots": slots}
+
+
 @router.get("/{appointment_id}", response_model=AppointmentResponse)
 def get_appointment(
     appointment_id: int,
