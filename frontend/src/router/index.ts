@@ -2,10 +2,14 @@ import { createRouter, createWebHistory } from "vue-router"
 
 import LoginView from "../views/auth/LoginView.vue"
 import RegisterView from "../views/auth/RegisterView.vue"
-import ProviderListView from "../views/ProviderListView.vue"
-import ProviderProfileView from "../views/ProviderProfileView.vue"
-import MyAppointmentsView from "../views/MyAppointmentsView.vue"
 import AuthSelectView from "../views/auth/AuthSelectView.vue"
+
+import ProviderListView from "../views/customer/ProviderListView.vue"
+import ProviderProfileView from "../views/customer/ProviderProfileView.vue"
+import MyAppointmentsView from "../views/customer/MyAppointmentsView.vue"
+
+import ProviderDashboardView from "../views/provider/ProviderDashboardView.vue"
+import AdminDashboardView from "../views/admin/AdminDashboardView.vue"
 
 import { useAuthStore } from "../stores/authStore"
 
@@ -14,38 +18,64 @@ const routes = [
     path: "/",
     redirect: "/auth"
   },
+
   {
     path: "/auth",
     name: "auth",
     component: AuthSelectView
   },
+
   {
     path: "/login",
     name: "login",
     component: LoginView
   },
+
   {
     path: "/register",
     name: "register",
     component: RegisterView
   },
+
+  // CUSTOMER ROUTES
+
   {
     path: "/providers",
     name: "providers",
     component: ProviderListView,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true, roles: ["customer"] }
   },
+
   {
     path: "/providers/:id",
     name: "providerProfile",
     component: ProviderProfileView,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true, roles: ["customer"] }
   },
+
   {
     path: "/appointments",
     name: "appointments",
     component: MyAppointmentsView,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true, roles: ["customer"] }
+  },
+
+  // PROVIDER ROUTES
+
+  {
+    path: "/provider/dashboard",
+    name: "providerDashboard",
+    component: ProviderDashboardView,
+    meta: { requiresAuth: true, roles: ["provider"] }
+  },
+
+  // ADMIN ROUTES
+
+  {
+    path: "/admin/dashboard",
+    name: "adminDashboard",
+    component: AdminDashboardView,
+    meta: { requiresAuth: true, roles: ["admin"] }
   }
 ]
 
@@ -58,16 +88,36 @@ router.beforeEach(async (to) => {
 
   const auth = useAuthStore()
 
-  if (to.meta.requiresAuth && !auth.user) {
+  if (to.meta.requiresAuth) {
 
-    try {
-      await auth.fetchUser()
-    } catch {
-      return { path: "/login" }
+    if (!auth.user) {
+      try {
+        await auth.fetchUser()
+      } catch {
+        return { path: "/login" }
+      }
     }
 
     if (!auth.user) {
       return { path: "/login" }
+    }
+
+    const allowedRoles = to.meta.roles as string[]
+
+    if (allowedRoles && !allowedRoles.includes(auth.user.role)) {
+
+      if (auth.user.role === "provider") {
+        return { path: "/provider/dashboard" }
+      }
+
+      if (auth.user.role === "admin") {
+        return { path: "/admin/dashboard" }
+      }
+
+      if (auth.user.role === "customer") {
+        return { path: "/providers" }
+      }
+
     }
 
   }

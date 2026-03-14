@@ -20,7 +20,19 @@ const login = async () => {
 
     await auth.login(email.value, password.value)
 
-    router.push("/providers")
+    // role based redirect
+
+    if (auth.user?.role === "customer") {
+      router.push("/providers")
+    }
+
+    if (auth.user?.role === "provider") {
+      router.push("/provider/dashboard")
+    }
+
+    if (auth.user?.role === "admin") {
+      router.push("/admin/dashboard")
+    }
 
   } catch (err) {
 
@@ -51,6 +63,7 @@ const login = async () => {
         type="email"
         placeholder="Email"
         required
+        autofocus
       />
 
       <input
