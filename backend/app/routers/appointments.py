@@ -52,6 +52,8 @@ def create_appointment(
 
 @router.get("/", response_model=list[AppointmentResponse])
 def get_appointments(
+    limit: int = 20,
+    offset: int = 0,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -61,11 +63,11 @@ def get_appointments(
 
         return db.query(Appointment).filter(
             Appointment.provider_id.in_(provider_ids)
-        ).all()
+        ).offset(offset).limit(limit).all()
 
     return db.query(Appointment).filter(
         Appointment.user_id == current_user.id
-    ).all()
+    ).offset(offset).limit(limit).all()
 
 
 @router.get("/providers/{provider_id}/available-slots")

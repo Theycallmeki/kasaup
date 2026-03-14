@@ -35,8 +35,12 @@ def create_provider(
 
 
 @router.get("/", response_model=list[ProviderResponse])
-def get_providers(db: Session = Depends(get_db)):
-    return db.query(Provider).all()
+def get_providers(
+    limit: int = 20,
+    offset: int = 0,
+    db: Session = Depends(get_db)
+):
+    return db.query(Provider).offset(offset).limit(limit).all()
 
 
 @router.get("/nearby")

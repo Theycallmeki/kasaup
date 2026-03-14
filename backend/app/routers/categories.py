@@ -24,8 +24,12 @@ def create_category(
 
 
 @router.get("/", response_model=list[CategoryResponse])
-def get_categories(db: Session = Depends(get_db)):
-    return db.query(Category).all()
+def get_categories(
+    limit: int = 20,
+    offset: int = 0,
+    db: Session = Depends(get_db)
+):
+    return db.query(Category).offset(offset).limit(limit).all()
 
 
 @router.get("/{category_id}", response_model=CategoryResponse)
@@ -36,12 +40,21 @@ def get_category(category_id: int, db: Session = Depends(get_db)):
     return category
 
 
-@router.get("/{category_id}/services", response_model=list[ServiceResponse], dependencies=[Depends(get_current_user)])
+@router.get(
+    "/{category_id}/services",
+    response_model=list[ServiceResponse],
+    dependencies=[Depends(get_current_user)]
+)
 def get_category_services(
     category_id: int,
+    limit: int = 20,
+    offset: int = 0,
     db: Session = Depends(get_db)
 ):
-    services = db.query(Service).filter(Service.category_id == category_id).all()
+    services = db.query(Service).filter(
+        Service.category_id == category_id
+    ).offset(offset).limit(limit).all()
+
     return services
 
 

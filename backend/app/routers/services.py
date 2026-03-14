@@ -36,8 +36,12 @@ def create_service(
 
 
 @router.get("/", response_model=list[ServiceResponse])
-def get_services(db: Session = Depends(get_db)):
-    return db.query(Service).all()
+def get_services(
+    limit: int = 20,
+    offset: int = 0,
+    db: Session = Depends(get_db)
+):
+    return db.query(Service).offset(offset).limit(limit).all()
 
 
 @router.get("/search")
@@ -60,19 +64,28 @@ def search(
 @router.get("/provider/{provider_id}", response_model=list[ServiceResponse])
 def get_services_by_provider(
     provider_id: int,
+    limit: int = 20,
+    offset: int = 0,
     db: Session = Depends(get_db)
 ):
-    services = db.query(Service).filter(Service.provider_id == provider_id).all()
+    services = db.query(Service).filter(
+        Service.provider_id == provider_id
+    ).offset(offset).limit(limit).all()
+
     return services
 
 
 @router.get("/category/{category_id}", response_model=list[ServiceResponse])
 def get_services_by_category(
     category_id: int,
+    limit: int = 20,
+    offset: int = 0,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    services = db.query(Service).filter(Service.category_id == category_id).all()
+    services = db.query(Service).filter(
+        Service.category_id == category_id
+    ).offset(offset).limit(limit).all()
 
     return services
 
