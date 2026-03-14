@@ -6,7 +6,7 @@
 
     <div class="actions">
       <button @click="goProviders">Browse Providers</button>
-      <button @click="goLogin">Login</button>
+      <button @click="goAuth">Get Started</button>
     </div>
 
   </div>
@@ -21,8 +21,8 @@ const goProviders = () => {
   router.push("/providers")
 }
 
-const goLogin = () => {
-  router.push("/login")
+const goAuth = () => {
+  router.push("/auth")
 }
 </script>
 

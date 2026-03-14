@@ -17,7 +17,6 @@ class Appointment(Base):
 
     appointment_time = Column(DateTime, nullable=False)
 
-    # Improved status
     status = Column(String, default="pending", nullable=False)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
