@@ -7,6 +7,7 @@ from app.models.providers import Provider
 from app.models.users import User
 from app.schemas.service import ServiceCreate, ServiceUpdate, ServiceResponse
 from app.core.dependencies import require_provider, get_current_user
+from app.services.service_search_service import search_services
 
 router = APIRouter(dependencies=[Depends(require_provider)])
 
@@ -37,6 +38,23 @@ def create_service(
 @router.get("/", response_model=list[ServiceResponse])
 def get_services(db: Session = Depends(get_db)):
     return db.query(Service).all()
+
+
+@router.get("/search")
+def search(
+    q: str | None = None,
+    category_id: int | None = None,
+    min_price: float | None = None,
+    max_price: float | None = None,
+    db: Session = Depends(get_db)
+):
+    return search_services(
+        db,
+        query=q,
+        category_id=category_id,
+        min_price=min_price,
+        max_price=max_price
+    )
 
 
 @router.get("/category/{category_id}", response_model=list[ServiceResponse])

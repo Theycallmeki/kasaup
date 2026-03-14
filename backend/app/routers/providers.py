@@ -52,6 +52,24 @@ def get_nearby(
         raise HTTPException(status_code=400, detail=str(e))
 
 
+@router.get("/map")
+def get_providers_in_map(
+    min_lat: float,
+    max_lat: float,
+    min_lng: float,
+    max_lng: float,
+    db: Session = Depends(get_db)
+):
+    providers = db.query(Provider).filter(
+        Provider.latitude >= min_lat,
+        Provider.latitude <= max_lat,
+        Provider.longitude >= min_lng,
+        Provider.longitude <= max_lng
+    ).all()
+
+    return providers
+
+
 @router.get("/{provider_id}", response_model=ProviderResponse)
 def get_provider(provider_id: int, db: Session = Depends(get_db)):
     provider = db.query(Provider).filter(Provider.id == provider_id).first()
