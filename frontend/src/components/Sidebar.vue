@@ -1,68 +1,61 @@
 <script setup lang="ts">
+import { ref } from "vue"
 import { useAuthStore } from "../stores/authStore"
 import { useRouter } from "vue-router"
 
 const auth = useAuthStore()
 const router = useRouter()
 
+const collapsed = ref(false)
+
+const toggleSidebar = () => {
+  collapsed.value = !collapsed.value
+}
+
 const logout = async () => {
   await auth.logout()
-  router.push("/")
+  router.push("/login")
 }
 </script>
 
 <template>
-  <div class="sidebar">
 
-    <h2 class="logo">Kasaup</h2>
+  <div :class="['sidebar', { collapsed }]">
+
+    <div class="top">
+
+      <h2 v-if="!collapsed" class="logo">
+        Kasaup
+      </h2>
+
+      <button class="toggle" @click="toggleSidebar">
+        ☰
+      </button>
+
+    </div>
 
     <nav>
 
       <router-link to="/" class="link">
-        Home
+        <span v-if="!collapsed">Home</span>
       </router-link>
 
       <router-link to="/providers" class="link">
-        Providers
+        <span v-if="!collapsed">Providers</span>
       </router-link>
 
-      <router-link 
-        v-if="auth.user"
-        to="/appointments"
-        class="link"
-      >
-        My Appointments
+      <router-link to="/appointments" class="link">
+        <span v-if="!collapsed">Appointments</span>
       </router-link>
 
-      <!-- Not logged in -->
-      <router-link 
-        v-if="!auth.user"
-        to="/login"
-        class="link"
-      >
-        Login
-      </router-link>
-
-      <router-link 
-        v-if="!auth.user"
-        to="/register"
-        class="link"
-      >
-        Register
-      </router-link>
-
-      <!-- Logged in -->
-      <button 
-        v-if="auth.user"
-        class="link logout"
-        @click="logout"
-      >
-        Logout
+      <button class="link logout" @click="logout">
+        <span v-if="!collapsed">Logout</span>
       </button>
 
     </nav>
 
   </div>
+
 </template>
 
 <style scoped>
@@ -74,10 +67,26 @@ const logout = async () => {
   color:white;
   padding:20px;
   position:fixed;
+  transition:width 0.2s ease;
 }
 
-.logo{
+.sidebar.collapsed{
+  width:70px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
   margin-bottom:30px;
+}
+
+.toggle{
+  background:none;
+  border:none;
+  color:white;
+  font-size:18px;
+  cursor:pointer;
 }
 
 nav{

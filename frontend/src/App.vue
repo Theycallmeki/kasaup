@@ -15,9 +15,13 @@ onMounted(() => {
 
   <div class="layout">
 
-    <Sidebar />
+    <!-- Sidebar only when logged in -->
+    <Sidebar v-if="auth.user" />
 
-    <main class="content">
+    <main
+      class="content"
+      :class="{ full: !auth.user }"
+    >
       <router-view />
     </main>
 
@@ -35,6 +39,10 @@ onMounted(() => {
   margin-left:220px;
   padding:30px;
   width:100%;
+}
+
+.full{
+  margin-left:0;
 }
 
 </style>

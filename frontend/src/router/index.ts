@@ -1,17 +1,23 @@
 import { createRouter, createWebHistory } from "vue-router"
 
-import HomeView from "../views/HomeView.vue"
 import LoginView from "../views/LoginView.vue"
 import RegisterView from "../views/RegisterView.vue"
 import ProviderListView from "../views/ProviderListView.vue"
 import ProviderProfileView from "../views/ProviderProfileView.vue"
 import MyAppointmentsView from "../views/MyAppointmentsView.vue"
+import AuthSelectView from "../views/AuthSelectView.vue"
+
+import { useAuthStore } from "../stores/authStore"
 
 const routes = [
   {
     path: "/",
-    name: "home",
-    component: HomeView
+    redirect: "/auth"
+  },
+  {
+    path: "/auth",
+    name: "auth",
+    component: AuthSelectView
   },
   {
     path: "/login",
@@ -26,23 +32,46 @@ const routes = [
   {
     path: "/providers",
     name: "providers",
-    component: ProviderListView
+    component: ProviderListView,
+    meta: { requiresAuth: true }
   },
   {
     path: "/providers/:id",
     name: "providerProfile",
-    component: ProviderProfileView
+    component: ProviderProfileView,
+    meta: { requiresAuth: true }
   },
   {
     path: "/appointments",
     name: "appointments",
-    component: MyAppointmentsView
+    component: MyAppointmentsView,
+    meta: { requiresAuth: true }
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(),
   routes
+})
+
+router.beforeEach(async (to) => {
+
+  const auth = useAuthStore()
+
+  if (to.meta.requiresAuth && !auth.user) {
+
+    try {
+      await auth.fetchUser()
+    } catch {
+      return { path: "/login" }
+    }
+
+    if (!auth.user) {
+      return { path: "/login" }
+    }
+
+  }
+
 })
 
 export default router
