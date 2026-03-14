@@ -1,30 +1,41 @@
 <script setup lang="ts">
-import { ref } from "vue"
-import { useRouter } from "vue-router"
-import { useAuthStore } from "../stores/authStore"
+import { ref, computed } from "vue"
+import { useRouter, useRoute } from "vue-router"
+import { useAuthStore } from "../../stores/authStore"
 
 const router = useRouter()
+const route = useRoute()
 const auth = useAuthStore()
 
 const email = ref("")
 const password = ref("")
-const error = ref("")
+const full_name = ref("")
+const phone = ref("")
 const loading = ref(false)
+const error = ref("")
 
-const login = async () => {
+const role = computed(() => route.query.role || "customer")
+
+const register = async () => {
 
   error.value = ""
   loading.value = true
 
   try {
 
-    await auth.login(email.value, password.value)
+    await auth.register({
+      email: email.value,
+      password: password.value,
+      full_name: full_name.value,
+      phone: phone.value,
+      role: role.value
+    })
 
-    router.push("/providers")
+    router.push("/login")
 
-  } catch (err) {
+  } catch (err: any) {
 
-    error.value = "Invalid email or password"
+    error.value = "Registration failed. Email may already exist."
 
   } finally {
 
@@ -37,20 +48,31 @@ const login = async () => {
 
 <template>
 
-<div class="login-container">
+<div class="register-container">
 
-  <div class="login-card">
+  <div class="register-card">
 
     <h1>Kasaup</h1>
-    <p>Login to your account</p>
+    <p>Create your {{ role }} account</p>
 
-    <form @submit.prevent="login">
+    <form @submit.prevent="register">
+
+      <input
+        v-model="full_name"
+        placeholder="Full Name"
+        required
+      />
 
       <input
         v-model="email"
         type="email"
         placeholder="Email"
         required
+      />
+
+      <input
+        v-model="phone"
+        placeholder="Phone"
       />
 
       <input
@@ -61,7 +83,7 @@ const login = async () => {
       />
 
       <button :disabled="loading">
-        {{ loading ? "Logging in..." : "Login" }}
+        {{ loading ? "Creating account..." : "Register" }}
       </button>
 
     </form>
@@ -70,12 +92,12 @@ const login = async () => {
       {{ error }}
     </p>
 
-    <div class="register">
+    <div class="login">
 
-      <p>Don't have an account?</p>
+      <p>Already have an account?</p>
 
-      <router-link to="/auth">
-        Register as Customer or Provider
+      <router-link to="/login">
+        Login
       </router-link>
 
     </div>
@@ -88,15 +110,15 @@ const login = async () => {
 
 <style scoped>
 
-.login-container{
+.register-container{
   height:100vh;
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
   background:#f1f5f9;
 }
 
-.login-card{
+.register-card{
   width:380px;
   padding:40px;
   background:white;
@@ -122,18 +144,14 @@ button{
   padding:10px;
   border:none;
   border-radius:6px;
-  background:#2563eb;
+  background:#16a34a;
   color:white;
   font-weight:600;
   cursor:pointer;
 }
 
 button:hover{
-  background:#1d4ed8;
-}
-
-button:disabled{
-  opacity:0.6;
+  background:#15803d;
 }
 
 .error{
@@ -141,11 +159,11 @@ button:disabled{
   margin-top:10px;
 }
 
-.register{
+.login{
   margin-top:20px;
 }
 
-.register a{
+.login a{
   color:#2563eb;
   text-decoration:none;
 }

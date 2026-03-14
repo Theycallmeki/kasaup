@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router"
 
-import LoginView from "../views/LoginView.vue"
-import RegisterView from "../views/RegisterView.vue"
+import LoginView from "../views/auth/LoginView.vue"
+import RegisterView from "../views/auth/RegisterView.vue"
 import ProviderListView from "../views/ProviderListView.vue"
 import ProviderProfileView from "../views/ProviderProfileView.vue"
 import MyAppointmentsView from "../views/MyAppointmentsView.vue"
-import AuthSelectView from "../views/AuthSelectView.vue"
+import AuthSelectView from "../views/auth/AuthSelectView.vue"
 
 import { useAuthStore } from "../stores/authStore"
 
