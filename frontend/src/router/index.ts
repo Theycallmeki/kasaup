@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router"
 
+import HomeView from "../views/customer/HomeView.vue"
 import LoginView from "../views/auth/LoginView.vue"
 import RegisterView from "../views/auth/RegisterView.vue"
 import AuthSelectView from "../views/auth/AuthSelectView.vue"
@@ -16,7 +17,8 @@ import { useAuthStore } from "../stores/authStore"
 const routes = [
   {
     path: "/",
-    redirect: "/auth"
+    name: "home",
+    component: HomeView
   },
 
   {
@@ -36,8 +38,6 @@ const routes = [
     name: "register",
     component: RegisterView
   },
-
-  // CUSTOMER ROUTES
 
   {
     path: "/providers",
@@ -60,16 +60,12 @@ const routes = [
     meta: { requiresAuth: true, roles: ["customer"] }
   },
 
-  // PROVIDER ROUTES
-
   {
     path: "/provider/dashboard",
     name: "providerDashboard",
     component: ProviderDashboardView,
     meta: { requiresAuth: true, roles: ["provider"] }
   },
-
-  // ADMIN ROUTES
 
   {
     path: "/admin/dashboard",
