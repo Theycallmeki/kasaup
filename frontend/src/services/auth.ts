@@ -18,9 +18,9 @@ export const getCurrentUser = async () => {
 export const registerRequest = async (data: {
   email: string
   password: string
-  full_name: string
-  phone: string
-  role: string
+  full_name?: string
+  phone?: string
+  role?: string
 }) => {
   const res = await api.post("/users", data)
   return res.data

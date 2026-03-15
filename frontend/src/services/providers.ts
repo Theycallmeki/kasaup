@@ -25,3 +25,39 @@ export async function getNearbyProviders(
   })
   return res.data
 }
+
+export async function getProvidersInMap(bounds: {
+  min_lat: number
+  max_lat: number
+  min_lng: number
+  max_lng: number
+}) {
+  const res = await api.get("/providers/map", {
+    params: bounds
+  })
+  return res.data
+}
+
+export async function createProvider(data: {
+  shop_name: string
+  description?: string
+  phone?: string
+  email?: string
+  address?: string
+  latitude: number
+  longitude: number
+  offers_home_service: boolean
+}) {
+  const res = await api.post("/providers", data)
+  return res.data
+}
+
+export async function updateProvider(id: number, data: any) {
+  const res = await api.put(`/providers/${id}`, data)
+  return res.data
+}
+
+export async function deleteProvider(id: number) {
+  const res = await api.delete(`/providers/${id}`)
+  return res.data
+}

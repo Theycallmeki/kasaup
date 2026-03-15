@@ -15,6 +15,21 @@ export async function getProviderServices(providerId: number) {
   return res.data
 }
 
+export async function getCategoryServices(categoryId: number) {
+  const res = await api.get(`/services/category/${categoryId}`)
+  return res.data
+}
+
+export async function searchServices(params: {
+  q?: string
+  category_id?: number
+  min_price?: number
+  max_price?: number
+}) {
+  const res = await api.get("/services/search", { params })
+  return res.data
+}
+
 export async function createService(data: {
   category_id: number
   name: string
@@ -28,19 +43,20 @@ export async function createService(data: {
   return res.data
 }
 
-export async function updateService(id: number, data: any) {
+export async function updateService(id: number, data: {
+  category_id?: number
+  name?: string
+  description?: string
+  price?: number
+  duration_minutes?: number
+  latitude?: number
+  longitude?: number
+}) {
   const res = await api.put(`/services/${id}`, data)
   return res.data
 }
 
 export async function deleteService(id: number) {
   const res = await api.delete(`/services/${id}`)
-  return res.data
-}
-
-export async function searchServices(query: string) {
-  const res = await api.get("/services/search", {
-    params: { q: query }
-  })
   return res.data
 }
