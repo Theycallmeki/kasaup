@@ -13,19 +13,18 @@ onMounted(() => {
 
 <template>
 
-  <div class="layout">
+<div class="layout">
 
-    <!-- Sidebar only when logged in -->
-    <Sidebar v-if="auth.user" />
+  <Sidebar v-if="auth.user" />
 
-    <main
-      class="content"
-      :class="{ full: !auth.user }"
-    >
-      <router-view />
-    </main>
+  <main
+    class="content"
+    :class="{ full: !auth.user }"
+  >
+    <router-view />
+  </main>
 
-  </div>
+</div>
 
 </template>
 
@@ -39,6 +38,8 @@ onMounted(() => {
   margin-left:220px;
   padding:30px;
   width:100%;
+  min-height:100vh;
+  background:#f8fafc;
 }
 
 .full{

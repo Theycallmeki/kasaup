@@ -2,6 +2,7 @@
 import { onMounted } from "vue"
 import { useRouter } from "vue-router"
 import { useProviderStore } from "../../stores/providerStore"
+import ProviderMap from "../../components/ProviderMap.vue"
 
 const providerStore = useProviderStore()
 const router = useRouter()
@@ -19,6 +20,8 @@ function openProvider(id: number) {
   <div>
 
     <h2>Providers</h2>
+
+    <ProviderMap />
 
     <div v-if="providerStore.loading">
       Loading providers...

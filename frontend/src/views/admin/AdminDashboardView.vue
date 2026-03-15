@@ -1,4 +1,19 @@
 <script setup lang="ts">
+import { useRouter } from "vue-router"
+
+const router = useRouter()
+
+function goUsers() {
+  router.push("/admin/users")
+}
+
+function goProviders() {
+  router.push("/admin/providers")
+}
+
+function goCategories() {
+  router.push("/admin/categories")
+}
 </script>
 
 <template>
@@ -13,19 +28,19 @@
     <div class="card">
       <h3>Users</h3>
       <p>View and manage registered users</p>
-      <button>Manage Users</button>
+      <button @click="goUsers">Manage Users</button>
     </div>
 
     <div class="card">
       <h3>Providers</h3>
       <p>Verify and manage service providers</p>
-      <button>Manage Providers</button>
+      <button @click="goProviders">Manage Providers</button>
     </div>
 
     <div class="card">
       <h3>Categories</h3>
       <p>Manage service categories</p>
-      <button>Manage Categories</button>
+      <button @click="goCategories">Manage Categories</button>
     </div>
 
   </div>

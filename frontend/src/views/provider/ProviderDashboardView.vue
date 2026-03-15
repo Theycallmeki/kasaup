@@ -1,4 +1,19 @@
 <script setup lang="ts">
+import { useRouter } from "vue-router"
+
+const router = useRouter()
+
+function goServices() {
+  router.push("/provider/services")
+}
+
+function goAppointments() {
+  router.push("/provider/appointments")
+}
+
+function goAvailability() {
+  router.push("/provider/availability")
+}
 </script>
 
 <template>
@@ -13,19 +28,19 @@
     <div class="card">
       <h3>My Services</h3>
       <p>Manage services you offer</p>
-      <button>Manage Services</button>
+      <button @click="goServices">Manage Services</button>
     </div>
 
     <div class="card">
       <h3>Appointments</h3>
       <p>View upcoming bookings</p>
-      <button>View Appointments</button>
+      <button @click="goAppointments">View Appointments</button>
     </div>
 
     <div class="card">
       <h3>Availability</h3>
       <p>Set your working schedule</p>
-      <button>Manage Availability</button>
+      <button @click="goAvailability">Manage Availability</button>
     </div>
 
   </div>

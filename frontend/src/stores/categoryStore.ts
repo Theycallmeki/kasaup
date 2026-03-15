@@ -1,5 +1,10 @@
 import { defineStore } from "pinia"
-import { getCategories } from "../services/categories"
+import {
+  getCategories,
+  createCategory,
+  updateCategory,
+  deleteCategory
+} from "../services/categories"
 
 export const useCategoryStore = defineStore("categories", {
 
@@ -11,6 +16,18 @@ export const useCategoryStore = defineStore("categories", {
 
     async fetchCategories() {
       this.categories = await getCategories()
+    },
+
+    async addCategory(data: any) {
+      return await createCategory(data)
+    },
+
+    async editCategory(id: number, data: any) {
+      return await updateCategory(id, data)
+    },
+
+    async removeCategory(id: number) {
+      return await deleteCategory(id)
     }
 
   }
