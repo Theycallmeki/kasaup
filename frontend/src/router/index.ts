@@ -14,6 +14,7 @@ import ProviderServicesView from "../views/provider/ProviderServicesView.vue"
 import ProviderAvailabilityView from "../views/provider/ProviderAvailabilityView.vue"
 import ProviderAppointmentsView from "../views/provider/ProviderAppointmentsView.vue"
 import CreateServiceView from "../views/provider/CreateServiceView.vue"
+import CreateProviderProfileView from "../views/provider/CreateProviderProfileView.vue"
 
 import AdminDashboardView from "../views/admin/AdminDashboardView.vue"
 import AdminCategoriesView from "../views/admin/AdminCategoriesView.vue"
@@ -21,8 +22,10 @@ import AdminUsersView from "../views/admin/AdminUsersView.vue"
 import AdminProvidersView from "../views/admin/AdminProvidersView.vue"
 
 import { useAuthStore } from "../stores/authStore"
+import api from "../services/api"
 
 const routes = [
+
   {
     path: "/",
     name: "home",
@@ -66,6 +69,13 @@ const routes = [
     name: "appointments",
     component: MyAppointmentsView,
     meta: { requiresAuth: true, roles: ["customer"] }
+  },
+
+  {
+    path: "/provider/create-profile",
+    name: "createProviderProfile",
+    component: CreateProviderProfileView,
+    meta: { requiresAuth: true, roles: ["provider"] }
   },
 
   {
@@ -130,6 +140,7 @@ const routes = [
     component: AdminProvidersView,
     meta: { requiresAuth: true, roles: ["admin"] }
   }
+
 ]
 
 const router = createRouter({
@@ -170,6 +181,28 @@ router.beforeEach(async (to) => {
       if (auth.user.role === "customer") {
         return { path: "/providers" }
       }
+
+    }
+
+   
+
+    if (auth.user.role === "provider") {
+
+      try {
+
+        const res = await api.get("/providers")
+
+        const provider = res.data.find(
+          (p:any) => p.owner_id === auth.user.id
+        )
+
+        if (!provider && to.path !== "/provider/create-profile") {
+
+          return { path: "/provider/create-profile" }
+
+        }
+
+      } catch {}
 
     }
 

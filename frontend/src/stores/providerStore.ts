@@ -1,13 +1,18 @@
 import { defineStore } from "pinia"
 import {
   getProviders,
-  getProviderProfile
+  getProvider,
+  getProviderProfile,
+  createProvider,
+  updateProvider,
+  deleteProvider
 } from "../services/providers"
 
 export const useProviderStore = defineStore("providers", {
 
   state: () => ({
     providers: [] as any[],
+    provider: null as any,
     providerProfile: null as any,
     loading: false
   }),
@@ -26,6 +31,18 @@ export const useProviderStore = defineStore("providers", {
 
     },
 
+    async fetchProvider(id: number) {
+
+      this.loading = true
+
+      try {
+        this.provider = await getProvider(id)
+      } finally {
+        this.loading = false
+      }
+
+    },
+
     async fetchProviderProfile(id: number) {
 
       this.loading = true
@@ -35,6 +52,36 @@ export const useProviderStore = defineStore("providers", {
       } finally {
         this.loading = false
       }
+
+    },
+
+    async addProvider(data: any) {
+
+      const res = await createProvider(data)
+
+      await this.fetchProviders()
+
+      return res
+
+    },
+
+    async editProvider(id: number, data: any) {
+
+      const res = await updateProvider(id, data)
+
+      await this.fetchProviders()
+
+      return res
+
+    },
+
+    async removeProvider(id: number) {
+
+      const res = await deleteProvider(id)
+
+      await this.fetchProviders()
+
+      return res
 
     }
 

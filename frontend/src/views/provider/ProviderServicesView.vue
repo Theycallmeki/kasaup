@@ -8,14 +8,32 @@ const serviceStore = useServiceStore()
 const authStore = useAuthStore()
 const router = useRouter()
 
-onMounted(() => {
+onMounted(async () => {
+
   if (authStore.user?.provider_id) {
-    serviceStore.fetchProviderServices(authStore.user.provider_id)
+
+    await serviceStore.fetchProviderServices(authStore.user.provider_id)
+
   }
+
 })
 
 function createService() {
+
   router.push("/provider/services/create")
+
+}
+
+function editService(id: number) {
+
+  router.push(`/provider/services/edit/${id}`)
+
+}
+
+async function deleteService(id: number) {
+
+  await serviceStore.removeService(id)
+
 }
 </script>
 
@@ -23,26 +41,52 @@ function createService() {
 
 <div>
 
-  <h2>My Services</h2>
+<h2>My Services</h2>
 
-  <button @click="createService">
-    Create Service
-  </button>
+<button @click="createService">
+Create Service
+</button>
 
-  <div v-if="serviceStore.loading">
-    Loading...
-  </div>
+<div v-if="serviceStore.loading">
+Loading...
+</div>
 
-  <div v-else>
+<div v-else>
 
-    <div
-      v-for="service in serviceStore.services"
-      :key="service.id"
-    >
-      {{ service.name }} - {{ service.price }}
-    </div>
+<div
+v-for="service in serviceStore.services"
+:key="service.id"
+style="margin-bottom:12px"
+>
 
-  </div>
+<strong>{{ service.name }}</strong>
+
+<div>
+Price: ₱{{ service.price }}
+</div>
+
+<div>
+Duration: {{ service.duration_minutes }} minutes
+</div>
+
+<div style="margin-top:6px">
+
+<button @click="editService(service.id)">
+Edit
+</button>
+
+<button
+style="margin-left:10px"
+@click="deleteService(service.id)"
+>
+Delete
+</button>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 

@@ -10,66 +10,100 @@ const appointmentStore = useAppointmentStore()
 
 const id = Number(route.params.id)
 
-onMounted(() => {
-  providerStore.fetchProviderProfile(id)
+onMounted(async () => {
+
+  await providerStore.fetchProviderProfile(id)
+
 })
 
 function loadSlots(serviceId: number) {
+
   appointmentStore.fetchAvailableSlots(serviceId)
+
 }
 
 function book(serviceId: number, slot: string) {
+
   appointmentStore.bookAppointment({
     provider_id: id,
     service_id: serviceId,
     appointment_time: slot
   })
+
 }
 </script>
 
 <template>
-  <div>
 
-    <div v-if="providerStore.loading">
-      Loading...
-    </div>
+<div>
 
-    <div v-else-if="providerStore.providerProfile">
+<div v-if="providerStore.loading">
+Loading...
+</div>
 
-      <h2>
-        {{ providerStore.providerProfile.shop_name }}
-      </h2>
+<div v-else-if="providerStore.providerProfile">
 
-      <div
-        v-for="service in providerStore.providerProfile.services"
-        :key="service.id"
-      >
+<h2>
+{{ providerStore.providerProfile.provider.shop_name }}
+</h2>
 
-        <div>
-          {{ service.name }} - {{ service.price }}
-        </div>
+<p>
+{{ providerStore.providerProfile.provider.description }}
+</p>
 
-        <button @click="loadSlots(service.id)">
-          Book
-        </button>
+<div
+v-for="service in providerStore.providerProfile.services"
+:key="service.id"
+style="margin-bottom:16px"
+>
 
-        <div v-if="appointmentStore.slots.length">
+<div>
+<strong>{{ service.name }}</strong>
+</div>
 
-          <div
-            v-for="slot in appointmentStore.slots"
-            :key="slot"
-          >
-            {{ slot }}
-            <button @click="book(service.id, slot)">
-              Confirm
-            </button>
-          </div>
+<div>
+Price: ₱{{ service.price }}
+</div>
 
-        </div>
+<div>
+Duration: {{ service.duration_minutes }} minutes
+</div>
 
-      </div>
+<button
+style="margin-top:6px"
+@click="loadSlots(service.id)"
+>
+Book
+</button>
 
-    </div>
+<div
+v-if="appointmentStore.slots.length"
+style="margin-top:10px"
+>
 
-  </div>
+<div
+v-for="slot in appointmentStore.slots"
+:key="slot"
+style="margin-bottom:6px"
+>
+
+{{ slot }}
+
+<button
+style="margin-left:10px"
+@click="book(service.id, slot)"
+>
+Confirm
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </template>

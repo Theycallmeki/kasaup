@@ -7,12 +7,16 @@ import ProviderMap from "../../components/ProviderMap.vue"
 const providerStore = useProviderStore()
 const router = useRouter()
 
-onMounted(() => {
-  providerStore.fetchProviders()
+onMounted(async () => {
+
+  await providerStore.fetchProviders()
+
 })
 
 function openProvider(id: number) {
+
   router.push(`/providers/${id}`)
+
 }
 </script>
 
@@ -20,11 +24,14 @@ function openProvider(id: number) {
 
 <div class="providers-page">
 
-  <div class="search-bar">
-    <input placeholder="Search services or providers..." />
-  </div>
+<div class="search-bar">
+<input placeholder="Search services or providers..." />
+</div>
 
-  <ProviderMap />
+<ProviderMap
+:providers="providerStore.providers"
+@provider-click="openProvider"
+/>
 
 </div>
 
@@ -33,27 +40,27 @@ function openProvider(id: number) {
 <style scoped>
 
 .providers-page{
-  position:relative;
-  height:100vh;
-  width:100%;
+position:relative;
+height:100vh;
+width:100%;
 }
 
 .search-bar{
-  position:absolute;
-  top:20px;
-  left:50%;
-  transform:translateX(-50%);
-  z-index:1000;
-  width:420px;
+position:absolute;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+z-index:1000;
+width:420px;
 }
 
 .search-bar input{
-  width:100%;
-  padding:12px 16px;
-  border-radius:10px;
-  border:1px solid #cbd5e1;
-  box-shadow:0 5px 15px rgba(0,0,0,0.15);
-  font-size:14px;
+width:100%;
+padding:12px 16px;
+border-radius:10px;
+border:1px solid #cbd5e1;
+box-shadow:0 5px 15px rgba(0,0,0,0.15);
+font-size:14px;
 }
 
 </style>

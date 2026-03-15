@@ -14,7 +14,7 @@ const phone = ref("")
 const loading = ref(false)
 const error = ref("")
 
-const role = computed(() => route.query.role || "customer")
+const role = computed(() => (route.query.role as string) || "customer")
 
 const register = async () => {
 
@@ -33,7 +33,7 @@ const register = async () => {
 
     router.push("/login")
 
-  } catch (err: any) {
+  } catch (err:any) {
 
     error.value = "Registration failed. Email may already exist."
 

@@ -4,8 +4,10 @@ import { useAppointmentStore } from "../../stores/appointmentStore"
 
 const appointmentStore = useAppointmentStore()
 
-onMounted(() => {
-  appointmentStore.fetchAppointments()
+onMounted(async () => {
+
+  await appointmentStore.fetchAppointments()
+
 })
 </script>
 
@@ -13,22 +15,43 @@ onMounted(() => {
 
 <div>
 
-  <h2>Provider Appointments</h2>
+<h2>Provider Appointments</h2>
 
-  <div v-if="appointmentStore.loading">
-    Loading...
-  </div>
+<div v-if="appointmentStore.loading">
+Loading...
+</div>
 
-  <div v-else>
+<div v-else>
 
-    <div
-      v-for="appointment in appointmentStore.appointments"
-      :key="appointment.id"
-    >
-      {{ appointment.appointment_time }}
-    </div>
+<div
+v-for="appointment in appointmentStore.appointments"
+:key="appointment.id"
+style="margin-bottom:12px"
+>
 
-  </div>
+<div>
+<strong>Appointment Time:</strong>
+{{ appointment.appointment_time }}
+</div>
+
+<div>
+<strong>Service ID:</strong>
+{{ appointment.service_id }}
+</div>
+
+<div>
+<strong>Customer ID:</strong>
+{{ appointment.user_id }}
+</div>
+
+<div>
+<strong>Status:</strong>
+{{ appointment.status }}
+</div>
+
+</div>
+
+</div>
 
 </div>
 
