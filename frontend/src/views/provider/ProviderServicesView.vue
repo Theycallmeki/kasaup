@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { onMounted } from "vue"
 import { useServiceStore } from "../../stores/serviceStore"
+import { useAuthStore } from "../../stores/authStore"
 
 const serviceStore = useServiceStore()
+const authStore = useAuthStore()
 
 onMounted(() => {
-  serviceStore.fetchServices()
+  if (authStore.user?.provider_id) {
+    serviceStore.fetchProviderServices(authStore.user.provider_id)
+  }
 })
 </script>
 

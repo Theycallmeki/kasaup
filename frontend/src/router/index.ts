@@ -12,9 +12,12 @@ import MyAppointmentsView from "../views/customer/MyAppointmentsView.vue"
 import ProviderDashboardView from "../views/provider/ProviderDashboardView.vue"
 import ProviderServicesView from "../views/provider/ProviderServicesView.vue"
 import ProviderAvailabilityView from "../views/provider/ProviderAvailabilityView.vue"
+import ProviderAppointmentsView from "../views/provider/ProviderAppointmentsView.vue"
 
 import AdminDashboardView from "../views/admin/AdminDashboardView.vue"
 import AdminCategoriesView from "../views/admin/AdminCategoriesView.vue"
+import AdminUsersView from "../views/admin/AdminUsersView.vue"
+import AdminProvidersView from "../views/admin/AdminProvidersView.vue"
 
 import { useAuthStore } from "../stores/authStore"
 
@@ -86,6 +89,13 @@ const routes = [
   },
 
   {
+    path: "/provider/appointments",
+    name: "providerAppointments",
+    component: ProviderAppointmentsView,
+    meta: { requiresAuth: true, roles: ["provider"] }
+  },
+
+  {
     path: "/admin/dashboard",
     name: "adminDashboard",
     component: AdminDashboardView,
@@ -96,6 +106,20 @@ const routes = [
     path: "/admin/categories",
     name: "adminCategories",
     component: AdminCategoriesView,
+    meta: { requiresAuth: true, roles: ["admin"] }
+  },
+
+  {
+    path: "/admin/users",
+    name: "adminUsers",
+    component: AdminUsersView,
+    meta: { requiresAuth: true, roles: ["admin"] }
+  },
+
+  {
+    path: "/admin/providers",
+    name: "adminProviders",
+    component: AdminProvidersView,
     meta: { requiresAuth: true, roles: ["admin"] }
   }
 ]

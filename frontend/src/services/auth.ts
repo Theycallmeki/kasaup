@@ -22,6 +22,6 @@ export const registerRequest = async (data: {
   phone: string
   role: string
 }) => {
-  const res = await api.post("/users/", data)
+  const res = await api.post("/users", data)
   return res.data
 }
