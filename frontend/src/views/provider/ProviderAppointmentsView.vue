@@ -13,12 +13,12 @@ onMounted(async () => {
 
 <template>
 
-<div>
+<div class="appointments">
 
 <h2>Provider Appointments</h2>
 
 <div v-if="appointmentStore.loading">
-Loading...
+Loading appointments...
 </div>
 
 <div v-else>
@@ -26,7 +26,7 @@ Loading...
 <div
 v-for="appointment in appointmentStore.appointments"
 :key="appointment.id"
-style="margin-bottom:12px"
+class="appointment-card"
 >
 
 <div>
@@ -56,3 +56,19 @@ style="margin-bottom:12px"
 </div>
 
 </template>
+
+<style scoped>
+
+.appointments{
+padding:20px;
+}
+
+.appointment-card{
+background:white;
+border-radius:8px;
+padding:16px;
+margin-bottom:12px;
+box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
+
+</style>

@@ -26,21 +26,45 @@ function goAvailability() {
   <div class="cards">
 
     <div class="card">
+
       <h3>My Services</h3>
-      <p>Manage services you offer</p>
-      <button @click="goServices">Manage Services</button>
+
+      <p>
+        Manage services you offer
+      </p>
+
+      <button @click="goServices">
+        Manage Services
+      </button>
+
     </div>
 
     <div class="card">
+
       <h3>Appointments</h3>
-      <p>View upcoming bookings</p>
-      <button @click="goAppointments">View Appointments</button>
+
+      <p>
+        View upcoming bookings
+      </p>
+
+      <button @click="goAppointments">
+        View Appointments
+      </button>
+
     </div>
 
     <div class="card">
+
       <h3>Availability</h3>
-      <p>Set your working schedule</p>
-      <button @click="goAvailability">Manage Availability</button>
+
+      <p>
+        Set your working schedule
+      </p>
+
+      <button @click="goAvailability">
+        Manage Availability
+      </button>
+
     </div>
 
   </div>
@@ -77,6 +101,10 @@ button{
   color:white;
   border-radius:6px;
   cursor:pointer;
+}
+
+button:hover{
+  background:#1d4ed8;
 }
 
 </style>

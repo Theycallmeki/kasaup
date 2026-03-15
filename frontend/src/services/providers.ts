@@ -1,18 +1,24 @@
 import api from "./api"
 
 export async function getProviders() {
+
   const res = await api.get("/providers")
   return res.data
+
 }
 
 export async function getProvider(id: number) {
+
   const res = await api.get(`/providers/${id}`)
   return res.data
+
 }
 
 export async function getProviderProfile(id: number) {
+
   const res = await api.get(`/providers/${id}/profile`)
   return res.data
+
 }
 
 export async function getNearbyProviders(
@@ -20,10 +26,13 @@ export async function getNearbyProviders(
   lng: number,
   radius: number = 10
 ) {
+
   const res = await api.get("/providers/nearby", {
     params: { lat, lng, radius }
   })
+
   return res.data
+
 }
 
 export async function getProvidersInMap(bounds: {
@@ -32,10 +41,18 @@ export async function getProvidersInMap(bounds: {
   min_lng: number
   max_lng: number
 }) {
+
   const res = await api.get("/providers/map", {
-    params: bounds
+    params: {
+      min_lat: bounds.min_lat,
+      max_lat: bounds.max_lat,
+      min_lng: bounds.min_lng,
+      max_lng: bounds.max_lng
+    }
   })
+
   return res.data
+
 }
 
 export async function createProvider(data: {
@@ -48,16 +65,31 @@ export async function createProvider(data: {
   longitude: number
   offers_home_service: boolean
 }) {
+
   const res = await api.post("/providers", data)
   return res.data
+
 }
 
-export async function updateProvider(id: number, data: any) {
+export async function updateProvider(id: number, data: {
+  shop_name?: string
+  description?: string
+  phone?: string
+  email?: string
+  address?: string
+  latitude?: number
+  longitude?: number
+  offers_home_service?: boolean
+}) {
+
   const res = await api.put(`/providers/${id}`, data)
   return res.data
+
 }
 
 export async function deleteProvider(id: number) {
+
   const res = await api.delete(`/providers/${id}`)
   return res.data
+
 }

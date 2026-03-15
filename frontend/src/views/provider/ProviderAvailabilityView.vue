@@ -100,11 +100,11 @@ function resetForm() {
 
 <template>
 
-<div>
+<div class="availability">
 
 <h2>Provider Availability</h2>
 
-<form @submit.prevent="submit">
+<form class="availability-form" @submit.prevent="submit">
 
 <select v-model.number="form.day_of_week">
 
@@ -129,7 +129,7 @@ v-model="form.end_time"
 />
 
 <button type="submit">
-{{ editingId ? "Update" : "Add Availability" }}
+{{ editingId ? "Update Availability" : "Add Availability" }}
 </button>
 
 </form>
@@ -145,18 +145,24 @@ Loading...
 <div
 v-for="slot in availability"
 :key="slot.id"
-style="margin-bottom:10px"
+class="slot"
 >
 
-Day: {{ slot.day_of_week }}
+<div>
+<strong>Day:</strong> {{ slot.day_of_week }}
+</div>
 
+<div>
 {{ slot.start_time }} - {{ slot.end_time }}
+</div>
+
+<div class="actions">
 
 <button @click="edit(slot)">
 Edit
 </button>
 
-<button @click="remove(slot.id)">
+<button class="delete" @click="remove(slot.id)">
 Delete
 </button>
 
@@ -166,4 +172,61 @@ Delete
 
 </div>
 
+</div>
+
 </template>
+
+<style scoped>
+
+.availability{
+padding:20px;
+max-width:600px;
+}
+
+.availability-form{
+display:flex;
+gap:10px;
+margin-bottom:20px;
+}
+
+select,input{
+padding:8px;
+border-radius:6px;
+border:1px solid #cbd5e1;
+}
+
+button{
+padding:8px 12px;
+border:none;
+border-radius:6px;
+background:#2563eb;
+color:white;
+cursor:pointer;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+.delete{
+background:#ef4444;
+}
+
+.delete:hover{
+background:#dc2626;
+}
+
+.slot{
+padding:12px;
+background:#f1f5f9;
+border-radius:6px;
+margin-bottom:10px;
+}
+
+.actions{
+margin-top:6px;
+display:flex;
+gap:10px;
+}
+
+</style>

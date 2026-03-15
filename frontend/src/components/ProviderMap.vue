@@ -46,12 +46,15 @@ onMounted(async () => {
     marker.bindPopup(popup)
 
     marker.on("popupopen", () => {
+
       const btn = document.getElementById(`view-${provider.id}`)
+
       if (btn) {
         btn.onclick = () => {
           router.push(`/providers/${provider.id}`)
         }
       }
+
     })
 
   })
@@ -66,7 +69,9 @@ onMounted(async () => {
 </script>
 
 <template>
+
 <div id="map"></div>
+
 </template>
 
 <style scoped>
