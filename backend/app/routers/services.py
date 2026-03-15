@@ -12,7 +12,7 @@ from app.services.service_search_service import search_services
 router = APIRouter()
 
 
-@router.post("/", response_model=ServiceResponse, dependencies=[Depends(require_provider)])
+@router.post("/", response_model=ServiceResponse)
 def create_service(
     service: ServiceCreate,
     db: Session = Depends(get_db),
@@ -26,7 +26,16 @@ def create_service(
     if provider.owner_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized")
 
-    new_service = Service(**service.dict())
+    new_service = Service(
+        provider_id=service.provider_id,
+        category_id=service.category_id,
+        name=service.name,
+        description=service.description,
+        price=service.price,
+        duration_minutes=service.duration_minutes,
+        latitude=service.latitude,
+        longitude=service.longitude
+    )
 
     db.add(new_service)
     db.commit()
@@ -99,7 +108,7 @@ def get_service(service_id: int, db: Session = Depends(get_db)):
     return service
 
 
-@router.put("/{service_id}", response_model=ServiceResponse, dependencies=[Depends(require_provider)])
+@router.put("/{service_id}", response_model=ServiceResponse)
 def update_service(
     service_id: int,
     service: ServiceUpdate,
@@ -127,7 +136,7 @@ def update_service(
     return db_service
 
 
-@router.delete("/{service_id}", dependencies=[Depends(require_provider)])
+@router.delete("/{service_id}")
 def delete_service(
     service_id: int,
     db: Session = Depends(get_db),

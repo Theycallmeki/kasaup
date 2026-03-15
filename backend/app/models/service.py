@@ -20,6 +20,10 @@ class Service(Base):
 
     duration_minutes = Column(Integer)
 
+    latitude = Column(Float)
+
+    longitude = Column(Float)
+
     provider = relationship("Provider", back_populates="services")
 
     category = relationship("Category", back_populates="services")

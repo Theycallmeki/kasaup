@@ -11,10 +11,23 @@ onMounted(async () => {
 
   await providerStore.fetchProviders()
 
-  const map = L.map("map").setView([14.5995, 120.9842], 12)
+  const philippinesBounds = L.latLngBounds(
+    [4.5, 116.0],
+    [21.5, 127.0]
+  )
+
+  const map = L.map("map", {
+    maxBounds: philippinesBounds,
+    maxBoundsViscosity: 1.0,
+    minZoom: 6,
+    maxZoom: 18,
+    worldCopyJump: false,
+    zoomControl: true
+  }).setView([12.8797, 121.7740], 6)
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "© OpenStreetMap contributors"
+    attribution: "© OpenStreetMap contributors",
+    noWrap: true
   }).addTo(map)
 
   providerStore.providers.forEach((provider: any) => {
@@ -43,6 +56,12 @@ onMounted(async () => {
 
   })
 
+  map.setMaxBounds(philippinesBounds)
+
+  setTimeout(() => {
+    map.invalidateSize()
+  }, 200)
+
 })
 </script>
 
@@ -53,9 +72,8 @@ onMounted(async () => {
 <style scoped>
 
 #map{
-  height:500px;
+  height:100vh;
   width:100%;
-  border-radius:10px;
 }
 
 </style>

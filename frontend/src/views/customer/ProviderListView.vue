@@ -17,28 +17,43 @@ function openProvider(id: number) {
 </script>
 
 <template>
-  <div>
 
-    <h2>Providers</h2>
+<div class="providers-page">
 
-    <ProviderMap />
-
-    <div v-if="providerStore.loading">
-      Loading providers...
-    </div>
-
-    <div v-else>
-
-      <div
-        v-for="provider in providerStore.providers"
-        :key="provider.id"
-        @click="openProvider(provider.id)"
-        style="cursor:pointer"
-      >
-        {{ provider.shop_name }}
-      </div>
-
-    </div>
-
+  <div class="search-bar">
+    <input placeholder="Search services or providers..." />
   </div>
+
+  <ProviderMap />
+
+</div>
+
 </template>
+
+<style scoped>
+
+.providers-page{
+  position:relative;
+  height:100vh;
+  width:100%;
+}
+
+.search-bar{
+  position:absolute;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:1000;
+  width:420px;
+}
+
+.search-bar input{
+  width:100%;
+  padding:12px 16px;
+  border-radius:10px;
+  border:1px solid #cbd5e1;
+  box-shadow:0 5px 15px rgba(0,0,0,0.15);
+  font-size:14px;
+}
+
+</style>
