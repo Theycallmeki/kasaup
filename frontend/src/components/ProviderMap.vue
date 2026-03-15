@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { onMounted } from "vue"
+import { useRouter } from "vue-router"
 import L from "leaflet"
 import { useProviderStore } from "../stores/providerStore"
 
 const providerStore = useProviderStore()
+const router = useRouter()
 
 onMounted(async () => {
 
@@ -19,9 +21,25 @@ onMounted(async () => {
 
     if (!provider.latitude || !provider.longitude) return
 
-    L.marker([provider.latitude, provider.longitude])
-      .addTo(map)
-      .bindPopup(provider.shop_name)
+    const marker = L.marker([provider.latitude, provider.longitude]).addTo(map)
+
+    const popup = `
+      <div>
+        <strong>${provider.shop_name}</strong><br/>
+        <button id="view-${provider.id}">View Profile</button>
+      </div>
+    `
+
+    marker.bindPopup(popup)
+
+    marker.on("popupopen", () => {
+      const btn = document.getElementById(`view-${provider.id}`)
+      if (btn) {
+        btn.onclick = () => {
+          router.push(`/providers/${provider.id}`)
+        }
+      }
+    })
 
   })
 
@@ -29,9 +47,7 @@ onMounted(async () => {
 </script>
 
 <template>
-
 <div id="map"></div>
-
 </template>
 
 <style scoped>
