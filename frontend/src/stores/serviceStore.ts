@@ -1,57 +1,55 @@
-import { defineStore } from "pinia"
+import { defineStore } from "pinia";
 import {
   getServices,
   getProviderServices,
   createService,
   updateService,
-  deleteService
-} from "../services/services"
+  deleteService,
+} from "../services/services";
 
 export const useServiceStore = defineStore("services", {
-
   state: () => ({
     services: [] as any[],
-    loading: false
+    loading: false,
   }),
 
   actions: {
-
     async fetchServices() {
-
-      this.loading = true
+      this.loading = true;
 
       try {
-        this.services = await getServices()
+        this.services = await getServices();
       } finally {
-        this.loading = false
+        this.loading = false;
       }
-
     },
 
     async fetchProviderServices(providerId: number) {
-
-      this.loading = true
+      this.loading = true;
 
       try {
-        this.services = await getProviderServices(providerId)
+        this.services = await getProviderServices(providerId);
       } finally {
-        this.loading = false
+        this.loading = false;
       }
-
     },
 
     async addService(data: any) {
-      return await createService(data)
+      const service = await createService(data);
+      await this.fetchServices();
+      return service;
     },
 
     async editService(id: number, data: any) {
-      return await updateService(id, data)
+      const service = await updateService(id, data);
+      await this.fetchServices();
+      return service;
     },
 
     async removeService(id: number) {
-      return await deleteService(id)
-    }
-
-  }
-
-})
+      const res = await deleteService(id);
+      await this.fetchServices();
+      return res;
+    },
+  },
+});

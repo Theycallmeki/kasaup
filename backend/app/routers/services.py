@@ -18,16 +18,15 @@ def create_service(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_provider)
 ):
-    provider = db.query(Provider).filter(Provider.id == service.provider_id).first()
+    provider = db.query(Provider).filter(
+        Provider.owner_id == current_user.id
+    ).first()
 
     if not provider:
         raise HTTPException(status_code=404, detail="Provider not found")
 
-    if provider.owner_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Not authorized")
-
     new_service = Service(
-        provider_id=service.provider_id,
+        provider_id=provider.id,
         category_id=service.category_id,
         name=service.name,
         description=service.description,
@@ -120,7 +119,9 @@ def update_service(
     if not db_service:
         raise HTTPException(status_code=404, detail="Service not found")
 
-    provider = db.query(Provider).filter(Provider.id == db_service.provider_id).first()
+    provider = db.query(Provider).filter(
+        Provider.id == db_service.provider_id
+    ).first()
 
     if provider.owner_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized")
@@ -147,7 +148,9 @@ def delete_service(
     if not service:
         raise HTTPException(status_code=404, detail="Service not found")
 
-    provider = db.query(Provider).filter(Provider.id == service.provider_id).first()
+    provider = db.query(Provider).filter(
+        Provider.id == service.provider_id
+    ).first()
 
     if provider.owner_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized")

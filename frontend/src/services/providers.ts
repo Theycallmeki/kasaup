@@ -15,9 +15,13 @@ export async function getProviderProfile(id: number) {
   return res.data
 }
 
-export async function getNearbyProviders(lat: number, lng: number) {
+export async function getNearbyProviders(
+  lat: number,
+  lng: number,
+  radius: number = 10
+) {
   const res = await api.get("/providers/nearby", {
-    params: { lat, lng }
+    params: { lat, lng, radius }
   })
   return res.data
 }

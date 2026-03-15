@@ -9,7 +9,7 @@ export const useAppointmentStore = defineStore("appointments", {
 
   state: () => ({
     appointments: [] as any[],
-    slots: [] as any[],
+    slots: [] as string[],
     loading: false
   }),
 
@@ -39,7 +39,11 @@ export const useAppointmentStore = defineStore("appointments", {
 
     },
 
-    async bookAppointment(data: any) {
+    async bookAppointment(data: {
+      provider_id: number
+      service_id: number
+      appointment_time: string
+    }) {
       return await createAppointment(data)
     }
 

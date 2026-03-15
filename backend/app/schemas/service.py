@@ -2,7 +2,6 @@ from pydantic import BaseModel
 
 
 class ServiceCreate(BaseModel):
-    provider_id: int
     category_id: int
     name: str
     description: str | None = None

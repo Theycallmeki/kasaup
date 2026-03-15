@@ -15,7 +15,15 @@ export async function getProviderServices(providerId: number) {
   return res.data
 }
 
-export async function createService(data: any) {
+export async function createService(data: {
+  category_id: number
+  name: string
+  description?: string
+  price: number
+  duration_minutes: number
+  latitude?: number
+  longitude?: number
+}) {
   const res = await api.post("/services", data)
   return res.data
 }

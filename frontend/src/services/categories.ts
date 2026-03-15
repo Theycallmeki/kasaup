@@ -5,12 +5,22 @@ export async function getCategories() {
   return res.data
 }
 
-export async function createCategory(data: any) {
+export async function getCategory(id: number) {
+  const res = await api.get(`/categories/${id}`)
+  return res.data
+}
+
+export async function getCategoryServices(id: number) {
+  const res = await api.get(`/categories/${id}/services`)
+  return res.data
+}
+
+export async function createCategory(data: { name: string }) {
   const res = await api.post("/categories", data)
   return res.data
 }
 
-export async function updateCategory(id: number, data: any) {
+export async function updateCategory(id: number, data: { name: string }) {
   const res = await api.put(`/categories/${id}`, data)
   return res.data
 }
