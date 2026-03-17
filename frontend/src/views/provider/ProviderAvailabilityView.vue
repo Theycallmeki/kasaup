@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue"
 import { useAuthStore } from "../../stores/authStore"
+import api from "../../services/api"
 import {
   getAvailability,
   createAvailability,
@@ -13,6 +14,8 @@ const authStore = useAuthStore()
 const availability = ref<any[]>([])
 const loading = ref(false)
 
+const providerId = ref<number | null>(null)
+
 const form = ref({
   day_of_week: 0,
   start_time: "09:00",
@@ -21,17 +24,30 @@ const form = ref({
 
 const editingId = ref<number | null>(null)
 
-onMounted(fetchAvailability)
+onMounted(async () => {
+  await resolveProvider()
+  await fetchAvailability()
+})
+
+async function resolveProvider() {
+  const res = await api.get("/providers")
+
+  const provider = res.data.find(
+    (p: any) => p.owner_id === authStore.user.id
+  )
+
+  providerId.value = provider?.id || null
+}
 
 async function fetchAvailability() {
 
-  if (!authStore.user?.provider_id) return
+  if (!providerId.value) return
 
   loading.value = true
 
   try {
 
-    availability.value = await getAvailability(authStore.user.provider_id)
+    availability.value = await getAvailability(providerId.value)
 
   } finally {
 
@@ -43,9 +59,7 @@ async function fetchAvailability() {
 
 async function submit() {
 
-  const provider_id = authStore.user?.provider_id
-
-  if (!provider_id) return
+  if (!providerId.value) return
 
   if (editingId.value) {
 
@@ -54,14 +68,14 @@ async function submit() {
   } else {
 
     await createAvailability({
-      provider_id,
+      provider_id: providerId.value,
       ...form.value
     })
 
   }
 
   resetForm()
-  fetchAvailability()
+  await fetchAvailability()
 
 }
 
@@ -81,7 +95,7 @@ async function remove(id: number) {
 
   await deleteAvailability(id)
 
-  fetchAvailability()
+  await fetchAvailability()
 
 }
 

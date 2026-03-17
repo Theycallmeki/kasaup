@@ -184,8 +184,6 @@ router.beforeEach(async (to) => {
 
     }
 
-   
-
     if (auth.user.role === "provider") {
 
       try {
@@ -197,9 +195,11 @@ router.beforeEach(async (to) => {
         )
 
         if (!provider && to.path !== "/provider/create-profile") {
-
           return { path: "/provider/create-profile" }
+        }
 
+        if (provider && to.path === "/provider/create-profile") {
+          return { path: "/provider/dashboard" }
         }
 
       } catch {}

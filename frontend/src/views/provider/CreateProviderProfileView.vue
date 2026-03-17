@@ -32,7 +32,7 @@ const create = async () => {
 
   try {
 
-    if(!latitude.value || !longitude.value){
+    if(latitude.value === null || longitude.value === null){
       error.value = "Please select your shop location on the map"
       loading.value = false
       return

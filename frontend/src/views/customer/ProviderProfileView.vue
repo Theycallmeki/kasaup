@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from "vue"
+import { onMounted, ref } from "vue"
 import { useRoute } from "vue-router"
 import { useProviderStore } from "../../stores/providerStore"
 import { useAppointmentStore } from "../../stores/appointmentStore"
@@ -10,26 +10,26 @@ const appointmentStore = useAppointmentStore()
 
 const id = Number(route.params.id)
 
+const activeServiceId = ref<number | null>(null)
+
 onMounted(async () => {
-
   await providerStore.fetchProviderProfile(id)
-
 })
 
-function loadSlots(serviceId: number) {
-
-  appointmentStore.fetchAvailableSlots(serviceId)
-
+async function loadSlots(serviceId: number) {
+  activeServiceId.value = serviceId
+  await appointmentStore.fetchAvailableSlots(serviceId)
 }
 
-function book(serviceId: number, slot: string) {
-
-  appointmentStore.bookAppointment({
+async function book(serviceId: number, slot: string) {
+  await appointmentStore.bookAppointment({
     provider_id: id,
     service_id: serviceId,
     appointment_time: slot
   })
 
+  appointmentStore.slots = []
+  activeServiceId.value = null
 }
 </script>
 
@@ -77,7 +77,7 @@ Book
 </button>
 
 <div
-v-if="appointmentStore.slots.length"
+v-if="activeServiceId === service.id && appointmentStore.slots.length"
 style="margin-top:10px"
 >
 

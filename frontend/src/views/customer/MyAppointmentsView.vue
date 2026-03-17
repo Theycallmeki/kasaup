@@ -5,10 +5,12 @@ import { useAppointmentStore } from "../../stores/appointmentStore"
 const appointmentStore = useAppointmentStore()
 
 onMounted(async () => {
-
   await appointmentStore.fetchAppointments()
-
 })
+
+const cancel = async (id: number) => {
+  await appointmentStore.cancel(id)
+}
 </script>
 
 <template>
@@ -26,7 +28,7 @@ Loading...
 <div
 v-for="appointment in appointmentStore.appointments"
 :key="appointment.id"
-style="margin-bottom:14px"
+style="margin-bottom:14px; border:1px solid #ddd; padding:10px; border-radius:8px"
 >
 
 <div>
@@ -47,6 +49,17 @@ style="margin-bottom:14px"
 <div>
 <strong>Status:</strong>
 {{ appointment.status }}
+</div>
+
+<div style="margin-top:8px">
+
+<button
+v-if="appointment.status === 'pending' || appointment.status === 'confirmed'"
+@click="cancel(appointment.id)"
+>
+Cancel
+</button>
+
 </div>
 
 </div>

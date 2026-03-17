@@ -5,10 +5,20 @@ import { useAppointmentStore } from "../../stores/appointmentStore"
 const appointmentStore = useAppointmentStore()
 
 onMounted(async () => {
-
   await appointmentStore.fetchAppointments()
-
 })
+
+const confirm = async (id: number) => {
+  await appointmentStore.confirm(id)
+}
+
+const cancel = async (id: number) => {
+  await appointmentStore.cancel(id)
+}
+
+const complete = async (id: number) => {
+  await appointmentStore.complete(id)
+}
 </script>
 
 <template>
@@ -47,6 +57,31 @@ class="appointment-card"
 <div>
 <strong>Status:</strong>
 {{ appointment.status }}
+</div>
+
+<div style="margin-top:10px; display:flex; gap:8px">
+
+<button
+v-if="appointment.status === 'pending'"
+@click="confirm(appointment.id)"
+>
+Accept
+</button>
+
+<button
+v-if="appointment.status === 'pending' || appointment.status === 'confirmed'"
+@click="cancel(appointment.id)"
+>
+Cancel
+</button>
+
+<button
+v-if="appointment.status === 'confirmed'"
+@click="complete(appointment.id)"
+>
+Complete
+</button>
+
 </div>
 
 </div>
