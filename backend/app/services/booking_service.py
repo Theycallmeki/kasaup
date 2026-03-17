@@ -12,7 +12,6 @@ def create_booking(
     service_id: int,
     appointment_time: datetime,
     duration_minutes: int,
-    status: str = "pending"
 ):
     end_time = appointment_time + timedelta(minutes=duration_minutes)
 
@@ -52,9 +51,9 @@ def create_booking(
     new_booking = Appointment(
         user_id=user_id,
         provider_id=provider_id,
-        service_id=service_id,   # ✅ added
+        service_id=service_id,
         appointment_time=appointment_time,
-        status=status
+        status="pending"  
     )
 
     db.add(new_booking)
@@ -62,3 +61,33 @@ def create_booking(
     db.refresh(new_booking)
 
     return new_booking
+
+
+def update_status(
+    db: Session,
+    appointment: Appointment,
+    new_status: str
+):
+    allowed_transitions = {
+        "pending": ["confirmed", "cancelled"],
+        "confirmed": ["completed", "cancelled"],
+        "completed": [],
+        "cancelled": []
+    }
+
+    current_status = appointment.status
+
+    if new_status not in allowed_transitions[current_status]:
+        raise ValueError(
+            f"Cannot change status from {current_status} to {new_status}"
+        )
+
+    appointment.status = new_status
+
+    if new_status == "completed":
+        appointment.completed_at = datetime.utcnow()
+
+    db.commit()
+    db.refresh(appointment)
+
+    return appointment

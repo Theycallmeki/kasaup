@@ -6,12 +6,10 @@ class AppointmentCreate(BaseModel):
     provider_id: int
     service_id: int
     appointment_time: datetime
-    status: str = "pending"
 
 
 class AppointmentUpdate(BaseModel):
     appointment_time: datetime | None = None
-    status: str | None = None
 
 
 class AppointmentResponse(BaseModel):

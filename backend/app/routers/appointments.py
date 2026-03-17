@@ -14,7 +14,7 @@ from app.schemas.appointment import (
     AppointmentResponse,
 )
 from app.core.dependencies import get_current_user
-from app.services.booking_service import create_booking
+from app.services.booking_service import create_booking, update_status
 
 router = APIRouter()
 
@@ -40,10 +40,9 @@ def create_appointment(
             db=db,
             user_id=current_user.id,
             provider_id=appointment.provider_id,
-            service_id=appointment.service_id,  
+            service_id=appointment.service_id,
             appointment_time=appointment.appointment_time,
             duration_minutes=service.duration_minutes,
-            status=appointment.status
         )
 
         return booking
@@ -70,6 +69,90 @@ def get_appointments(
     return db.query(Appointment).filter(
         Appointment.user_id == current_user.id
     ).offset(offset).limit(limit).all()
+
+
+@router.put("/{appointment_id}/confirm")
+def confirm_appointment(
+    appointment_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    appointment = db.query(Appointment).filter(
+        Appointment.id == appointment_id
+    ).first()
+
+    if not appointment:
+        raise HTTPException(404, "Appointment not found")
+
+    provider = db.query(Provider).filter(
+        Provider.id == appointment.provider_id
+    ).first()
+
+    if current_user.role != "provider" or provider.owner_id != current_user.id:
+        raise HTTPException(403, "Not authorized")
+
+    try:
+        return update_status(db, appointment, "confirmed")
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+
+
+@router.put("/{appointment_id}/cancel")
+def cancel_appointment(
+    appointment_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    appointment = db.query(Appointment).filter(
+        Appointment.id == appointment_id
+    ).first()
+
+    if not appointment:
+        raise HTTPException(404, "Appointment not found")
+
+    provider = db.query(Provider).filter(
+        Provider.id == appointment.provider_id
+    ).first()
+
+    is_customer = appointment.user_id == current_user.id
+    is_provider = (
+        current_user.role == "provider" and
+        provider.owner_id == current_user.id
+    )
+
+    if not (is_customer or is_provider):
+        raise HTTPException(403, "Not authorized")
+
+    try:
+        return update_status(db, appointment, "cancelled")
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+
+
+@router.put("/{appointment_id}/complete")
+def complete_appointment(
+    appointment_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    appointment = db.query(Appointment).filter(
+        Appointment.id == appointment_id
+    ).first()
+
+    if not appointment:
+        raise HTTPException(404, "Appointment not found")
+
+    provider = db.query(Provider).filter(
+        Provider.id == appointment.provider_id
+    ).first()
+
+    if current_user.role != "provider" or provider.owner_id != current_user.id:
+        raise HTTPException(403, "Not authorized")
+
+    try:
+        return update_status(db, appointment, "completed")
+    except ValueError as e:
+        raise HTTPException(400, str(e))
 
 
 @router.get("/providers/{provider_id}/available-slots")
