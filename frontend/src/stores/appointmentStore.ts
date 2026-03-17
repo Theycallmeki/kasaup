@@ -2,7 +2,10 @@ import { defineStore } from "pinia"
 import {
   getAppointments,
   createAppointment,
-  getAvailableSlots
+  getAvailableSlots,
+  confirmAppointment,
+  cancelAppointment,
+  completeAppointment
 } from "../services/appointments"
 
 export const useAppointmentStore = defineStore("appointments", {
@@ -16,27 +19,21 @@ export const useAppointmentStore = defineStore("appointments", {
   actions: {
 
     async fetchAppointments() {
-
       this.loading = true
-
       try {
         this.appointments = await getAppointments()
       } finally {
         this.loading = false
       }
-
     },
 
     async fetchAvailableSlots(serviceId: number) {
-
       this.loading = true
-
       try {
         this.slots = await getAvailableSlots(serviceId)
       } finally {
         this.loading = false
       }
-
     },
 
     async bookAppointment(data: {
@@ -44,7 +41,24 @@ export const useAppointmentStore = defineStore("appointments", {
       service_id: number
       appointment_time: string
     }) {
-      return await createAppointment(data)
+      const res = await createAppointment(data)
+      await this.fetchAppointments()
+      return res
+    },
+
+    async confirm(id: number) {
+      await confirmAppointment(id)
+      await this.fetchAppointments()
+    },
+
+    async cancel(id: number) {
+      await cancelAppointment(id)
+      await this.fetchAppointments()
+    },
+
+    async complete(id: number) {
+      await completeAppointment(id)
+      await this.fetchAppointments()
     }
 
   }
