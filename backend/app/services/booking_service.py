@@ -12,6 +12,8 @@ def create_booking(
     service_id: int,
     appointment_time: datetime,
     duration_minutes: int,
+    customer_latitude: float | None = None,
+    customer_longitude: float | None = None,
 ):
     end_time = appointment_time + timedelta(minutes=duration_minutes)
 
@@ -53,7 +55,9 @@ def create_booking(
         provider_id=provider_id,
         service_id=service_id,
         appointment_time=appointment_time,
-        status="pending"  
+        status="pending",
+        customer_latitude=customer_latitude,
+        customer_longitude=customer_longitude
     )
 
     db.add(new_booking)

@@ -43,8 +43,9 @@ def create_appointment(
             service_id=appointment.service_id,
             appointment_time=appointment.appointment_time,
             duration_minutes=service.duration_minutes,
+            customer_latitude=appointment.customer_latitude,
+            customer_longitude=appointment.customer_longitude,
         )
-
         return booking
 
     except ValueError as e:

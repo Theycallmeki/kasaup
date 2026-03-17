@@ -40,6 +40,8 @@ export const useAppointmentStore = defineStore("appointments", {
       provider_id: number
       service_id: number
       appointment_time: string
+      customer_latitude?: number | null
+      customer_longitude?: number | null
     }) {
       const res = await createAppointment(data)
       await this.fetchAppointments()

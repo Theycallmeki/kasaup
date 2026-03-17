@@ -3,6 +3,7 @@ import { onMounted, ref } from "vue"
 import { useRoute } from "vue-router"
 import { useProviderStore } from "../../stores/providerStore"
 import { useAppointmentStore } from "../../stores/appointmentStore"
+import LocationPickerMap from "../../components/LocationPickerMap.vue"
 
 const route = useRoute()
 const providerStore = useProviderStore()
@@ -11,6 +12,9 @@ const appointmentStore = useAppointmentStore()
 const id = Number(route.params.id)
 
 const activeServiceId = ref<number | null>(null)
+
+const customerLat = ref<number | null>(null)
+const customerLng = ref<number | null>(null)
 
 onMounted(async () => {
   await providerStore.fetchProviderProfile(id)
@@ -21,15 +25,24 @@ async function loadSlots(serviceId: number) {
   await appointmentStore.fetchAvailableSlots(serviceId)
 }
 
+function setLocation(data: any) {
+  customerLat.value = data.latitude
+  customerLng.value = data.longitude
+}
+
 async function book(serviceId: number, slot: string) {
   await appointmentStore.bookAppointment({
     provider_id: id,
     service_id: serviceId,
-    appointment_time: slot
+    appointment_time: slot,
+    customer_latitude: customerLat.value,
+    customer_longitude: customerLng.value
   })
 
   appointmentStore.slots = []
   activeServiceId.value = null
+  customerLat.value = null
+  customerLng.value = null
 }
 </script>
 
@@ -80,6 +93,13 @@ Book
 v-if="activeServiceId === service.id && appointmentStore.slots.length"
 style="margin-top:10px"
 >
+
+<div
+v-if="providerStore.providerProfile.provider.offers_home_service"
+style="margin-bottom:10px"
+>
+<LocationPickerMap @location-selected="setLocation" />
+</div>
 
 <div
 v-for="slot in appointmentStore.slots"

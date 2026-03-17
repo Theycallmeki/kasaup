@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, DateTime, String
+from sqlalchemy import Column, Integer, ForeignKey, DateTime, String, Float
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.db import Base
@@ -18,6 +18,9 @@ class Appointment(Base):
     appointment_time = Column(DateTime, nullable=False)
 
     status = Column(String, default="pending", nullable=False)
+
+    customer_latitude = Column(Float, nullable=True)
+    customer_longitude = Column(Float, nullable=True)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     completed_at = Column(DateTime, nullable=True)
