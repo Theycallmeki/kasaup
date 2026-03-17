@@ -32,7 +32,25 @@ const create = async () => {
 
   try {
 
-    if(latitude.value === null || longitude.value === null){
+    if (!shop_name.value.trim()) {
+      error.value = "Shop name is required"
+      loading.value = false
+      return
+    }
+
+    if (!phone.value.trim()) {
+      error.value = "Phone is required"
+      loading.value = false
+      return
+    }
+
+    if (!email.value.trim()) {
+      error.value = "Email is required"
+      loading.value = false
+      return
+    }
+
+    if (latitude.value === null || longitude.value === null) {
       error.value = "Please select your shop location on the map"
       loading.value = false
       return
@@ -72,49 +90,26 @@ const create = async () => {
 
 <div class="form">
 
-<input
-v-model="shop_name"
-placeholder="Shop Name"
-/>
+<input v-model="shop_name" placeholder="Shop Name" />
 
-<textarea
-v-model="description"
-placeholder="Description"
-/>
+<textarea v-model="description" placeholder="Description" />
 
-<input
-v-model="phone"
-placeholder="Phone"
-/>
+<input v-model="phone" placeholder="Phone" />
 
-<input
-v-model="email"
-placeholder="Email"
-/>
+<input v-model="email" placeholder="Email" />
 
-<input
-v-model="address"
-placeholder="Address"
-/>
+<input v-model="address" placeholder="Address" />
 
 <label>
-<input
-type="checkbox"
-v-model="offers_home_service"
-/>
+<input type="checkbox" v-model="offers_home_service" />
 Offers Home Service
 </label>
 
 <h3>Select Shop Location</h3>
 
-<LocationPickerMap
-@location-selected="setLocation"
-/>
+<LocationPickerMap @location-selected="setLocation" />
 
-<button
-@click="create"
-:disabled="loading"
->
+<button @click="create" :disabled="loading">
 {{ loading ? "Creating..." : "Create Provider Profile" }}
 </button>
 
