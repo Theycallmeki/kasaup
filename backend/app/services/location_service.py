@@ -38,7 +38,13 @@ def find_nearby_providers(db: Session, lat: float, lng: float, radius: float):
     if not is_within_philippines(lat, lng):
         raise ValueError("Search location must be inside the Philippines")
 
-    providers = db.query(Provider).all()
+    lat_range = radius / 111
+    lng_range = radius / (111 * math.cos(math.radians(lat)))
+
+    providers = db.query(Provider).filter(
+        Provider.latitude.between(lat - lat_range, lat + lat_range),
+        Provider.longitude.between(lng - lng_range, lng + lng_range)
+    ).all()
 
     results = []
 
@@ -50,7 +56,10 @@ def find_nearby_providers(db: Session, lat: float, lng: float, radius: float):
 
         if distance <= radius:
             results.append({
-                "provider": provider,
+                "id": provider.id,
+                "name": provider.name,
+                "latitude": provider.latitude,
+                "longitude": provider.longitude,
                 "distance_km": round(distance, 2)
             })
 

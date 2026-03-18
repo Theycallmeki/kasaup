@@ -47,22 +47,26 @@ const menuItems = computed(() => {
 </script>
 
 <template>
-
-<div :class="['sidebar', { collapsed }]" v-if="auth.user">
+<aside class="sidebar" :class="{ collapsed }" aria-label="Sidebar navigation">
 
   <div class="top">
 
-    <h2 v-if="!collapsed" class="logo">
-      Kasaup
-    </h2>
+    <h2 v-if="!collapsed" class="logo">Kasaup</h2>
 
-    <button class="toggle" @click="toggleSidebar">
+    <button
+      class="toggle"
+      type="button"
+      @click="toggleSidebar"
+      :aria-expanded="!collapsed"
+      aria-controls="sidebar-nav"
+      aria-label="Toggle sidebar"
+    >
       ☰
     </button>
 
   </div>
 
-  <nav>
+  <nav id="sidebar-nav" class="nav">
 
     <router-link
       v-for="item in menuItems"
@@ -79,7 +83,7 @@ const menuItems = computed(() => {
 
   </nav>
 
-</div>
+</aside>
 
 </template>
 
@@ -90,9 +94,13 @@ const menuItems = computed(() => {
   height:100vh;
   background:#1e293b;
   color:white;
-  padding:20px;
-  position:fixed;
+  padding:20px 16px;
+  border-right:1px solid rgba(255,255,255,0.08);
   transition:width 0.2s ease;
+  flex-shrink:0;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
 }
 
 .sidebar.collapsed{
@@ -103,7 +111,13 @@ const menuItems = computed(() => {
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:30px;
+  margin-bottom:18px;
+}
+
+.logo{
+  margin:0;
+  font-size:18px;
+  letter-spacing:0.2px;
 }
 
 .toggle{
@@ -112,23 +126,34 @@ const menuItems = computed(() => {
   color:white;
   font-size:18px;
   cursor:pointer;
+  padding:6px 10px;
+  border-radius:8px;
 }
 
-nav{
+.toggle:hover{
+  background:#334155;
+}
+
+.nav{
   display:flex;
   flex-direction:column;
+  gap:4px;
+  overflow:auto;
+  padding-right:6px;
 }
 
 .link{
   color:white;
   text-decoration:none;
-  margin:10px 0;
   padding:8px;
   border-radius:6px;
   background:none;
   border:none;
   text-align:left;
   cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
 }
 
 .link:hover{
@@ -137,6 +162,24 @@ nav{
 
 .logout{
   color:#f87171;
+}
+
+@media (max-width: 768px){
+  .sidebar{
+    width:100%;
+    height:auto;
+    border-right:none;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+
+  .sidebar.collapsed{
+    width:100%;
+  }
+
+  .nav{
+    overflow:visible;
+    padding-right:0;
+  }
 }
 
 </style>

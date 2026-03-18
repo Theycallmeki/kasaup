@@ -1,11 +1,40 @@
 <script setup lang="ts">
-import { onMounted } from "vue"
+import { onMounted, nextTick } from "vue"
 import { useAppointmentStore } from "../../stores/appointmentStore"
+import L from "leaflet"
 
 const appointmentStore = useAppointmentStore()
 
 onMounted(async () => {
   await appointmentStore.fetchAppointments()
+
+  await nextTick()
+
+  appointmentStore.appointments.forEach((appointment) => {
+    if (
+      appointment.customer_latitude &&
+      appointment.customer_longitude
+    ) {
+      const mapId = `map-${appointment.id}`
+
+      const map = L.map(mapId).setView(
+        [
+          appointment.customer_latitude,
+          appointment.customer_longitude
+        ],
+        15
+      )
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap contributors"
+      }).addTo(map)
+
+      L.marker([
+        appointment.customer_latitude,
+        appointment.customer_longitude
+      ]).addTo(map)
+    }
+  })
 })
 
 const confirm = async (id: number) => {
@@ -59,6 +88,13 @@ class="appointment-card"
 {{ appointment.status }}
 </div>
 
+<div
+v-if="appointment.customer_latitude && appointment.customer_longitude"
+class="map-container"
+>
+<div :id="`map-${appointment.id}`" class="map"></div>
+</div>
+
 <div style="margin-top:10px; display:flex; gap:8px">
 
 <button
@@ -104,6 +140,16 @@ border-radius:8px;
 padding:16px;
 margin-bottom:12px;
 box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
+
+.map-container{
+margin-top:12px;
+}
+
+.map{
+height:200px;
+width:100%;
+border-radius:8px;
 }
 
 </style>

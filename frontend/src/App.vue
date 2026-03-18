@@ -19,7 +19,6 @@ onMounted(() => {
 
   <main
     class="content"
-    :class="{ full: !auth.user }"
   >
     <router-view />
   </main>
@@ -35,15 +34,22 @@ onMounted(() => {
 }
 
 .content{
-  margin-left:220px;
   padding:30px;
   width:100%;
   min-height:100vh;
   background:#f8fafc;
+  flex:1;
 }
 
-.full{
-  margin-left:0;
+@media (max-width: 768px){
+  .layout{
+    flex-direction:column;
+  }
+
+  .content{
+    min-height:0;
+    padding:16px;
+  }
 }
 
 </style>
