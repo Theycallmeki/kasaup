@@ -93,16 +93,15 @@ async function drawOptimizedRoute(
       map.fitBounds(bounds, { padding: [24, 24], maxZoom: 16 })
     }
 
-    // Provide quick feedback (optional; keeps UI simple)
     const distanceKm = route.distance ? route.distance / 1000 : null
     const durationMin = route.duration ? route.duration / 60 : null
-    // eslint-disable-next-line no-console
+    
     console.log("Route:", { distanceKm, durationMin })
 
   } catch (err: any) {
-    // eslint-disable-next-line no-console
+    
     console.error(err)
-    // eslint-disable-next-line no-alert
+    
     alert(err?.message || "Unable to get directions.")
   }
 }
@@ -161,16 +160,14 @@ onMounted(async () => {
     popupDiv.appendChild(btn)
     popupDiv.appendChild(dirBtn)
 
-    // Clicking the marker only opens the popup; directions are drawn only
-    // when the user clicks the "Directions" button inside the popup.
+    
     marker.bindPopup(popupDiv)
 
   })
 
   map.setMaxBounds(philippinesBounds)
 
-  // If the user clicked "Use My Location" before the map was ready,
-  // apply the latest coords now that `map` exists.
+
   if (pendingUserCoords) {
     setUserMarker(pendingUserCoords.lat, pendingUserCoords.lng)
   }
