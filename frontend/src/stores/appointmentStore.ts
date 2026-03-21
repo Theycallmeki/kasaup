@@ -3,7 +3,7 @@ import {
   getAppointments,
   createAppointment,
   getAvailableSlots,
-  confirmAppointment,
+  approveAppointment,
   cancelAppointment,
   completeAppointment
 } from "../services/appointments"
@@ -48,8 +48,8 @@ export const useAppointmentStore = defineStore("appointments", {
       return res
     },
 
-    async confirm(id: number) {
-      await confirmAppointment(id)
+    async approve(id: number) {
+      await approveAppointment(id)
       await this.fetchAppointments()
     },
 

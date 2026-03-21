@@ -72,8 +72,8 @@ def get_appointments(
     ).offset(offset).limit(limit).all()
 
 
-@router.put("/{appointment_id}/confirm")
-def confirm_appointment(
+@router.put("/{appointment_id}/approve")
+def approve_appointment(
     appointment_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -93,7 +93,7 @@ def confirm_appointment(
         raise HTTPException(403, "Not authorized")
 
     try:
-        return update_status(db, appointment, "confirmed")
+        return update_status(db, appointment, "approved")
     except ValueError as e:
         raise HTTPException(400, str(e))
 
@@ -182,7 +182,7 @@ def get_available_slots(
             Appointment.provider_id == provider_id,
             Appointment.appointment_time >= start,
             Appointment.appointment_time <= end,
-            Appointment.status.in_(["pending", "confirmed"]),
+            Appointment.status.in_(["pending", "approved", "confirmed"]),
         )
         .all()
     )
@@ -247,7 +247,7 @@ def get_service_available_slots(
             Appointment.provider_id == provider.id,
             Appointment.appointment_time >= start,
             Appointment.appointment_time <= end,
-            Appointment.status.in_(["pending", "confirmed"]),
+            Appointment.status.in_(["pending", "approved", "confirmed"]),
         )
         .all()
     )

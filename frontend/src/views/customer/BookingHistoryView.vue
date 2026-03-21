@@ -67,7 +67,7 @@ style="margin-bottom:14px; border:1px solid #ddd; padding:10px; border-radius:8p
 <div style="margin-top:8px">
 
 <button
-v-if="appointment.status === 'pending' || appointment.status === 'confirmed'"
+v-if="appointment.status === 'pending' || appointment.status === 'approved' || appointment.status === 'confirmed'"
 @click="cancel(appointment.id)"
 >
 Cancel

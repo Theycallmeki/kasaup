@@ -37,8 +37,8 @@ onMounted(async () => {
   })
 })
 
-const confirm = async (id: number) => {
-  await appointmentStore.confirm(id)
+const approve = async (id: number) => {
+  await appointmentStore.approve(id)
 }
 
 const cancel = async (id: number) => {
@@ -99,20 +99,20 @@ class="map-container"
 
 <button
 v-if="appointment.status === 'pending'"
-@click="confirm(appointment.id)"
+@click="approve(appointment.id)"
 >
-Accept
+Approve
 </button>
 
 <button
-v-if="appointment.status === 'pending' || appointment.status === 'confirmed'"
+v-if="appointment.status === 'pending' || appointment.status === 'approved' || appointment.status === 'confirmed'"
 @click="cancel(appointment.id)"
 >
 Cancel
 </button>
 
 <button
-v-if="appointment.status === 'confirmed'"
+v-if="appointment.status === 'approved' || appointment.status === 'confirmed'"
 @click="complete(appointment.id)"
 >
 Complete

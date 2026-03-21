@@ -33,8 +33,8 @@ export async function deleteAppointment(id: number) {
   return res.data
 }
 
-export async function confirmAppointment(id: number) {
-  const res = await api.put(`/appointments/${id}/confirm`)
+export async function approveAppointment(id: number) {
+  const res = await api.put(`/appointments/${id}/approve`)
   return res.data
 }
 

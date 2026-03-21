@@ -76,10 +76,12 @@ def update_status(
     new_status: str
 ):
     allowed_transitions = {
-        "pending": ["confirmed", "cancelled"],
+        "pending": ["approved", "cancelled"],
+        "approved": ["completed", "cancelled"],
+        # legacy rows from before "approved" existed
         "confirmed": ["completed", "cancelled"],
         "completed": [],
-        "cancelled": []
+        "cancelled": [],
     }
 
     current_status = appointment.status
