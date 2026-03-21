@@ -8,15 +8,12 @@ onMounted(async () => {
   await appointmentStore.fetchAppointments()
 })
 
-/** Upcoming / active bookings only — cancelled are listed under booking history. */
-const activeAppointments = computed(() => {
-  return appointmentStore.appointments
-    .filter((a) => a.status !== "cancelled")
-    .sort(
-      (a, b) =>
-        new Date(a.appointment_time).getTime() -
-        new Date(b.appointment_time).getTime()
-    )
+const sortedAppointments = computed(() => {
+  return [...appointmentStore.appointments].sort(
+    (a, b) =>
+      new Date(b.appointment_time).getTime() -
+      new Date(a.appointment_time).getTime()
+  )
 })
 
 const cancel = async (id: number) => {
@@ -28,26 +25,21 @@ const cancel = async (id: number) => {
 
 <div>
 
-<h2>My appointments</h2>
+<h2>Booking history</h2>
 
-<p class="subnav">
-  <router-link to="/appointments/history">Booking history</router-link>
-  (all statuses, including cancelled)
+<p class="hint">
+  All bookings, including cancelled. Active bookings also appear under
+  <router-link to="/appointments">My appointments</router-link>.
 </p>
 
 <div v-if="appointmentStore.loading">
 Loading...
 </div>
 
-<div v-else-if="activeAppointments.length === 0">
-<p>No active appointments. Cancelled bookings are in
-<router-link to="/appointments/history">booking history</router-link>.</p>
-</div>
-
 <div v-else>
 
 <div
-v-for="appointment in activeAppointments"
+v-for="appointment in sortedAppointments"
 :key="appointment.id"
 style="margin-bottom:14px; border:1px solid #ddd; padding:10px; border-radius:8px"
 >
@@ -92,9 +84,9 @@ Cancel
 </template>
 
 <style scoped>
-.subnav {
-  font-size: 14px;
+.hint {
   color: #64748b;
+  font-size: 14px;
   margin-bottom: 16px;
 }
 </style>

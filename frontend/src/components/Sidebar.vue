@@ -22,7 +22,8 @@ const role = computed(() => auth.user?.role)
 const menus = {
   customer: [
     { label: "Providers", path: "/providers" },
-    { label: "My Appointments", path: "/appointments" }
+    { label: "My appointments", path: "/appointments" },
+    { label: "Booking history", path: "/appointments/history" }
   ],
 
   provider: [

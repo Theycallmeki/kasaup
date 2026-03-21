@@ -8,6 +8,7 @@ import AuthSelectView from "../views/auth/AuthSelectView.vue"
 import ProviderListView from "../views/customer/ProviderListView.vue"
 import ProviderProfileView from "../views/customer/ProviderProfileView.vue"
 import MyAppointmentsView from "../views/customer/MyAppointmentsView.vue"
+import BookingHistoryView from "../views/customer/BookingHistoryView.vue"
 
 import ProviderDashboardView from "../views/provider/ProviderDashboardView.vue"
 import ProviderServicesView from "../views/provider/ProviderServicesView.vue"
@@ -68,6 +69,13 @@ const routes = [
     path: "/appointments",
     name: "appointments",
     component: MyAppointmentsView,
+    meta: { requiresAuth: true, roles: ["customer"] }
+  },
+
+  {
+    path: "/appointments/history",
+    name: "bookingHistory",
+    component: BookingHistoryView,
     meta: { requiresAuth: true, roles: ["customer"] }
   },
 

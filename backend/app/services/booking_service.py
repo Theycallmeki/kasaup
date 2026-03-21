@@ -22,6 +22,9 @@ def create_booking(
     ).all()
 
     for booking in existing:
+        if booking.status in ("cancelled", "completed"):
+            continue
+
         booking_end = booking.appointment_time + timedelta(minutes=duration_minutes)
 
         if (

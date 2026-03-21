@@ -181,7 +181,8 @@ def get_available_slots(
         .filter(
             Appointment.provider_id == provider_id,
             Appointment.appointment_time >= start,
-            Appointment.appointment_time <= end
+            Appointment.appointment_time <= end,
+            Appointment.status.in_(["pending", "confirmed"]),
         )
         .all()
     )
@@ -245,7 +246,8 @@ def get_service_available_slots(
         .filter(
             Appointment.provider_id == provider.id,
             Appointment.appointment_time >= start,
-            Appointment.appointment_time <= end
+            Appointment.appointment_time <= end,
+            Appointment.status.in_(["pending", "confirmed"]),
         )
         .all()
     )
