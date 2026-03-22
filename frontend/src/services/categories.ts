@@ -1,7 +1,7 @@
 import api from "./api"
 
-export async function getCategories() {
-  const res = await api.get("/categories")
+export async function getCategories(params?: { limit?: number; offset?: number }) {
+  const res = await api.get("/categories", { params })
   return res.data
 }
 

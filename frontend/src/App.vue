@@ -12,33 +12,30 @@ onMounted(() => {
 </script>
 
 <template>
+  <div class="layout">
+    <Sidebar v-if="auth.user" />
 
-<div class="layout">
-
-  <Sidebar v-if="auth.user" />
-
-  <main
-    class="content"
-  >
-    <router-view />
-  </main>
-
-</div>
-
+    <main class="content">
+      <router-view />
+    </main>
+  </div>
 </template>
 
 <style scoped>
-
 .layout{
   display:flex;
+  height:100vh;
+  width:100vw;
+  overflow:hidden;
 }
 
 .content{
-  padding:30px;
-  width:100%;
-  min-height:100vh;
-  background:#f8fafc;
   flex:1;
+  height:100%;
+  margin:0;
+  padding:0;
+  background:#0e0c1a;
+  overflow:hidden;
 }
 
 @media (max-width: 768px){
@@ -47,9 +44,8 @@ onMounted(() => {
   }
 
   .content{
-    min-height:0;
-    padding:16px;
+    height:100%;
+    padding:0;
   }
 }
-
 </style>

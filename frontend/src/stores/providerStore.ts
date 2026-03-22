@@ -24,7 +24,7 @@ export const useProviderStore = defineStore("providers", {
       this.loading = true
 
       try {
-        this.providers = await getProviders()
+        this.providers = await getProviders({ limit: 500, offset: 0 })
       } finally {
         this.loading = false
       }

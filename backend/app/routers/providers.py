@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.db import get_db
 from app.models.providers import Provider
 from app.models.service import Service
 from app.models.category import Category
 from app.models.users import User
-from app.schemas.providers import ProviderCreate, ProviderUpdate, ProviderResponse
+from app.schemas.providers import ProviderCreate, ProviderUpdate, ProviderResponse, ProviderListItem
 from app.core.dependencies import require_provider
 from app.services.location_service import is_within_philippines, find_nearby_providers
 
@@ -34,13 +34,39 @@ def create_provider(
     return new_provider
 
 
-@router.get("/", response_model=list[ProviderResponse])
+@router.get("/", response_model=list[ProviderListItem])
 def get_providers(
-    limit: int = 20,
+    limit: int = 500,
     offset: int = 0,
     db: Session = Depends(get_db)
 ):
-    return db.query(Provider).offset(offset).limit(limit).all()
+    providers = (
+        db.query(Provider)
+        .options(joinedload(Provider.services).joinedload(Service.category))
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+    out: list[ProviderListItem] = []
+    for p in providers:
+        base = ProviderResponse.model_validate(p).model_dump()
+        names = [s.name for s in (p.services or []) if s.name]
+        cat_seen: set[str] = set()
+        category_names: list[str] = []
+        for s in p.services or []:
+            cname = s.category.name if s.category else None
+            if cname and cname not in cat_seen:
+                cat_seen.add(cname)
+                category_names.append(cname)
+        category_names.sort()
+        out.append(
+            ProviderListItem(
+                **base,
+                service_names=names,
+                category_names=category_names,
+            )
+        )
+    return out
 
 
 @router.get("/nearby")

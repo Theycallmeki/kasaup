@@ -1,8 +1,8 @@
 import api from "./api"
 
-export async function getProviders() {
+export async function getProviders(params?: { limit?: number; offset?: number }) {
 
-  const res = await api.get("/providers")
+  const res = await api.get("/providers", { params })
   return res.data
 
 }

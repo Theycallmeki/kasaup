@@ -42,3 +42,8 @@ class ProviderResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ProviderListItem(ProviderResponse):
+    service_names: list[str] = []
+    category_names: list[str] = []
