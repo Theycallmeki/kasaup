@@ -34,17 +34,13 @@ function useMyLocation() {
 }
 
 onMounted(() => {
-
-  const philippinesBounds = L.latLngBounds(
-    [4.5, 116.0],
-    [21.5, 127.0]
-  )
+  const philippinesBounds = L.latLngBounds([4.5, 116.0], [21.5, 127.0])
 
   map = L.map("picker-map", {
     maxBounds: philippinesBounds,
     minZoom: 6,
     maxZoom: 18
-  }).setView([12.8797, 121.7740], 6)
+  }).setView([12.8797, 121.774], 6)
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "© OpenStreetMap contributors",
@@ -52,7 +48,6 @@ onMounted(() => {
   }).addTo(map)
 
   map.on("click", (e: any) => {
-
     lat.value = e.latlng.lat
     lng.value = e.latlng.lng
 
@@ -66,56 +61,82 @@ onMounted(() => {
     } else {
       marker = L.marker(e.latlng).addTo(map)
     }
-
   })
 
+  window.setTimeout(() => {
+    map?.invalidateSize()
+  }, 100)
+  window.setTimeout(() => {
+    map?.invalidateSize()
+  }, 400)
 })
 </script>
 
 <template>
-
-<div class="location-picker">
-
-  <button @click="useMyLocation">
-    Use My Location
-  </button>
-
-  <div id="picker-map"></div>
-
-  <div class="coords" v-if="lat !== null && lng !== null">
-    Latitude: {{ lat }} <br />
-    Longitude: {{ lng }}
+  <div class="location-picker-root">
+    <div class="picker-toolbar">
+      <button type="button" class="location-btn" @click="useMyLocation">
+        Use My Location
+      </button>
+    </div>
+    <div id="picker-map" class="picker-map-el"></div>
+    <div v-if="lat !== null && lng !== null" class="coords">
+      {{ lat.toFixed(5) }}, {{ lng.toFixed(5) }}
+    </div>
   </div>
-
-</div>
-
 </template>
 
 <style scoped>
-
-#picker-map{
-  height:400px;
-  width:100%;
-  border-radius:10px;
-  margin-top:10px;
+.location-picker-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  flex: 1;
 }
 
-.coords{
-  margin-top:10px;
-  font-size:14px;
+.picker-toolbar {
+  flex-shrink: 0;
+  padding: 0 0 8px;
 }
 
-button{
-  padding:8px 12px;
-  border:none;
-  border-radius:6px;
-  background:#2563eb;
-  color:white;
-  cursor:pointer;
+.location-btn {
+  padding: 8px 14px;
+  border: 0.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(124, 58, 237, 0.35);
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.location-btn:hover {
+  background: rgba(124, 58, 237, 0.55);
 }
 
-button:hover{
-  background:#1d4ed8;
+/* Leaflet target — height comes from flex parent; CreateServiceView may override :deep */
+.picker-map-el {
+  flex: 1;
+  min-height: 240px;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
+.coords {
+  flex-shrink: 0;
+  margin-top: 8px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+  font-family: ui-monospace, monospace;
+}
+
+.picker-map-el :deep(.leaflet-container) {
+  height: 100%;
+  min-height: 240px;
+  border-radius: 10px;
+  background: #0e0c1a;
+}
 </style>

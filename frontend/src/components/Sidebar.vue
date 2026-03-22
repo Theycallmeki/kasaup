@@ -99,9 +99,6 @@ const icons: Record<string, string> = {
         <span v-if="!collapsed" class="link-label">{{ item.label }}</span>
       </router-link>
 
-      <div class="spacer" />
-      <div class="divider" />
-
       <button class="link logout" @click="logout">
         <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path :d="icons.logout" />
@@ -240,16 +237,6 @@ const icons: Record<string, string> = {
 
 .link-label {
   overflow: hidden;
-}
-
-.spacer {
-  flex: 1;
-}
-
-.divider {
-  height: 0.5px;
-  background: rgba(255, 255, 255, 0.07);
-  margin: 10px 0;
 }
 
 .logout {

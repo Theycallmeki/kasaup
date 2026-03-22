@@ -8,7 +8,6 @@ const serviceStore = useServiceStore()
 const authStore = useAuthStore()
 
 const providerId = ref<number | null>(null)
-
 const editingId = ref<number | null>(null)
 
 const form = ref({
@@ -26,11 +25,7 @@ onMounted(async () => {
 
 async function resolveProvider() {
   const res = await api.get("/providers")
-
-  const provider = res.data.find(
-    (p: any) => p.owner_id === authStore.user.id
-  )
-
+  const provider = res.data.find((p: any) => p.owner_id === authStore.user.id)
   providerId.value = provider?.id || null
 }
 
@@ -41,7 +36,6 @@ async function fetchServices() {
 
 function startEdit(service: any) {
   editingId.value = service.id
-
   form.value = {
     name: service.name,
     description: service.description,
@@ -53,9 +47,7 @@ function startEdit(service: any) {
 
 async function saveEdit() {
   if (!editingId.value) return
-
   await serviceStore.editService(editingId.value, form.value)
-
   editingId.value = null
   resetForm()
   await fetchServices()
@@ -67,91 +59,311 @@ async function deleteService(id: number) {
 }
 
 function resetForm() {
-  form.value = {
-    name: "",
-    description: "",
-    price: 0,
-    duration_minutes: 60,
-    category_id: 1
-  }
+  form.value = { name: "", description: "", price: 0, duration_minutes: 60, category_id: 1 }
 }
 </script>
 
 <template>
+  <div class="page">
 
-<div>
+    <div class="page-header">
+      <h1 class="title">My Services</h1>
+      <router-link :to="{ name: 'createService' }" class="create-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        New Service
+      </router-link>
+    </div>
 
-<h2>My Services</h2>
+    <div v-if="serviceStore.loading" class="state-msg">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
+        <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+      </svg>
+      Loading services...
+    </div>
 
-<div v-if="serviceStore.loading">
-Loading...
-</div>
+    <div v-else-if="serviceStore.services.length === 0" class="state-msg">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(255,255,255,0.15);margin-bottom:12px">
+        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+      </svg>
+      <p>No services yet.</p>
+      <router-link :to="{ name: 'createService' }" class="empty-link">Create your first service</router-link>
+    </div>
 
-<div v-else>
+    <div v-else class="cards">
+      <div
+        v-for="service in serviceStore.services"
+        :key="service.id"
+        class="card"
+      >
+        <!-- View mode -->
+        <template v-if="editingId !== service.id">
+          <div class="card-top">
+            <div>
+              <div class="service-name">{{ service.name }}</div>
+              <div class="service-meta">
+                <span class="meta-pill">₱{{ service.price }}</span>
+                <span class="meta-pill">{{ service.duration_minutes }} min</span>
+              </div>
+            </div>
+          </div>
 
-<div
-v-for="service in serviceStore.services"
-:key="service.id"
-style="margin-bottom:12px; border:1px solid #ddd; padding:10px; border-radius:8px"
->
+          <div class="card-actions">
+            <button class="action-btn btn-edit" @click="startEdit(service)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+              Edit
+            </button>
+            <button class="action-btn btn-delete" @click="deleteService(service.id)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+              </svg>
+              Delete
+            </button>
+          </div>
+        </template>
 
-<div v-if="editingId !== service.id">
+        <!-- Edit mode -->
+        <template v-else>
+          <div class="edit-form">
+            <div class="field">
+              <label>Name</label>
+              <input v-model="form.name" class="input" placeholder="Service name" />
+            </div>
+            <div class="field">
+              <label>Description</label>
+              <input v-model="form.description" class="input" placeholder="Description" />
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Price (₱)</label>
+                <input v-model.number="form.price" class="input" type="number" placeholder="0" />
+              </div>
+              <div class="field">
+                <label>Duration (min)</label>
+                <input v-model.number="form.duration_minutes" class="input" type="number" placeholder="60" />
+              </div>
+            </div>
+            <div class="edit-actions">
+              <button class="action-btn btn-save" @click="saveEdit">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Save
+              </button>
+              <button class="action-btn btn-cancel" @click="editingId = null">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
 
-<strong>{{ service.name }}</strong>
-
-<div>
-Price: ₱{{ service.price }}
-</div>
-
-<div>
-Duration: {{ service.duration_minutes }} minutes
-</div>
-
-<div style="margin-top:6px">
-
-<button @click="startEdit(service)">
-Edit
-</button>
-
-<button
-style="margin-left:10px"
-@click="deleteService(service.id)"
->
-Delete
-</button>
-
-</div>
-
-</div>
-
-<div v-else>
-
-<input v-model="form.name" placeholder="Name" />
-<input v-model="form.description" placeholder="Description" />
-<input v-model.number="form.price" type="number" placeholder="Price" />
-<input v-model.number="form.duration_minutes" type="number" placeholder="Duration" />
-
-<div style="margin-top:6px">
-
-<button @click="saveEdit">
-Save
-</button>
-
-<button
-style="margin-left:10px"
-@click="editingId = null"
->
-Cancel
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
+  </div>
 </template>
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@700&family=DM+Sans:wght@400;500&display=swap');
+
+.page {
+  min-height: 100vh;
+  background: #0e0c1a;
+  padding: 36px 32px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.title {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.create-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+.create-btn:hover { opacity: 0.85; }
+
+.state-msg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 14px;
+  gap: 6px;
+  text-align: center;
+}
+.empty-link {
+  color: rgba(167, 139, 250, 0.8);
+  font-size: 13px;
+  text-decoration: none;
+  margin-top: 4px;
+}
+.empty-link:hover { color: #a78bfa; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 1s linear infinite; margin-bottom: 8px; }
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 680px;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.035);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 16px 18px;
+  transition: border-color 0.2s;
+}
+.card:hover { border-color: rgba(167, 139, 250, 0.2); }
+
+.card-top {
+  margin-bottom: 14px;
+}
+
+.service-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.service-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.meta-pill {
+  font-size: 12px;
+  color: rgba(167, 139, 250, 0.8);
+  background: rgba(99, 60, 220, 0.15);
+  border: 0.5px solid rgba(130, 90, 255, 0.2);
+  border-radius: 100px;
+  padding: 3px 10px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s;
+}
+.action-btn:hover { opacity: 0.8; }
+
+.btn-edit {
+  background: rgba(255, 255, 255, 0.06);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+}
+.btn-delete {
+  background: rgba(248, 113, 113, 0.08);
+  border: 0.5px solid rgba(248, 113, 113, 0.25);
+  color: rgba(248, 113, 113, 0.8);
+}
+.btn-save {
+  background: rgba(52, 211, 153, 0.12);
+  border: 0.5px solid rgba(52, 211, 153, 0.3);
+  color: #34d399;
+}
+.btn-cancel {
+  background: rgba(255, 255, 255, 0.04);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+label {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.input::placeholder { color: rgba(255, 255, 255, 0.2); }
+.input:focus { border-color: rgba(167, 139, 250, 0.5); }
+
+.edit-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+@media (max-width: 540px) {
+  .page { padding: 24px 16px; }
+  .field-row { grid-template-columns: 1fr; }
+}
+</style>
