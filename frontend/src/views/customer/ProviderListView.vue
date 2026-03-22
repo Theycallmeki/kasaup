@@ -217,12 +217,13 @@ const categoryFilteredProviders = computed((): Record<string, unknown>[] => {
   return list.filter((p) => providerHasCategory(p, cat.name))
 })
 
-// Suggestions are scoped to the already-category-filtered list
 const suggestions = computed(() => {
   const q = searchDraft.value.trim()
   if (!q || providerStore.loading) return []
+
   return categoryFilteredProviders.value
     .map((p) => ({ p, score: scoreProviderQuery(q, p) }))
+    .filter((x) => x.score >= SEARCH_MATCH_THRESHOLD)
     .sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score
       const da = typeof a.p.distance_km === "number" ? a.p.distance_km : 9999
