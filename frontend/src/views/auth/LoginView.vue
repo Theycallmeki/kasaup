@@ -12,155 +12,234 @@ const error = ref("")
 const loading = ref(false)
 
 const login = async () => {
-
   error.value = ""
   loading.value = true
 
   try {
-
     await auth.login(email.value, password.value)
 
-    // role based redirect
-
-    if (auth.user?.role === "customer") {
-      router.push("/providers")
-    }
-
-    if (auth.user?.role === "provider") {
-      router.push("/provider/dashboard")
-    }
-
-    if (auth.user?.role === "admin") {
-      router.push("/admin/dashboard")
-    }
-
+    if (auth.user?.role === "customer") router.push("/providers")
+    if (auth.user?.role === "provider") router.push("/provider/dashboard")
+    if (auth.user?.role === "admin") router.push("/admin/dashboard")
   } catch (err) {
-
     error.value = "Invalid email or password"
-
   } finally {
-
     loading.value = false
-
   }
-
 }
 </script>
 
 <template>
+  <div class="login-page">
+    <div class="bg-orb orb1" />
+    <div class="bg-orb orb2" />
 
-<div class="login-container">
+    <div class="login-card">
+      <span class="eyebrow">Welcome back</span>
+      <h1 class="title">Kasa<span class="accent">up</span></h1>
+      <p class="subtitle">Login to your account</p>
 
-  <div class="login-card">
+      <form @submit.prevent="login">
+        <input
+          v-model="email"
+          class="field"
+          type="email"
+          placeholder="Email"
+          required
+          autofocus
+        />
+        <input
+          v-model="password"
+          class="field"
+          type="password"
+          placeholder="Password"
+          required
+        />
 
-    <h1>Kasaup</h1>
-    <p>Login to your account</p>
+        <p v-if="error" class="error">{{ error }}</p>
 
-    <form @submit.prevent="login">
+        <button class="btn" :disabled="loading">
+          <svg v-if="!loading" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+            <polyline points="10 17 15 12 10 7" />
+            <line x1="15" y1="12" x2="3" y2="12" />
+          </svg>
+          {{ loading ? "Logging in..." : "Login" }}
+        </button>
+      </form>
 
-      <input
-        v-model="email"
-        type="email"
-        placeholder="Email"
-        required
-        autofocus
-      />
-
-      <input
-        v-model="password"
-        type="password"
-        placeholder="Password"
-        required
-      />
-
-      <button :disabled="loading">
-        {{ loading ? "Logging in..." : "Login" }}
-      </button>
-
-    </form>
-
-    <p v-if="error" class="error">
-      {{ error }}
-    </p>
-
-    <div class="register">
-
-      <p>Don't have an account?</p>
-
-      <router-link to="/auth">
-        Register as Customer or Provider
-      </router-link>
-
+      <p class="register">
+        Don't have an account?
+        <router-link to="/auth">Register as Customer or Provider</router-link>
+      </p>
     </div>
-
   </div>
-
-</div>
-
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@700&family=DM+Sans:wght@400;500&display=swap');
 
-.login-container{
-  height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#f1f5f9;
+:global(html),
+:global(body),
+:global(#app) {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #0e0c1a;
 }
 
-.login-card{
-  width:380px;
-  padding:40px;
-  background:white;
-  border-radius:10px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.1);
-  text-align:center;
+.login-page {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #0e0c1a;
+  overflow: hidden;
+  font-family: 'DM Sans', sans-serif;
 }
 
-form{
-  display:flex;
-  flex-direction:column;
-  margin-top:20px;
+.bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.orb1 {
+  width: 420px;
+  height: 420px;
+  top: -80px;
+  left: -100px;
+  background: radial-gradient(circle, rgba(99, 60, 220, 0.35) 0%, transparent 70%);
+}
+.orb2 {
+  width: 360px;
+  height: 360px;
+  bottom: -60px;
+  right: -80px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.25) 0%, transparent 70%);
 }
 
-input{
-  padding:10px;
-  margin-bottom:12px;
-  border-radius:6px;
-  border:1px solid #cbd5e1;
+.login-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.035);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 48px 40px;
+  max-width: 400px;
+  width: calc(100% - 48px);
+  text-align: center;
+  backdrop-filter: blur(12px);
+  animation: rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-button{
-  padding:10px;
-  border:none;
-  border-radius:6px;
-  background:#2563eb;
-  color:white;
-  font-weight:600;
-  cursor:pointer;
+.eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(168, 130, 255, 0.9);
+  background: rgba(99, 60, 220, 0.2);
+  border: 0.5px solid rgba(130, 90, 255, 0.3);
+  border-radius: 100px;
+  padding: 5px 14px;
+  margin-bottom: 20px;
 }
 
-button:hover{
-  background:#1d4ed8;
+.title {
+  font-family: 'Sora', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.accent {
+  color: #a78bfa;
 }
 
-button:disabled{
-  opacity:0.6;
+.subtitle {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 28px;
 }
 
-.error{
-  color:#ef4444;
-  margin-top:10px;
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
-.register{
-  margin-top:20px;
+.field {
+  width: 100%;
+  padding: 13px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 0.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.18s;
+}
+.field::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+.field:focus {
+  border-color: rgba(167, 139, 250, 0.5);
 }
 
-.register a{
-  color:#2563eb;
-  text-decoration:none;
+.error {
+  font-size: 13px;
+  color: #f87171;
+  text-align: left;
+  margin-top: -4px;
 }
 
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  border-radius: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 13px 20px;
+  cursor: pointer;
+  border: none;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: #fff;
+  transition: transform 0.18s ease, opacity 0.18s ease;
+  margin-top: 4px;
+}
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.register {
+  margin-top: 24px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.3);
+}
+.register a {
+  color: rgba(167, 139, 250, 0.8);
+  text-decoration: none;
+  margin-left: 4px;
+}
+.register a:hover {
+  color: #a78bfa;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 </style>
