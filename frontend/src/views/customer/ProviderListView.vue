@@ -23,11 +23,9 @@ const highlightIndex = ref(0)
 const inputFocused = ref(false)
 
 const USER_LOCATION_KEY = "kasaup:user_location_v1"
-
 const SUGGESTION_LIMIT = 8
 
 const categories = ref<{ id: number; name: string }[]>([])
-/** Empty string = all categories; otherwise category id as string for the select’s v-model. */
 const categoryFilter = ref("")
 
 function providerHasCategory(p: Record<string, unknown>, categoryName: string): boolean {
@@ -76,7 +74,6 @@ function useMyLocation() {
     alert("Geolocation is not supported by your browser.")
     return
   }
-
   navigator.geolocation.getCurrentPosition(
     (pos) => {
       userLat.value = pos.coords.latitude
@@ -140,27 +137,20 @@ function onSearchFocus() {
 
 function onSearchBlur() {
   inputFocused.value = false
-  window.setTimeout(() => {
-    suggestionsOpen.value = false
-  }, 180)
+  window.setTimeout(() => { suggestionsOpen.value = false }, 180)
 }
 
 function onSearchInput() {
   pinnedProviderId.value = null
   highlightIndex.value = 0
-  if (searchDraft.value.trim().length > 0) suggestionsOpen.value = true
-  else suggestionsOpen.value = false
+  suggestionsOpen.value = searchDraft.value.trim().length > 0
 }
 
 function onSearchKeydown(e: KeyboardEvent) {
   const list = suggestions.value
   const open = showSuggestionDropdown.value
 
-  if (e.key === "Escape") {
-    suggestionsOpen.value = false
-    return
-  }
-
+  if (e.key === "Escape") { suggestionsOpen.value = false; return }
   if (!open || !list.length) return
 
   if (e.key === "ArrowDown") {
@@ -189,34 +179,25 @@ onMounted(async () => {
       .then((data: { id: number; name: string }[]) => {
         categories.value = Array.isArray(data) ? data : []
       })
-      .catch(() => {
-        categories.value = []
-      }),
+      .catch(() => { categories.value = [] }),
   ])
 })
 
-watch(categoryFilter, () => {
-  pinnedProviderId.value = null
-})
+watch(categoryFilter, () => { pinnedProviderId.value = null })
 
 const providersWithDistance = computed((): Record<string, unknown>[] => {
   const list = providerStore.providers as Record<string, unknown>[]
   const lat = userLat.value
   const lng = userLng.value
-  if (lat == null || lng == null) {
-    return list.map((p) => ({ ...p })) as Record<string, unknown>[]
-  }
+  if (lat == null || lng == null) return list.map((p) => ({ ...p }))
   return list
     .map((p) => {
       const plat = p.latitude
       const plng = p.longitude
       if (typeof plat === "number" && typeof plng === "number") {
-        return {
-          ...p,
-          distance_km: haversine(lat, lng, plat, plng),
-        } as Record<string, unknown>
+        return { ...p, distance_km: haversine(lat, lng, plat, plng) }
       }
-      return { ...p, distance_km: undefined } as Record<string, unknown>
+      return { ...p, distance_km: undefined }
     })
     .sort((a, b) => {
       const da = typeof a.distance_km === "number" ? a.distance_km : 9999
@@ -236,11 +217,11 @@ const categoryFilteredProviders = computed((): Record<string, unknown>[] => {
   return list.filter((p) => providerHasCategory(p, cat.name))
 })
 
+// Suggestions are scoped to the already-category-filtered list
 const suggestions = computed(() => {
   const q = searchDraft.value.trim()
   if (!q || providerStore.loading) return []
-  const list = categoryFilteredProviders.value
-  return list
+  return categoryFilteredProviders.value
     .map((p) => ({ p, score: scoreProviderQuery(q, p) }))
     .sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score
@@ -260,29 +241,23 @@ const showSuggestionDropdown = computed(
     suggestions.value.length > 0
 )
 
-watch(suggestions, () => {
-  highlightIndex.value = 0
-})
+watch(suggestions, () => { highlightIndex.value = 0 })
 
+// filteredProviders now always starts from categoryFilteredProviders
 const filteredProviders = computed(() => {
   if (pinnedProviderId.value != null) {
     const id = pinnedProviderId.value
-    const found = providersWithDistance.value.find((p) => Number(p.id) === id)
+    const found = categoryFilteredProviders.value.find((p) => Number(p.id) === id)
     return found ? [found] : []
   }
 
-  const list = providersWithDistance.value
+  const list = categoryFilteredProviders.value
   const q = activeSearchQuery.value
 
-  if (!q) {
-    return list
-  }
+  if (!q) return list
 
-  const scored = list
-    .map((p) => ({
-      p,
-      score: scoreProviderQuery(q, p),
-    }))
+  return list
+    .map((p) => ({ p, score: scoreProviderQuery(q, p) }))
     .filter((x) => x.score >= SEARCH_MATCH_THRESHOLD)
     .sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score
@@ -290,8 +265,7 @@ const filteredProviders = computed(() => {
       const db = typeof b.p.distance_km === "number" ? b.p.distance_km : 9999
       return da - db
     })
-
-  return scored.map((x) => x.p)
+    .map((x) => x.p)
 })
 
 const searchHadNoMatches = computed(
@@ -375,9 +349,7 @@ const categoryHasNoProviders = computed(
         </ul>
       </div>
 
-      <button type="submit" class="search-btn">
-        Search
-      </button>
+      <button type="submit" class="search-btn">Search</button>
 
       <button type="button" class="location-btn" @click="useMyLocation">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -394,7 +366,7 @@ const categoryHasNoProviders = computed(
     </p>
 
     <p v-else-if="searchHadNoMatches" class="search-empty" role="status">
-      No close matches for “{{ activeSearchQuery }}”. Try different keywords or clear filters.
+      No close matches for "{{ activeSearchQuery }}". Try different keywords or clear filters.
       <button type="button" class="link-clear" @click="clearSearch">Clear search</button>
     </p>
 
@@ -412,15 +384,6 @@ const categoryHasNoProviders = computed(
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap');
-
-:global(html),
-:global(body),
-:global(#app) {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background: #0e0c1a;
-}
 
 .providers-page {
   position: relative;
@@ -476,13 +439,8 @@ const categoryHasNoProviders = computed(
   background-repeat: no-repeat;
   background-position: right 12px center;
 }
-.category-select:focus {
-  border-color: rgba(167, 139, 250, 0.45);
-}
-.category-select option {
-  background: #13111f;
-  color: #fff;
-}
+.category-select:focus { border-color: rgba(167, 139, 250, 0.45); }
+.category-select option { background: #13111f; color: #fff; }
 
 .search-combo {
   flex: 1;
@@ -515,10 +473,8 @@ const categoryHasNoProviders = computed(
   outline: none;
   backdrop-filter: blur(16px);
 }
-
-.search-input-wrap input:focus {
-  border-color: rgba(167, 139, 250, 0.45);
-}
+.search-input-wrap input:focus { border-color: rgba(167, 139, 250, 0.45); }
+.search-input-wrap input::placeholder { color: rgba(255, 255, 255, 0.25); }
 
 .suggest-dropdown {
   position: absolute;
@@ -545,9 +501,7 @@ const categoryHasNoProviders = computed(
   transition: background 0.12s;
 }
 .suggest-item:hover,
-.suggest-item.active {
-  background: rgba(167, 139, 250, 0.12);
-}
+.suggest-item.active { background: rgba(167, 139, 250, 0.12); }
 
 .suggest-title {
   font-size: 14px;
@@ -556,13 +510,11 @@ const categoryHasNoProviders = computed(
   margin-bottom: 4px;
   line-height: 1.3;
 }
-
 .suggest-loc {
   font-size: 12px;
   color: rgba(255, 255, 255, 0.45);
   line-height: 1.35;
 }
-
 .suggest-cat {
   margin-top: 6px;
   font-size: 11px;
@@ -605,7 +557,9 @@ const categoryHasNoProviders = computed(
   font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
+  transition: opacity 0.15s;
 }
+.location-btn:hover { opacity: 0.9; }
 
 .search-empty {
   position: absolute;
@@ -624,6 +578,10 @@ const categoryHasNoProviders = computed(
   border-radius: 12px;
   backdrop-filter: blur(12px);
 }
+.search-empty--muted {
+  border-color: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.55);
+}
 
 .link-clear {
   display: inline;
@@ -637,14 +595,7 @@ const categoryHasNoProviders = computed(
   cursor: pointer;
   text-decoration: underline;
 }
-.link-clear:hover {
-  color: #c4b5fd;
-}
-
-.search-empty--muted {
-  border-color: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.55);
-}
+.link-clear:hover { color: #c4b5fd; }
 
 .map-loading {
   position: absolute;
@@ -659,16 +610,8 @@ const categoryHasNoProviders = computed(
 }
 
 @media (max-width: 640px) {
-  .search-bar {
-    flex-direction: column;
-  }
-  .search-btn,
-  .location-btn {
-    justify-content: center;
-  }
-  .search-empty {
-    top: auto;
-    bottom: 140px;
-  }
+  .search-bar { flex-direction: column; }
+  .search-btn, .location-btn { justify-content: center; }
+  .search-empty { top: auto; bottom: 140px; }
 }
 </style>
