@@ -36,8 +36,6 @@ export async function createService(data: {
   description?: string
   price: number
   duration_minutes: number
-  latitude?: number
-  longitude?: number
 }) {
   const res = await api.post("/services", data)
   return res.data
@@ -49,8 +47,6 @@ export async function updateService(id: number, data: {
   description?: string
   price?: number
   duration_minutes?: number
-  latitude?: number
-  longitude?: number
 }) {
   const res = await api.put(`/services/${id}`, data)
   return res.data

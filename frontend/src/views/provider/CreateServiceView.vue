@@ -3,7 +3,6 @@ import { onMounted, ref } from "vue"
 import { useRouter } from "vue-router"
 import { useServiceStore } from "../../stores/serviceStore"
 import { getCategories } from "../../services/categories"
-import LocationPickerMap from "../../components/LocationPickerMap.vue"
 
 const router = useRouter()
 const serviceStore = useServiceStore()
@@ -16,14 +15,6 @@ const description = ref("")
 const price = ref(0)
 const duration_minutes = ref(60)
 const category_id = ref<number | null>(null)
-
-const latitude = ref<number | null>(null)
-const longitude = ref<number | null>(null)
-
-function setLocation(data: any) {
-  latitude.value = data.latitude
-  longitude.value = data.longitude
-}
 
 onMounted(async () => {
   categoriesLoading.value = true
@@ -51,9 +42,7 @@ const createService = async () => {
       name: name.value,
       description: description.value,
       price: price.value,
-      duration_minutes: duration_minutes.value,
-      latitude: latitude.value ?? undefined,
-      longitude: longitude.value ?? undefined
+      duration_minutes: duration_minutes.value
     })
     router.push("/provider/services")
   } catch (err: any) {
@@ -65,7 +54,7 @@ const createService = async () => {
 <template>
   <div class="page">
 
-    <div class="left-panel">
+    <div class="left-panel full">
       <h1 class="title">Create Service</h1>
 
       <div class="form">
@@ -128,13 +117,6 @@ const createService = async () => {
           </select>
         </div>
 
-        <p v-if="latitude && longitude" class="coords-hint">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-          </svg>
-          {{ latitude.toFixed(5) }}, {{ longitude.toFixed(5) }}
-        </p>
-
         <button
           class="submit-btn"
           type="button"
@@ -147,18 +129,6 @@ const createService = async () => {
           Create Service
         </button>
 
-      </div>
-    </div>
-
-    <div class="right-panel">
-      <div class="map-header">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-        </svg>
-        Click the map to set service location
-      </div>
-      <div class="map-wrap">
-        <LocationPickerMap @location-selected="setLocation" />
       </div>
     </div>
 
@@ -176,56 +146,11 @@ const createService = async () => {
   overflow: hidden;
 }
 
-.left-panel {
-  width: 380px;
-  flex-shrink: 0;
+.left-panel.full {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
   padding: 36px 28px;
-  overflow-y: auto;
-  border-right: 0.5px solid rgba(255, 255, 255, 0.07);
-}
-
-.right-panel {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.map-header {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.25);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 8px 12px 6px;
-  border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
-  flex-shrink: 0;
-}
-
-.map-wrap {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  padding: 0 12px 12px;
-}
-
-.map-wrap :deep(.location-picker-root) {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.map-wrap :deep(#picker-map) {
-  flex: 1;
-  min-height: 0;
-  height: auto !important;
-  width: 100% !important;
 }
 
 .title {
@@ -291,14 +216,6 @@ select.input option {
   color: #fff;
 }
 
-.coords-hint {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  color: rgba(167, 139, 250, 0.7);
-}
-
 .submit-btn {
   display: flex;
   align-items: center;
@@ -325,22 +242,5 @@ select.input option {
   opacity: 0.45;
   cursor: not-allowed;
   transform: none;
-}
-
-@media (max-width: 768px) {
-  .page {
-    flex-direction: column;
-    height: auto;
-    overflow: auto;
-  }
-  .left-panel {
-    width: 100%;
-    border-right: none;
-    border-bottom: 0.5px solid rgba(255, 255, 255, 0.07);
-  }
-  .right-panel {
-    min-height: 55vh;
-    flex: 1;
-  }
 }
 </style>
