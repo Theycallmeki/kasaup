@@ -7,8 +7,6 @@ class ServiceCreate(BaseModel):
     description: str | None = None
     price: float
     duration_minutes: int
-    latitude: float | None = None
-    longitude: float | None = None
 
 
 class ServiceUpdate(BaseModel):
@@ -17,8 +15,6 @@ class ServiceUpdate(BaseModel):
     description: str | None = None
     price: float
     duration_minutes: int
-    latitude: float | None = None
-    longitude: float | None = None
 
 
 class ServiceResponse(BaseModel):
@@ -29,8 +25,6 @@ class ServiceResponse(BaseModel):
     description: str | None
     price: float
     duration_minutes: int
-    latitude: float | None
-    longitude: float | None
 
     class Config:
         from_attributes = True

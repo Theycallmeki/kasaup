@@ -31,9 +31,7 @@ def create_service(
         name=service.name,
         description=service.description,
         price=service.price,
-        duration_minutes=service.duration_minutes,
-        latitude=service.latitude,
-        longitude=service.longitude
+        duration_minutes=service.duration_minutes
     )
 
     db.add(new_service)
