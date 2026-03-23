@@ -21,21 +21,22 @@ const role = computed(() => auth.user?.role)
 
 const menus = {
   customer: [
-    { label: "Providers",        path: "/providers",            icon: "search" },
+    { label: "Services",         path: "/services",             icon: "search"   },
+    { label: "Providers",        path: "/providers",            icon: "map"      },
     { label: "My Appointments",  path: "/appointments",         icon: "calendar" },
-    { label: "Booking History",  path: "/appointments/history", icon: "clock" }
+    { label: "Booking History",  path: "/appointments/history", icon: "clock"    }
   ],
   provider: [
-    { label: "Dashboard",     path: "/provider/dashboard",    icon: "grid" },
-    { label: "Services",      path: "/provider/services",     icon: "wrench" },
-    { label: "Appointments",  path: "/provider/appointments", icon: "calendar" },
-    { label: "Availability",  path: "/provider/availability", icon: "clock" }
+    { label: "Dashboard",    path: "/provider/dashboard",    icon: "grid"     },
+    { label: "Services",     path: "/provider/services",     icon: "wrench"   },
+    { label: "Appointments", path: "/provider/appointments", icon: "calendar" },
+    { label: "Availability", path: "/provider/availability", icon: "clock"    }
   ],
   admin: [
-    { label: "Dashboard",   path: "/admin/dashboard",   icon: "grid" },
-    { label: "Users",       path: "/admin/users",       icon: "users" },
-    { label: "Providers",   path: "/admin/providers",   icon: "wrench" },
-    { label: "Categories",  path: "/admin/categories",  icon: "tag" }
+    { label: "Dashboard",  path: "/admin/dashboard",  icon: "grid"   },
+    { label: "Users",      path: "/admin/users",       icon: "users"  },
+    { label: "Providers",  path: "/admin/providers",   icon: "wrench" },
+    { label: "Categories", path: "/admin/categories",  icon: "tag"    }
   ]
 }
 
@@ -44,10 +45,10 @@ const menuItems = computed(() => {
   return menus[role.value as keyof typeof menus] || []
 })
 
-// SVG paths keyed by icon name
 const icons: Record<string, string> = {
   grid:     "M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z",
   search:   "M11 11m-8 0a8 8 0 1 0 16 0 8 8 0 1 0-16 0M21 21l-4.35-4.35",
+  map:      "M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4zM8 2v16M16 6v16",
   calendar: "M3 4h18v18H3zM16 2v4M8 2v4M3 10h18",
   clock:    "M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zM12 6v6l4 2",
   wrench:   "M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z",
@@ -63,7 +64,6 @@ const icons: Record<string, string> = {
     :class="{ collapsed }"
     aria-label="Sidebar navigation"
   >
-    <!-- Top -->
     <div class="top">
       <div v-if="!collapsed" class="logo">Kasa<span class="accent">up</span></div>
       <button
@@ -81,10 +81,8 @@ const icons: Record<string, string> = {
       </button>
     </div>
 
-    <!-- Role badge -->
     <div v-if="!collapsed && role" class="role-badge">{{ role }}</div>
 
-    <!-- Nav -->
     <nav id="sidebar-nav" class="nav">
       <router-link
         v-for="item in menuItems"
@@ -130,7 +128,6 @@ const icons: Record<string, string> = {
   width: 66px;
 }
 
-/* Top row */
 .top {
   display: flex;
   align-items: center;
@@ -147,9 +144,7 @@ const icons: Record<string, string> = {
   letter-spacing: -0.02em;
   white-space: nowrap;
 }
-.accent {
-  color: #a78bfa;
-}
+.accent { color: #a78bfa; }
 
 .toggle {
   background: rgba(255, 255, 255, 0.05);
@@ -170,7 +165,6 @@ const icons: Record<string, string> = {
   color: #fff;
 }
 
-/* Role badge */
 .role-badge {
   display: inline-block;
   font-size: 10px;
@@ -186,7 +180,6 @@ const icons: Record<string, string> = {
   align-self: flex-start;
 }
 
-/* Nav */
 .nav {
   display: flex;
   flex-direction: column;
@@ -231,23 +224,16 @@ const icons: Record<string, string> = {
   opacity: 0.7;
 }
 .link:hover .link-icon,
-.link.active .link-icon {
-  opacity: 1;
-}
+.link.active .link-icon { opacity: 1; }
 
-.link-label {
-  overflow: hidden;
-}
+.link-label { overflow: hidden; }
 
-.logout {
-  color: rgba(248, 113, 113, 0.6) !important;
-}
+.logout { color: rgba(248, 113, 113, 0.6) !important; }
 .logout:hover {
   background: rgba(248, 113, 113, 0.08) !important;
   color: #f87171 !important;
 }
 
-/* Mobile */
 @media (max-width: 768px) {
   .sidebar {
     width: 100%;
@@ -255,11 +241,7 @@ const icons: Record<string, string> = {
     border-right: none;
     border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
   }
-  .sidebar.collapsed {
-    width: 100%;
-  }
-  .nav {
-    overflow: visible;
-  }
+  .sidebar.collapsed { width: 100%; }
+  .nav { overflow: visible; }
 }
 </style>

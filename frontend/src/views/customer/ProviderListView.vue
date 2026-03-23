@@ -244,7 +244,6 @@ const showSuggestionDropdown = computed(
 
 watch(suggestions, () => { highlightIndex.value = 0 })
 
-// filteredProviders now always starts from categoryFilteredProviders
 const filteredProviders = computed(() => {
   if (pinnedProviderId.value != null) {
     const id = pinnedProviderId.value

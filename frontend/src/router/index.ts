@@ -9,6 +9,8 @@ import ProviderListView from "../views/customer/ProviderListView.vue"
 import ProviderProfileView from "../views/customer/ProviderProfileView.vue"
 import MyAppointmentsView from "../views/customer/MyAppointmentsView.vue"
 import BookingHistoryView from "../views/customer/BookingHistoryView.vue"
+import ServicesView from '../views/customer/ServicesView.vue'
+
 
 import ProviderDashboardView from "../views/provider/ProviderDashboardView.vue"
 import ProviderServicesView from "../views/provider/ProviderServicesView.vue"
@@ -50,6 +52,13 @@ const routes = [
     name: "register",
     component: RegisterView
   },
+
+  {
+  path: '/services',
+  name: 'services',
+  component: ServicesView,
+  meta: { requiresAuth: true, role: 'customer' }
+},
 
   {
     path: "/providers",
