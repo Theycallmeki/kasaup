@@ -137,7 +137,7 @@ Create a `.env` file in the project root.
 Example configuration
 
 ```env
-DATABASE_URL=postgresql://postgres:password@localhost/kasaup
+DATABASE_URL=postgresql://postgres:password@localhost/your-db-name
 SECRET_KEY=your-secret-key
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 REFRESH_TOKEN_EXPIRE_DAYS=7
