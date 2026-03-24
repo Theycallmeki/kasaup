@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { useRouter } from "vue-router"
-import { createProvider } from "../../services/providers"
+import { createProvider, uploadProviderImage } from "../../services/providers"
 import LocationPickerMap from "../../components/LocationPickerMap.vue"
 
 const router = useRouter()
@@ -17,12 +17,22 @@ const longitude = ref<number | null>(null)
 
 const offers_home_service = ref(false)
 
+const profileImageFile = ref<File | null>(null)
+const profileImagePreview = ref<string | null>(null)
+
 const loading = ref(false)
 const error = ref("")
 
 function setLocation(data: any) {
   latitude.value = data.latitude
   longitude.value = data.longitude
+}
+
+function onImageChange(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (!file) return
+  profileImageFile.value = file
+  profileImagePreview.value = URL.createObjectURL(file)
 }
 
 const create = async () => {
@@ -39,7 +49,7 @@ const create = async () => {
       return
     }
 
-    await createProvider({
+    const provider = await createProvider({
       shop_name: shop_name.value,
       description: description.value,
       phone: phone.value,
@@ -49,6 +59,10 @@ const create = async () => {
       longitude: longitude.value,
       offers_home_service: offers_home_service.value
     })
+
+    if (profileImageFile.value) {
+      await uploadProviderImage(provider.id, profileImageFile.value)
+    }
 
     router.push("/provider/dashboard")
   } catch (err: any) {
@@ -64,6 +78,30 @@ const create = async () => {
     <h1 class="title">Create Provider Profile</h1>
 
     <div class="form">
+
+      <div class="field">
+        <label>Profile Image</label>
+        <div class="image-upload-wrap">
+          <div class="image-preview" :class="{ 'has-image': profileImagePreview }">
+            <img v-if="profileImagePreview" :src="profileImagePreview" alt="Profile preview" />
+            <div v-else class="image-placeholder">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+              <span>No image selected</span>
+            </div>
+          </div>
+          <label class="image-btn" for="profile-image-input">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            {{ profileImageFile ? "Change Image" : "Upload Image" }}
+          </label>
+          <input id="profile-image-input" type="file" accept="image/*" class="hidden-input" @change="onImageChange" />
+        </div>
+      </div>
 
       <div class="field-row">
         <div class="field">
@@ -205,6 +243,69 @@ label {
 textarea.input {
   resize: vertical;
   min-height: 90px;
+}
+
+.image-upload-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.image-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.image-placeholder span {
+  font-size: 9px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.image-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  background: rgba(124, 58, 237, 0.15);
+  border: 0.5px solid rgba(124, 58, 237, 0.4);
+  border-radius: 8px;
+  color: rgba(167, 139, 250, 0.9);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-transform: none;
+  letter-spacing: normal;
+}
+.image-btn:hover {
+  background: rgba(124, 58, 237, 0.25);
+}
+
+.hidden-input {
+  display: none;
 }
 
 .checkbox-row {

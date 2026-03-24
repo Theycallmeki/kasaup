@@ -74,6 +74,15 @@ const palette  = ["#38bdf8","#a78bfa","#fbbf24","#86efac","#f9a8d4","#6ee7b7","#
 const accent   = (id: number) => palette[(id ?? 0) % palette.length]
 const catName  = (id: number) => catStore.categories?.find((c: any) => c.id === id)?.name ?? "Service"
 const shopName = (id: number) => providerMap.value[id]?.shop_name ?? "—"
+
+const BASE_URL = "http://localhost:8000"
+
+const imgUrl = (path: string) => `${BASE_URL}/${path}`
+
+const firstImage = (svc: any): string | null => {
+  if (Array.isArray(svc.images) && svc.images.length) return imgUrl(svc.images[0].image_url)
+  return null
+}
 </script>
 
 <template>
@@ -119,6 +128,10 @@ const shopName = (id: number) => providerMap.value[id]?.shop_name ?? "—"
         class="card" :style="{ '--a': accent(svc.category_id) }"
         @click="selected = svc"
       >
+        <div v-if="firstImage(svc)" class="thumb">
+          <img :src="firstImage(svc)!" :alt="svc.name" />
+          <div class="thumb-fade" />
+        </div>
         <div class="ct">
           <span class="badge">{{ catName(svc.category_id) }}</span>
           <span class="dur">
@@ -144,6 +157,17 @@ const shopName = (id: number) => providerMap.value[id]?.shop_name ?? "—"
       <div class="ov" :class="{ show: !!selected }" @click.self="selected = null">
         <div class="modal" v-if="selected" :style="{ '--a': accent(selected.category_id) }">
           <button class="mc" @click="selected = null">✕</button>
+
+          <div v-if="selected.images?.length" class="modal-gallery">
+            <img
+              v-for="(img, i) in selected.images"
+              :key="i"
+              :src="imgUrl(img.image_url)"
+              :alt="selected.name"
+              class="modal-thumb"
+            />
+          </div>
+
           <span class="badge lg">{{ catName(selected.category_id) }}</span>
           <h2 class="mt">{{ selected.name }}</h2>
           <p class="mb">{{ shopName(selected.provider_id) }}</p>
@@ -183,9 +207,16 @@ const shopName = (id: number) => providerMap.value[id]?.shop_name ?? "—"
 
 .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(268px,1fr)); gap:14px; }
 
-.card { position:relative; background:rgba(255,255,255,.03); border:0.5px solid rgba(255,255,255,.08); border-radius:16px; padding:20px; cursor:pointer; transition:transform .2s,border-color .2s; overflow:hidden; display:flex; flex-direction:column; }
+.card { position:relative; background:rgba(255,255,255,.03); border:0.5px solid rgba(255,255,255,.08); border-radius:16px; overflow:hidden; cursor:pointer; transition:transform .2s,border-color .2s; display:flex; flex-direction:column; }
 .card:hover { transform:translateY(-2px); border-color:color-mix(in srgb,var(--a) 30%,transparent); }
+.card > .ct, .card > .ti, .card > .by, .card > .desc, .card > .cf { padding-left:20px; padding-right:20px; }
+.card > .ct { padding-top:16px; }
+.card > .cf { padding-bottom:16px; }
 .glow { position:absolute; bottom:-40px; right:-40px; width:110px; height:110px; border-radius:50%; background:color-mix(in srgb,var(--a) 8%,transparent); filter:blur(28px); pointer-events:none; }
+
+.thumb { position:relative; width:100%; height:148px; flex-shrink:0; }
+.thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.thumb-fade { position:absolute; inset:0; background:linear-gradient(to bottom, transparent 40%, #0e0c1a 100%); }
 
 .ct { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
 .badge { font-size:10px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; padding:3px 10px; border-radius:100px; color:var(--a); background:color-mix(in srgb,var(--a) 12%,transparent); }
@@ -204,10 +235,17 @@ const shopName = (id: number) => providerMap.value[id]?.shop_name ?? "—"
 
 .ov { position:fixed; inset:0; background:rgba(0,0,0,.65); backdrop-filter:blur(8px); z-index:999; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity .25s; }
 .ov.show { opacity:1; pointer-events:all; }
-.modal { background:#1a1730; border:0.5px solid rgba(130,90,255,.25); border-radius:20px; padding:32px; max-width:440px; width:100%; position:relative; transform:translateY(12px); transition:transform .25s cubic-bezier(.34,1.56,.64,1); }
+.modal { background:#1a1730; border:0.5px solid rgba(130,90,255,.25); border-radius:20px; padding:32px; max-width:440px; width:100%; position:relative; transform:translateY(12px); transition:transform .25s cubic-bezier(.34,1.56,.64,1); max-height:85vh; overflow-y:auto; }
 .ov.show .modal { transform:translateY(0); }
 .mc { position:absolute; top:16px; right:16px; background:rgba(255,255,255,.07); border:0.5px solid rgba(255,255,255,.1); border-radius:8px; width:30px; height:30px; color:rgba(255,255,255,.5); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:color .15s; }
 .mc:hover { color:#fff; }
+
+.modal-gallery { display:flex; gap:8px; overflow-x:auto; margin-bottom:18px; padding-bottom:4px; scroll-snap-type:x mandatory; }
+.modal-gallery::-webkit-scrollbar { height:3px; }
+.modal-gallery::-webkit-scrollbar-track { background:rgba(255,255,255,.05); border-radius:2px; }
+.modal-gallery::-webkit-scrollbar-thumb { background:rgba(130,90,255,.4); border-radius:2px; }
+.modal-thumb { width:140px; height:100px; object-fit:cover; border-radius:10px; flex-shrink:0; scroll-snap-align:start; border:0.5px solid rgba(255,255,255,.08); }
+
 .mt { font-family:'Sora',sans-serif; font-size:1.4rem; font-weight:700; margin:0 0 4px; color:#fff; letter-spacing:-.02em; }
 .mb { font-size:.85rem; color:rgba(255,255,255,.35); margin:0 0 16px; }
 .mdesc { font-size:.88rem; color:rgba(255,255,255,.5); line-height:1.6; margin:0 0 20px; }

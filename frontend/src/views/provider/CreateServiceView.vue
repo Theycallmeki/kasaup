@@ -16,6 +16,9 @@ const price = ref(0)
 const duration_minutes = ref(60)
 const category_id = ref<number | null>(null)
 
+const imageFiles = ref<File[]>([])
+const imagePreviews = ref<string[]>([])
+
 onMounted(async () => {
   categoriesLoading.value = true
   try {
@@ -34,16 +37,32 @@ onMounted(async () => {
   }
 })
 
+function onImagesChange(e: Event) {
+  const files = Array.from((e.target as HTMLInputElement).files || [])
+  imageFiles.value = files
+  imagePreviews.value = files.map(f => URL.createObjectURL(f))
+}
+
+function removeImage(index: number) {
+  imageFiles.value = imageFiles.value.filter((_, i) => i !== index)
+  imagePreviews.value = imagePreviews.value.filter((_, i) => i !== index)
+}
+
 const createService = async () => {
   if (category_id.value == null) return
   try {
-    await serviceStore.addService({
+    const service = await serviceStore.addService({
       category_id: category_id.value,
       name: name.value,
       description: description.value,
       price: price.value,
       duration_minutes: duration_minutes.value
     })
+
+    if (imageFiles.value.length > 0) {
+      await serviceStore.uploadImages(service.id, imageFiles.value)
+    }
+
     router.push("/provider/services")
   } catch (err: any) {
     console.log(err.response?.data)
@@ -115,6 +134,41 @@ const createService = async () => {
               {{ c.name }}
             </option>
           </select>
+        </div>
+
+        <div class="field">
+          <label>Service Images</label>
+          <div class="images-wrap">
+            <div v-if="imagePreviews.length" class="previews">
+              <div
+                v-for="(src, i) in imagePreviews"
+                :key="i"
+                class="preview-item"
+              >
+                <img :src="src" alt="preview" />
+                <button class="remove-btn" type="button" @click="removeImage(i)">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <label class="image-btn" for="svc-images-input">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              {{ imageFiles.length ? `${imageFiles.length} file(s) selected` : "Upload Images" }}
+            </label>
+            <input
+              id="svc-images-input"
+              type="file"
+              accept="image/*"
+              multiple
+              class="hidden-input"
+              @change="onImagesChange"
+            />
+          </div>
         </div>
 
         <button
@@ -214,6 +268,75 @@ select.input {
 select.input option {
   background: #1a1628;
   color: #fff;
+}
+
+.images-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.preview-item {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+}
+
+.preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.image-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  background: rgba(124, 58, 237, 0.15);
+  border: 0.5px solid rgba(124, 58, 237, 0.4);
+  border-radius: 8px;
+  color: rgba(167, 139, 250, 0.9);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-transform: none;
+  letter-spacing: normal;
+  width: fit-content;
+}
+.image-btn:hover {
+  background: rgba(124, 58, 237, 0.25);
+}
+
+.hidden-input {
+  display: none;
 }
 
 .submit-btn {
