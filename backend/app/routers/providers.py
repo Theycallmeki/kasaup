@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session, joinedload
 
 from app.db import get_db
@@ -9,6 +9,7 @@ from app.models.users import User
 from app.schemas.providers import ProviderCreate, ProviderUpdate, ProviderResponse, ProviderListItem
 from app.core.dependencies import require_provider
 from app.services.location_service import is_within_philippines, find_nearby_providers
+from app.services.upload_service import save_image
 
 router = APIRouter()
 
@@ -34,6 +35,31 @@ def create_provider(
     return new_provider
 
 
+@router.post("/{provider_id}/profile-image")
+def upload_profile_image(
+    provider_id: int,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_provider)
+):
+    provider = db.query(Provider).filter(Provider.id == provider_id).first()
+
+    if not provider:
+        raise HTTPException(status_code=404, detail="Provider not found")
+
+    if provider.owner_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    path = save_image(file)
+
+    provider.profile_image = path
+
+    db.commit()
+    db.refresh(provider)
+
+    return {"profile_image": path}
+
+
 @router.get("/", response_model=list[ProviderListItem])
 def get_providers(
     limit: int = 500,
@@ -47,18 +73,25 @@ def get_providers(
         .limit(limit)
         .all()
     )
+
     out: list[ProviderListItem] = []
+
     for p in providers:
         base = ProviderResponse.model_validate(p).model_dump()
+
         names = [s.name for s in (p.services or []) if s.name]
+
         cat_seen: set[str] = set()
         category_names: list[str] = []
+
         for s in p.services or []:
             cname = s.category.name if s.category else None
             if cname and cname not in cat_seen:
                 cat_seen.add(cname)
                 category_names.append(cname)
+
         category_names.sort()
+
         out.append(
             ProviderListItem(
                 **base,
@@ -66,6 +99,7 @@ def get_providers(
                 category_names=category_names,
             )
         )
+
     return out
 
 

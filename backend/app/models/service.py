@@ -23,3 +23,5 @@ class Service(Base):
     provider = relationship("Provider", back_populates="services")
 
     category = relationship("Category", back_populates="services")
+
+    images = relationship("ServiceImage", back_populates="service", cascade="all, delete")

@@ -33,6 +33,8 @@ class Provider(Base):
 
     is_verified = Column(Boolean, default=False)
 
+    profile_image = Column(String)  
+
     created_at = Column(DateTime, default=datetime.utcnow)
 
     owner = relationship("User")

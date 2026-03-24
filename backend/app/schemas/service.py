@@ -1,4 +1,13 @@
 from pydantic import BaseModel
+from typing import List
+
+
+class ServiceImage(BaseModel):
+    id: int
+    image_url: str
+
+    class Config:
+        from_attributes = True
 
 
 class ServiceCreate(BaseModel):
@@ -7,6 +16,7 @@ class ServiceCreate(BaseModel):
     description: str | None = None
     price: float
     duration_minutes: int
+    images: List[str] = []
 
 
 class ServiceUpdate(BaseModel):
@@ -25,6 +35,7 @@ class ServiceResponse(BaseModel):
     description: str | None
     price: float
     duration_minutes: int
+    images: List[ServiceImage] = []
 
     class Config:
         from_attributes = True

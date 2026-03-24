@@ -35,6 +35,7 @@ class ProviderResponse(BaseModel):
     latitude: float
     longitude: float
     offers_home_service: bool
+    profile_image: str | None = None
     rating: float | None = None
     total_reviews: int | None = None
     is_verified: bool | None = None

@@ -1,13 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
+from typing import List
 
 from app.db import get_db
 from app.models.service import Service
 from app.models.providers import Provider
 from app.models.users import User
+from app.models.service_image import ServiceImage
 from app.schemas.service import ServiceCreate, ServiceUpdate, ServiceResponse
 from app.core.dependencies import require_provider
 from app.services.service_search_service import search_services
+from app.services.upload_service import save_multiple_images
 
 router = APIRouter()
 
@@ -38,7 +41,42 @@ def create_service(
     db.commit()
     db.refresh(new_service)
 
+    if service.images:
+        for img in service.images:
+            db.add(ServiceImage(service_id=new_service.id, image_url=img))
+        db.commit()
+
+    db.refresh(new_service)
     return new_service
+
+
+@router.post("/{service_id}/images")
+def upload_service_images(
+    service_id: int,
+    files: List[UploadFile] = File(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_provider)
+):
+    service = db.query(Service).filter(Service.id == service_id).first()
+
+    if not service:
+        raise HTTPException(status_code=404, detail="Service not found")
+
+    provider = db.query(Provider).filter(
+        Provider.id == service.provider_id
+    ).first()
+
+    if provider.owner_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    paths = save_multiple_images(files)
+
+    for path in paths:
+        db.add(ServiceImage(service_id=service.id, image_url=path))
+
+    db.commit()
+
+    return {"images": paths}
 
 
 @router.get("/", response_model=list[ServiceResponse])
@@ -74,11 +112,9 @@ def get_services_by_provider(
     offset: int = 0,
     db: Session = Depends(get_db)
 ):
-    services = db.query(Service).filter(
+    return db.query(Service).filter(
         Service.provider_id == provider_id
     ).offset(offset).limit(limit).all()
-
-    return services
 
 
 @router.get("/category/{category_id}", response_model=list[ServiceResponse])
@@ -88,11 +124,9 @@ def get_services_by_category(
     offset: int = 0,
     db: Session = Depends(get_db)
 ):
-    services = db.query(Service).filter(
+    return db.query(Service).filter(
         Service.category_id == category_id
     ).offset(offset).limit(limit).all()
-
-    return services
 
 
 @router.get("/{service_id}", response_model=ServiceResponse)
