@@ -5,7 +5,8 @@ import {
   getProviderProfile,
   createProvider,
   updateProvider,
-  deleteProvider
+  deleteProvider,
+  uploadProviderImage
 } from "../services/providers"
 
 export const useProviderStore = defineStore("providers", {
@@ -80,6 +81,16 @@ export const useProviderStore = defineStore("providers", {
       const res = await deleteProvider(id)
 
       await this.fetchProviders()
+
+      return res
+
+    },
+
+    async uploadProfileImage(providerId: number, file: File) {
+
+      const res = await uploadProviderImage(providerId, file)
+
+      await this.fetchProvider(providerId)
 
       return res
 

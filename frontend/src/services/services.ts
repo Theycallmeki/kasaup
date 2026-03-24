@@ -56,3 +56,23 @@ export async function deleteService(id: number) {
   const res = await api.delete(`/services/${id}`)
   return res.data
 }
+
+export async function uploadServiceImages(serviceId: number, files: File[]) {
+  const formData = new FormData()
+
+  files.forEach(file => {
+    formData.append("files", file)
+  })
+
+  const res = await api.post(
+    `/services/${serviceId}/images`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    }
+  )
+
+  return res.data
+}
