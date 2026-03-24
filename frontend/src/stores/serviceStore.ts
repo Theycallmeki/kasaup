@@ -5,6 +5,7 @@ import {
   createService,
   updateService,
   deleteService,
+  uploadServiceImages
 } from "../services/services";
 
 export const useServiceStore = defineStore("services", {
@@ -48,6 +49,12 @@ export const useServiceStore = defineStore("services", {
 
     async removeService(id: number) {
       const res = await deleteService(id);
+      await this.fetchServices();
+      return res;
+    },
+
+    async uploadImages(serviceId: number, files: File[]) {
+      const res = await uploadServiceImages(serviceId, files);
       await this.fetchServices();
       return res;
     },
