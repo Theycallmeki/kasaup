@@ -21,9 +21,9 @@ const cancel = async (id: number) => {
 }
 
 const statusClass = (status: string) => {
-  if (status === "pending")   return "badge-pending"
+  if (status === "pending") return "badge-pending"
   if (status === "confirmed") return "badge-confirmed"
-  if (status === "approved")  return "badge-approved"
+  if (status === "approved") return "badge-approved"
   if (status === "cancelled") return "badge-cancelled"
   return "badge-default"
 }
@@ -119,6 +119,7 @@ watch(totalPages, (tp) => {
       <p v-if="sortedAppointments.length" class="range-hint">
         Showing {{ rangeStart }}–{{ rangeEnd }} of {{ sortedAppointments.length }}
       </p>
+
       <div class="cards-scroll">
         <div
           v-for="appointment in paginatedAppointments"
@@ -155,21 +156,16 @@ watch(totalPages, (tp) => {
         </div>
       </div>
 
-      <nav v-if="totalPages > 1" class="pagination" aria-label="Booking history pages">
-        <button
-          type="button"
-          class="page-nav-btn"
-          :disabled="currentPage <= 1"
-          @click="goToPage(currentPage - 1)"
-        >
+      <nav v-if="totalPages > 1" class="pagination">
+        <button class="page-nav-btn" :disabled="currentPage <= 1" @click="goToPage(currentPage - 1)">
           Previous
         </button>
+
         <div class="page-numbers">
-          <template v-for="(p, idx) in pageNumbers" :key="`p-${idx}-${p}`">
-            <span v-if="p === '...'" class="page-ellipsis" aria-hidden="true">…</span>
+          <template v-for="(p, idx) in pageNumbers" :key="idx">
+            <span v-if="p === '...'" class="page-ellipsis">…</span>
             <button
               v-else
-              type="button"
               class="page-num"
               :class="{ active: p === currentPage }"
               @click="goToPage(p as number)"
@@ -178,12 +174,8 @@ watch(totalPages, (tp) => {
             </button>
           </template>
         </div>
-        <button
-          type="button"
-          class="page-nav-btn"
-          :disabled="currentPage >= totalPages"
-          @click="goToPage(currentPage + 1)"
-        >
+
+        <button class="page-nav-btn" :disabled="currentPage >= totalPages" @click="goToPage(currentPage + 1)">
           Next
         </button>
       </nav>
@@ -192,252 +184,4 @@ watch(totalPages, (tp) => {
   </div>
 </template>
 
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@700&family=DM+Sans:wght@400;500&display=swap');
-
-.page {
-  min-height: 100vh;
-  background: #0e0c1a;
-  padding: 36px 32px;
-  font-family: 'DM Sans', sans-serif;
-}
-
-.page-header {
-  margin-bottom: 28px;
-}
-
-.title {
-  font-family: 'Sora', sans-serif;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: -0.01em;
-  margin: 0 0 6px;
-}
-
-.hint {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.3);
-  margin: 0;
-}
-.hint a {
-  color: rgba(167, 139, 250, 0.8);
-  text-decoration: none;
-}
-.hint a:hover {
-  color: #a78bfa;
-}
-
-.state-msg {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.3);
-  font-size: 14px;
-  gap: 6px;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-.spin {
-  animation: spin 1s linear infinite;
-  margin-bottom: 8px;
-}
-
-.range-hint {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.35);
-  margin: 0 0 14px;
-}
-
-.cards {
-  display: flex;
-  flex-direction: column;
-}
-
-.pagination {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 10px 16px;
-  margin-top: 20px;
-  padding-top: 8px;
-}
-
-.page-nav-btn {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  padding: 8px 14px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 0.5px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.85);
-  cursor: pointer;
-  transition: background 0.15s, opacity 0.15s;
-}
-.page-nav-btn:hover:not(:disabled) {
-  background: rgba(167, 139, 250, 0.12);
-  border-color: rgba(167, 139, 250, 0.25);
-}
-.page-nav-btn:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
-.page-numbers {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-
-.page-num {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  min-width: 36px;
-  height: 36px;
-  padding: 0 8px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 0.5px solid rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.65);
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
-}
-.page-num:hover {
-  background: rgba(167, 139, 250, 0.1);
-  border-color: rgba(167, 139, 250, 0.2);
-  color: #fff;
-}
-.page-num.active {
-  background: rgba(124, 58, 237, 0.35);
-  border-color: rgba(167, 139, 250, 0.45);
-  color: #fff;
-}
-
-.page-ellipsis {
-  color: rgba(255, 255, 255, 0.25);
-  font-size: 13px;
-  padding: 0 4px;
-  user-select: none;
-}
-
-.cards-scroll {
-  max-height: 70vh;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding-right: 6px;
-  scrollbar-width: thin;
-  scrollbar-color: #a78bfa rgba(255,255,255,0.05);
-}
-
-.cards-scroll::-webkit-scrollbar {
-  width: 8px;
-}
-
-.cards-scroll::-webkit-scrollbar-track {
-  background: rgba(255,255,255,0.05);
-  border-radius: 10px;
-}
-
-.cards-scroll::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #a78bfa, #7c3aed);
-  border-radius: 10px;
-}
-
-.cards-scroll::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #c4b5fd, #8b5cf6);
-}
-
-.card {
-  background: rgba(255, 255, 255, 0.035);
-  border: 0.5px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  padding: 18px 20px;
-  transition: opacity 0.2s;
-}
-
-.card-cancelled {
-  opacity: 0.5;
-}
-
-.card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 14px;
-}
-
-.service-name {
-  font-size: 15px;
-  font-weight: 500;
-  color: #fff;
-  margin-bottom: 3px;
-}
-
-.provider-label {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.35);
-}
-
-.badge {
-  font-size: 11px;
-  font-weight: 500;
-  padding: 4px 10px;
-  border-radius: 100px;
-  letter-spacing: 0.04em;
-  text-transform: capitalize;
-  flex-shrink: 0;
-}
-.badge-pending   { background: rgba(251,191,36,0.15);  color: #fbbf24; border: 0.5px solid rgba(251,191,36,0.3); }
-.badge-confirmed { background: rgba(52,211,153,0.15);  color: #34d399; border: 0.5px solid rgba(52,211,153,0.3); }
-.badge-approved  { background: rgba(96,165,250,0.15);  color: #60a5fa; border: 0.5px solid rgba(96,165,250,0.3); }
-.badge-cancelled { background: rgba(248,113,113,0.1);  color: rgba(248,113,113,0.6); border: 0.5px solid rgba(248,113,113,0.2); }
-.badge-default   { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); border: 0.5px solid rgba(255,255,255,0.12); }
-
-.card-meta {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.card-divider {
-  height: 0.5px;
-  background: rgba(255, 255, 255, 0.07);
-  margin: 16px 0;
-}
-
-.cancel-btn {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  padding: 8px 16px;
-  border-radius: 8px;
-  background: rgba(248, 113, 113, 0.08);
-  border: 0.5px solid rgba(248, 113, 113, 0.25);
-  color: rgba(248, 113, 113, 0.8);
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
-.cancel-btn:hover {
-  opacity: 0.8;
-}
-
-@media (max-width: 640px) {
-  .page {
-    padding: 24px 16px;
-  }
-}
-</style>
+<style scoped src="../../styles/customer/BookingHistoryView.css"></style>
