@@ -20,8 +20,9 @@ const form = ref({
   category_id: 1
 })
 
-const imgUrl = (path: string) => `${api.defaults.baseURL}/${path}`
-
+const imgUrl = (path: string) =>
+  path ? `${api.defaults.baseURL}${path.startsWith("/") ? path : "/" + path}` : ""
+  
 onMounted(async () => {
   await resolveProvider()
   await fetchServices()

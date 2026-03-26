@@ -6,6 +6,7 @@ import { useCategoryStore } from "../../stores/categoryStore"
 import { searchServices } from "../../services/services"
 import { useRouter } from "vue-router"
 import ServiceFilters from "../../components/ServiceFilters.vue"
+import api from "../../services/api"
 
 const router    = useRouter()
 const svcStore  = useServiceStore()
@@ -75,8 +76,8 @@ const accent   = (id: number) => palette[(id ?? 0) % palette.length]
 const catName  = (id: number) => catStore.categories?.find((c: any) => c.id === id)?.name ?? "Service"
 const shopName = (id: number) => providerMap.value[id]?.shop_name ?? "—"
 
-const BASE_URL = "http://localhost:8000"
-const imgUrl = (path: string) => `${BASE_URL}/${path}`
+const imgUrl = (path: string) =>
+  path ? `${api.defaults.baseURL}${path.startsWith("/") ? path : "/" + path}` : ""
 
 const firstImage = (svc: any): string | null => {
   if (Array.isArray(svc.images) && svc.images.length) return imgUrl(svc.images[0].image_url)

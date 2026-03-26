@@ -82,12 +82,7 @@ export async function uploadProviderImage(providerId: number, file: File) {
 
   const res = await api.post(
     `/providers/${providerId}/profile-image`,
-    formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data"
-      }
-    }
+    formData
   )
 
   return res.data

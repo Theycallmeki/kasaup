@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session, joinedload
 from app.models.service_image import ServiceImage
 
-
 from app.db import get_db
 from app.models.providers import Provider
 from app.models.service import Service
@@ -52,7 +51,10 @@ def upload_profile_image(
     if provider.owner_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized")
 
-    path = save_image(file)
+    try:
+        path = save_image(file)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
     provider.profile_image = path
 

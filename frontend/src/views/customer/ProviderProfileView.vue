@@ -20,7 +20,8 @@ const loadingSlots = ref(false)
 const bookingLoading = ref(false)
 const errorMsg = ref("")
 
-const imgUrl = (path: string) => `${api.defaults.baseURL}/${path}`
+const imgUrl = (path: string) =>
+  path ? `${api.defaults.baseURL}${path.startsWith("/") ? path : "/" + path}` : ""
 
 onMounted(async () => {
   try {
