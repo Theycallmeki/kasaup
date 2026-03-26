@@ -191,3 +191,33 @@ def delete_service(
     db.commit()
 
     return {"message": "Service deleted"}
+
+
+@router.delete("/{service_id}/images/{image_id}")
+def delete_service_image(
+    service_id: int,
+    image_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_provider)
+):
+    image = db.query(ServiceImage).filter(
+        ServiceImage.id == image_id,
+        ServiceImage.service_id == service_id
+    ).first()
+
+    if not image:
+        raise HTTPException(status_code=404, detail="Image not found")
+
+    service = db.query(Service).filter(Service.id == service_id).first()
+
+    provider = db.query(Provider).filter(
+        Provider.id == service.provider_id
+    ).first()
+
+    if provider.owner_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    db.delete(image)
+    db.commit()
+
+    return {"message": "Image deleted"}

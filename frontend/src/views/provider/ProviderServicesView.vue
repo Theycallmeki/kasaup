@@ -9,6 +9,8 @@ const authStore = useAuthStore()
 
 const providerId = ref<number | null>(null)
 const editingId = ref<number | null>(null)
+const imageFiles = ref<File[]>([])
+const imagePreviews = ref<string[]>([])
 
 const form = ref({
   name: "",
@@ -17,6 +19,8 @@ const form = ref({
   duration_minutes: 60,
   category_id: 1
 })
+
+const imgUrl = (path: string) => `${api.defaults.baseURL}/${path}`
 
 onMounted(async () => {
   await resolveProvider()
@@ -36,6 +40,8 @@ async function fetchServices() {
 
 function startEdit(service: any) {
   editingId.value = service.id
+  imageFiles.value = []
+  imagePreviews.value = []
   form.value = {
     name: service.name,
     description: service.description,
@@ -45,10 +51,41 @@ function startEdit(service: any) {
   }
 }
 
+function cancelEdit() {
+  editingId.value = null
+  imageFiles.value = []
+  imagePreviews.value = []
+  resetForm()
+}
+
+function onImageChange(e: Event) {
+  const input = e.target as HTMLInputElement
+  if (!input.files) return
+  const files = Array.from(input.files)
+  imageFiles.value = [...imageFiles.value, ...files]
+  imagePreviews.value = [...imagePreviews.value, ...files.map(f => URL.createObjectURL(f))]
+  input.value = ""
+}
+
+function removePreview(i: number) {
+  imageFiles.value.splice(i, 1)
+  imagePreviews.value.splice(i, 1)
+}
+
+async function removeExistingImage(serviceId: number, imageId: number) {
+  await serviceStore.removeServiceImage(serviceId, imageId)
+  await fetchServices()
+}
+
 async function saveEdit() {
   if (!editingId.value) return
   await serviceStore.editService(editingId.value, form.value)
+  if (imageFiles.value.length) {
+    await serviceStore.uploadImages(editingId.value, imageFiles.value)
+  }
   editingId.value = null
+  imageFiles.value = []
+  imagePreviews.value = []
   resetForm()
   await fetchServices()
 }
@@ -60,6 +97,10 @@ async function deleteService(id: number) {
 
 function resetForm() {
   form.value = { name: "", description: "", price: 0, duration_minutes: 60, category_id: 1 }
+}
+
+function getService(id: number) {
+  return serviceStore.services.find((s: any) => s.id === id)
 }
 </script>
 
@@ -96,9 +137,22 @@ function resetForm() {
         v-for="service in serviceStore.services"
         :key="service.id"
         class="card"
+        :class="{ 'card-editing': editingId === service.id }"
       >
+
         <!-- View mode -->
         <template v-if="editingId !== service.id">
+
+          <div v-if="service.images?.length" class="service-images">
+            <img
+              v-for="img in service.images"
+              :key="img.id"
+              :src="imgUrl(img.image_url)"
+              class="service-img"
+              alt=""
+            />
+          </div>
+
           <div class="card-top">
             <div>
               <div class="service-name">{{ service.name }}</div>
@@ -129,14 +183,17 @@ function resetForm() {
         <!-- Edit mode -->
         <template v-else>
           <div class="edit-form">
+
             <div class="field">
               <label>Name</label>
               <input v-model="form.name" class="input" placeholder="Service name" />
             </div>
+
             <div class="field">
               <label>Description</label>
               <input v-model="form.description" class="input" placeholder="Description" />
             </div>
+
             <div class="field-row">
               <div class="field">
                 <label>Price (₱)</label>
@@ -147,6 +204,42 @@ function resetForm() {
                 <input v-model.number="form.duration_minutes" class="input" type="number" placeholder="60" />
               </div>
             </div>
+
+            <!-- Photos -->
+            <div class="field">
+              <label>Photos</label>
+
+              <div class="photo-grid">
+                <!-- Existing images -->
+                <div
+                  v-for="img in getService(editingId!)?.images ?? []"
+                  :key="img.id"
+                  class="img-wrap"
+                >
+                  <img :src="imgUrl(img.image_url)" class="preview-img" alt="" />
+                  <button class="remove-img" @click="removeExistingImage(editingId!, img.id)">✕</button>
+                </div>
+
+                <!-- New image previews -->
+                <div
+                  v-for="(src, i) in imagePreviews"
+                  :key="'new-' + i"
+                  class="img-wrap"
+                >
+                  <img :src="src" class="preview-img" alt="" />
+                  <button class="remove-img" @click="removePreview(i)">✕</button>
+                </div>
+
+                <!-- Add more button -->
+                <label class="add-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                  </svg>
+                  <input type="file" accept="image/*" multiple class="file-input" @change="onImageChange" />
+                </label>
+              </div>
+            </div>
+
             <div class="edit-actions">
               <button class="action-btn btn-save" @click="saveEdit">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -154,12 +247,14 @@ function resetForm() {
                 </svg>
                 Save
               </button>
-              <button class="action-btn btn-cancel" @click="editingId = null">
+              <button class="action-btn btn-cancel" @click="cancelEdit">
                 Cancel
               </button>
             </div>
+
           </div>
         </template>
+
       </div>
     </div>
 
@@ -247,6 +342,25 @@ function resetForm() {
   transition: border-color 0.2s;
 }
 .card:hover { border-color: rgba(167, 139, 250, 0.2); }
+.card-editing { border-color: rgba(167, 139, 250, 0.3); }
+
+.service-images {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin-bottom: 14px;
+  scrollbar-width: none;
+}
+.service-images::-webkit-scrollbar { display: none; }
+
+.service-img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 0.5px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
 
 .card-top {
   margin-bottom: 14px;
@@ -352,9 +466,70 @@ label {
   font-size: 13px;
   outline: none;
   transition: border-color 0.15s;
+  box-sizing: border-box;
 }
 .input::placeholder { color: rgba(255, 255, 255, 0.2); }
 .input:focus { border-color: rgba(167, 139, 250, 0.5); }
+
+.file-input { display: none; }
+
+.photo-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.img-wrap {
+  position: relative;
+}
+
+.preview-img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 0.5px solid rgba(255,255,255,0.08);
+  display: block;
+}
+
+.remove-img {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(248, 113, 113, 0.9);
+  border: none;
+  color: #fff;
+  font-size: 9px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.add-btn {
+  width: 72px;
+  height: 72px;
+  border-radius: 10px;
+  border: 0.5px dashed rgba(167, 139, 250, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(167, 139, 250, 0.5);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+.add-btn:hover {
+  border-color: rgba(167, 139, 250, 0.6);
+  color: rgba(167, 139, 250, 0.8);
+}
 
 .edit-actions {
   display: flex;

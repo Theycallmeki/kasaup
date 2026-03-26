@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session, joinedload
+from app.models.service_image import ServiceImage
+
 
 from app.db import get_db
 from app.models.providers import Provider
@@ -151,7 +153,12 @@ def get_provider_profile(provider_id: int, db: Session = Depends(get_db)):
     if not provider:
         raise HTTPException(status_code=404, detail="Provider not found")
 
-    services = db.query(Service).filter(Service.provider_id == provider_id).all()
+    services = (
+        db.query(Service)
+        .options(joinedload(Service.images))
+        .filter(Service.provider_id == provider_id)
+        .all()
+    )
 
     categories = (
         db.query(Category)

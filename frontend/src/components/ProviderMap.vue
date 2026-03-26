@@ -35,13 +35,11 @@ function setUserMarker(lat: number, lng: number) {
     iconAnchor: [9, 9]
   })
 
-  if (userMarker) {
-    userMarker.setLatLng([lat, lng])
-  } else {
-    userMarker = L.marker([lat, lng], { icon: userIcon })
-      .addTo(map)
-      .bindPopup(`<div class="kasaup-popup"><p class="kasaup-popup-name">You are here</p></div>`)
-  }
+userMarker = L.marker([lat, lng], { icon: userIcon })
+  .addTo(map)
+  .bindPopup(`<div class="kasaup-popup"><p class="kasaup-popup-name">You are here</p></div>`, {
+    className: "kasaup-leaflet-popup"
+  })
 
   map.setView([lat, lng], 13, { animate: true })
 }

@@ -4,6 +4,7 @@ import { useRoute } from "vue-router"
 import { useProviderStore } from "../../stores/providerStore"
 import { useAppointmentStore } from "../../stores/appointmentStore"
 import LocationPickerMap from "../../components/LocationPickerMap.vue"
+import api from "../../services/api"
 
 const route = useRoute()
 const providerStore = useProviderStore()
@@ -14,6 +15,8 @@ const id = Number(route.params.id)
 const activeServiceId = ref<number | null>(null)
 const customerLat = ref<number | null>(null)
 const customerLng = ref<number | null>(null)
+
+const imgUrl = (path: string) => `${api.defaults.baseURL}/${path}`
 
 onMounted(async () => {
   await providerStore.fetchProviderProfile(id)
@@ -62,7 +65,6 @@ const formatSlot = (iso: string) =>
 
     <template v-else-if="providerStore.providerProfile">
 
-      <!-- Header -->
       <div class="provider-header">
         <div class="provider-avatar">
           {{ providerStore.providerProfile.provider.shop_name?.charAt(0) }}
@@ -81,7 +83,6 @@ const formatSlot = (iso: string) =>
 
       <div class="divider" />
 
-      <!-- Services -->
       <h2 class="section-title">Services</h2>
 
       <div class="services">
@@ -91,6 +92,17 @@ const formatSlot = (iso: string) =>
           class="service-card"
           :class="{ 'service-active': activeServiceId === service.id }"
         >
+
+          <div v-if="service.images?.length" class="service-images">
+            <img
+              v-for="img in service.images"
+              :key="img.id"
+              :src="imgUrl(img.image_url)"
+              class="service-img"
+              alt=""
+            />
+          </div>
+
           <div class="service-top">
             <div>
               <div class="service-name">{{ service.name }}</div>
@@ -108,10 +120,8 @@ const formatSlot = (iso: string) =>
             </button>
           </div>
 
-          <!-- Slots -->
           <template v-if="activeServiceId === service.id && appointmentStore.slots.length">
 
-            <!-- Home service location picker -->
             <div
               v-if="providerStore.providerProfile.provider.offers_home_service"
               class="location-section"
@@ -133,7 +143,6 @@ const formatSlot = (iso: string) =>
               </p>
             </div>
 
-            <!-- Slot list -->
             <div class="slots-label">Available slots</div>
             <div class="slots">
               <div
@@ -186,7 +195,6 @@ const formatSlot = (iso: string) =>
 @keyframes spin { to { transform: rotate(360deg); } }
 .spin { animation: spin 1s linear infinite; }
 
-/* Header */
 .provider-header {
   display: flex;
   gap: 18px;
@@ -253,7 +261,6 @@ const formatSlot = (iso: string) =>
   margin: 0 0 16px;
 }
 
-/* Service cards */
 .services {
   display: flex;
   flex-direction: column;
@@ -264,11 +271,34 @@ const formatSlot = (iso: string) =>
   background: rgba(255,255,255,0.035);
   border: 0.5px solid rgba(255,255,255,0.08);
   border-radius: 16px;
-  padding: 18px 20px;
+  overflow: hidden;
   transition: border-color 0.2s;
 }
 .service-active {
   border-color: rgba(167, 139, 250, 0.3);
+}
+
+.service-images {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.service-images::-webkit-scrollbar { display: none; }
+
+.service-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  flex-shrink: 0;
+  display: block;
+}
+
+.service-images .service-img:only-child {
+  width: 100%;
+}
+
+.service-images:not(:has(.service-img:only-child)) .service-img {
+  width: 260px;
 }
 
 .service-top {
@@ -276,6 +306,7 @@ const formatSlot = (iso: string) =>
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
+  padding: 16px 18px 0;
 }
 
 .service-name {
@@ -289,6 +320,7 @@ const formatSlot = (iso: string) =>
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
+  padding-bottom: 16px;
 }
 
 .meta-pill {
@@ -321,9 +353,8 @@ const formatSlot = (iso: string) =>
   color: #a78bfa;
 }
 
-/* Location section */
 .location-section {
-  margin-top: 18px;
+  margin: 0 18px;
   padding-top: 16px;
   border-top: 0.5px solid rgba(255,255,255,0.07);
 }
@@ -356,23 +387,22 @@ const formatSlot = (iso: string) =>
   margin-top: 8px;
 }
 
-/* Slots */
 .slots-label {
   font-size: 11px;
   font-weight: 500;
   color: rgba(255,255,255,0.25);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin-top: 18px;
+  margin: 18px 18px 10px;
   padding-top: 16px;
   border-top: 0.5px solid rgba(255,255,255,0.07);
-  margin-bottom: 10px;
 }
 
 .slots {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  padding: 0 18px 18px;
 }
 
 .slot {

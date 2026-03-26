@@ -76,3 +76,8 @@ export async function uploadServiceImages(serviceId: number, files: File[]) {
 
   return res.data
 }
+
+export async function deleteServiceImage(serviceId: number, imageId: number) {
+  const res = await api.delete(`/services/${serviceId}/images/${imageId}`)
+  return res.data
+}
