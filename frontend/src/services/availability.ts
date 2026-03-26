@@ -1,7 +1,7 @@
 import api from "./api"
 
 export async function getAvailability(providerId: number) {
-  const res = await api.get(`/provider_availability/${providerId}`)
+  const res = await api.get(`/availability/${providerId}`)
   return res.data
 }
 
@@ -11,7 +11,7 @@ export async function createAvailability(data: {
   start_time: string
   end_time: string
 }) {
-  const res = await api.post("/provider_availability", data)
+  const res = await api.post("/availability", data)
   return res.data
 }
 
@@ -20,11 +20,11 @@ export async function updateAvailability(id: number, data: {
   start_time?: string
   end_time?: string
 }) {
-  const res = await api.put(`/provider_availability/${id}`, data)
+  const res = await api.put(`/availability/${id}`, data)
   return res.data
 }
 
 export async function deleteAvailability(id: number) {
-  const res = await api.delete(`/provider_availability/${id}`)
+  const res = await api.delete(`/availability/${id}`)
   return res.data
 }
