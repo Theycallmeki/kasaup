@@ -54,22 +54,23 @@ def create_appointment(
 
 @router.get("/", response_model=list[AppointmentResponse], dependencies=[Depends(get_current_user)])
 def get_appointments(
-    limit: int = 20,
-    offset: int = 0,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
     if current_user.role == "provider":
-        providers = db.query(Provider).filter(Provider.owner_id == current_user.id).all()
+        providers = db.query(Provider).filter(
+            Provider.owner_id == current_user.id
+        ).all()
+
         provider_ids = [p.id for p in providers]
 
         return db.query(Appointment).filter(
             Appointment.provider_id.in_(provider_ids)
-        ).offset(offset).limit(limit).all()
+        ).order_by(Appointment.id.desc()).all()
 
     return db.query(Appointment).filter(
         Appointment.user_id == current_user.id
-    ).offset(offset).limit(limit).all()
+    ).order_by(Appointment.id.desc()).all()
 
 
 @router.put("/{appointment_id}/approve")

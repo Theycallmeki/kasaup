@@ -1,7 +1,7 @@
 import api from "./api"
 
 export async function getAppointments() {
-  const res = await api.get("/appointments")
+  const res = await api.get("/appointments/")
   return res.data
 }
 
@@ -17,7 +17,7 @@ export async function createAppointment(data: {
   customer_latitude?: number | null
   customer_longitude?: number | null
 }) {
-  const res = await api.post("/appointments", data)
+  const res = await api.post("/appointments/", data)
   return res.data
 }
 

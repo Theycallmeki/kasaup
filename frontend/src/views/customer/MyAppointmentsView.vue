@@ -10,7 +10,7 @@ onMounted(async () => {
 
 const activeAppointments = computed(() => {
   return appointmentStore.appointments
-    .filter((a) => a.status !== "cancelled")
+    .filter((a) => ["pending", "approved"].includes(a.status))
     .sort(
       (a, b) =>
         new Date(a.appointment_time).getTime() -
@@ -24,7 +24,6 @@ const cancel = async (id: number) => {
 
 const statusClass = (status: string) => {
   if (status === "pending") return "badge-pending"
-  if (status === "confirmed") return "badge-confirmed"
   if (status === "approved") return "badge-approved"
   return "badge-default"
 }
@@ -40,7 +39,7 @@ const formatTime = (iso: string) => {
 }
 
 const canCancel = (status: string) =>
-  ["pending", "approved", "confirmed"].includes(status)
+  ["pending", "approved"].includes(status)
 </script>
 
 <template>
@@ -64,10 +63,16 @@ const canCancel = (status: string) =>
 
     <div v-else-if="activeAppointments.length === 0" class="state-msg">
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(255,255,255,0.15);margin-bottom:12px">
-        <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        <rect x="3" y="4" width="18" height="18" rx="2"/>
+        <line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8" y1="2" x2="8" y2="6"/>
+        <line x1="3" y1="10" x2="21" y2="10"/>
       </svg>
       <p>No active appointments.</p>
-      <p class="state-sub">Cancelled bookings are in <router-link to="/appointments/history">booking history</router-link>.</p>
+      <p class="state-sub">
+        Cancelled bookings are in 
+        <router-link to="/appointments/history">booking history</router-link>.
+      </p>
     </div>
 
     <div v-else class="cards">
@@ -78,9 +83,14 @@ const canCancel = (status: string) =>
       >
         <div class="card-top">
           <div>
-            <div class="service-name">Service #{{ appointment.service_id }}</div>
-            <div class="provider-label">Provider · #{{ appointment.provider_id }}</div>
+            <div class="service-name">
+              Service #{{ appointment.service_id }}
+            </div>
+            <div class="provider-label">
+              Provider · #{{ appointment.provider_id }}
+            </div>
           </div>
+
           <span class="badge" :class="statusClass(appointment.status)">
             {{ appointment.status }}
           </span>

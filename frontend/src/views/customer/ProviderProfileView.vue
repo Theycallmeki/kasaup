@@ -69,6 +69,9 @@ async function book(serviceId: number, slot: string) {
 
     await appointmentStore.fetchAvailableSlots(serviceId)
 
+  
+    await appointmentStore.fetchAppointments()
+
   } catch (e) {
     errorMsg.value = "Booking failed. Try again."
   } finally {
