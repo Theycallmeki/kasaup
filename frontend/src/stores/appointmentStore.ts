@@ -16,7 +16,7 @@ export const useAppointmentStore = defineStore("appointments", {
 
   state: () => ({
     appointments: [] as any[],
-    slots: [] as string[],
+    slots: [] as { start_time: string; end_time: string }[],
     loading: false,
     selectedDate: "" as string
   }),

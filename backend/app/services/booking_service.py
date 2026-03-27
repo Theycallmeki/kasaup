@@ -33,7 +33,7 @@ def create_booking(
         ):
             raise ValueError("Time slot overlaps with another appointment")
 
-    weekday = appointment_time.weekday()
+    weekday = (appointment_time.weekday() + 1) % 7
 
     availability = db.query(ProviderAvailability).filter(
         ProviderAvailability.provider_id == provider_id,

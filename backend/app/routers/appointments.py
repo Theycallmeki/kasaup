@@ -207,7 +207,7 @@ def get_available_slots(
     current = start
 
     while current <= end:
-        weekday = current.weekday()
+        weekday = (current.weekday() + 1) % 7
 
         day_availability = [
             a for a in availability if a.day_of_week == weekday
@@ -219,11 +219,8 @@ def get_available_slots(
                 minute=avail.start_time.minute
             )
 
-            while slot_time.time() < avail.end_time:
-                if slot_time not in booked_times and slot_time >= start:
-                    slots.append(slot_time)
-
-                slot_time += timedelta(hours=1)
+            if slot_time not in booked_times and slot_time >= start:
+                slots.append(slot_time)
 
         current += timedelta(days=1)
 
@@ -251,7 +248,7 @@ def get_service_available_slots(
     except:
         raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD")
 
-    weekday = selected_date.weekday()
+    weekday = (selected_date.weekday() + 1) % 7
 
     availability = db.query(ProviderAvailability).filter(
         ProviderAvailability.provider_id == provider.id,
@@ -292,22 +289,20 @@ def get_service_available_slots(
             microsecond=0
         )
 
-        while slot_time + timedelta(minutes=service.duration_minutes) <= end_time:
-            slot_end = slot_time + timedelta(minutes=service.duration_minutes)
+        overlap = False
+        for appt in appointments:
+            appt_start = appt.appointment_time
+            appt_end = appt_start + timedelta(minutes=appt.service.duration_minutes)
 
-            overlap = False
-            for appt in appointments:
-                appt_start = appt.appointment_time
-                appt_end = appt_start + timedelta(minutes=appt.service.duration_minutes)
+            if not (end_time <= appt_start or slot_time >= appt_end):
+                overlap = True
+                break
 
-                if not (slot_end <= appt_start or slot_time >= appt_end):
-                    overlap = True
-                    break
-
-            if not overlap and slot_time >= datetime.now():
-                slots.append(slot_time)
-
-            slot_time += timedelta(minutes=service.duration_minutes)
+        if not overlap and slot_time >= datetime.now():
+            slots.append({
+                "start_time": slot_time,
+                "end_time": end_time
+            })
 
     return {"available_slots": slots}
 

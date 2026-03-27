@@ -8,7 +8,6 @@
   max-width: 720px;
 }
 
-/* ---------- STATES ---------- */
 .state-msg {
   display: flex;
   flex-direction: column;
@@ -16,12 +15,22 @@
   justify-content: center;
   padding: 60px 20px;
   text-align: center;
-  color: rgba(255,255,255,0.3);
+  color: rgba(255, 255, 255, 0.3);
   font-size: 14px;
   gap: 6px;
 }
 
-/* ---------- HEADER ---------- */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+  margin-bottom: 8px;
+}
+
 .provider-header {
   display: flex;
   gap: 18px;
@@ -55,11 +64,10 @@
 
 .provider-desc {
   font-size: 14px;
-  color: rgba(255,255,255,0.4);
-  margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0 0 10px;
 }
 
-/* ---------- BADGE ---------- */
 .home-badge {
   display: inline-flex;
   align-items: center;
@@ -73,23 +81,20 @@
   padding: 3px 10px;
 }
 
-/* ---------- DIVIDER ---------- */
 .divider {
   height: 0.5px;
-  background: rgba(255,255,255,0.07);
+  background: rgba(255, 255, 255, 0.07);
   margin-bottom: 28px;
 }
 
-/* ---------- SECTION ---------- */
 .section-title {
   font-family: 'Sora', sans-serif;
   font-size: 1rem;
   font-weight: 700;
   color: #fff;
-  margin-bottom: 16px;
+  margin: 0 0 16px;
 }
 
-/* ---------- SERVICES ---------- */
 .services {
   display: flex;
   flex-direction: column;
@@ -97,25 +102,53 @@
 }
 
 .service-card {
-  background: rgba(255,255,255,0.035);
-  border: 0.5px solid rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.035);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  overflow: hidden;
   transition: border-color 0.2s;
+  overflow: hidden;
+}
+
+.service-body {
+  display: flex;
+  align-items: flex-start;
+}
+
+.service-left {
+  flex: 1;
+  min-width: 0;
+  border-right: 0.5px solid rgba(255, 255, 255, 0.06);
+}
+
+.service-right {
+  width: 300px;
+  flex-shrink: 0;
 }
 
 .service-active {
   border-color: rgba(167, 139, 250, 0.3);
 }
 
-/* ---------- IMAGES ---------- */
 .service-images {
   display: flex;
   overflow-x: auto;
 }
 
 .service-images::-webkit-scrollbar {
-  display: none;
+  height: 6px;
+}
+
+.service-images::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.service-images::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.service-images::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .service-img {
@@ -129,7 +162,6 @@
   width: 260px;
 }
 
-/* ---------- SERVICE TOP ---------- */
 .service-top {
   display: flex;
   justify-content: space-between;
@@ -159,55 +191,231 @@
   padding: 3px 10px;
 }
 
-/* ---------- BUTTON ---------- */
 .book-btn {
   padding: 8px 16px;
   border-radius: 8px;
   font-size: 13px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
   cursor: pointer;
   border: none;
   background: linear-gradient(135deg, #7c3aed, #a855f7);
   color: #fff;
+  flex-shrink: 0;
 }
 
 .book-btn-active {
-  background: rgba(167, 139, 250, 0.15);
+  background: rgba(167, 139, 250, 0.12);
   border: 0.5px solid rgba(167, 139, 250, 0.3);
   color: #a78bfa;
 }
 
-/* ---------- LOCATION ---------- */
+.calendar-section {
+  padding: 16px 18px;
+  border-top: none;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.cal-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cal-loading {
+  display: flex;
+  align-items: center;
+  color: rgba(167, 139, 250, 0.6);
+}
+
+.cal-nav {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.cal-nav:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.09);
+  color: #fff;
+}
+
+.cal-nav:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.cal-day-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.2);
+  text-align: center;
+  padding: 3px 0 6px;
+  letter-spacing: 0.04em;
+}
+
+.cal-cell {
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 40px;
+  max-height: 40px;
+  border-radius: 7px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  position: relative;
+  transition: background 0.15s;
+  gap: 2px;
+  margin: 0 auto;
+}
+
+.cal-empty {
+  cursor: default;
+}
+
+.cal-cell:not(.cal-past):not(.cal-empty):hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.cal-past {
+  color: rgba(255, 255, 255, 0.15);
+  cursor: not-allowed;
+  text-decoration: line-through;
+  text-decoration-color: rgba(255, 255, 255, 0.1);
+}
+
+.cal-today {
+  color: #a78bfa;
+  border: 0.5px solid rgba(167, 139, 250, 0.3);
+}
+
+.cal-available {
+  color: #fff;
+}
+
+.cal-selected {
+  background: rgba(52, 211, 153, 0.2) !important;
+  border: 0.5px solid rgba(52, 211, 153, 0.4);
+  color: #34d399 !important;
+}
+
+.cal-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #34d399;
+  flex-shrink: 0;
+}
+
+.cal-legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 0.5px solid rgba(255, 255, 255, 0.05);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.legend-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.legend-dot-available {
+  background: #34d399;
+}
+
+.legend-dot-past {
+  background: rgba(255, 255, 255, 0.15);
+}
+
 .location-section {
   margin: 0 18px;
   padding-top: 16px;
-  border-top: 0.5px solid rgba(255,255,255,0.07);
+  border-top: 0.5px solid rgba(255, 255, 255, 0.07);
 }
 
 .location-label {
   font-size: 11px;
-  color: rgba(255,255,255,0.3);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.25);
   margin-bottom: 8px;
 }
 
 .location-map {
   border-radius: 12px;
   overflow: hidden;
-  border: 0.5px solid rgba(255,255,255,0.08);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
   height: 200px;
 }
 
 .coords-hint {
   font-size: 12px;
   color: rgba(167, 139, 250, 0.7);
-  margin-top: 6px;
+  margin: 6px 0 0;
 }
 
-/* ---------- SLOTS ---------- */
 .slots {
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding: 16px 18px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.slots::-webkit-scrollbar {
+  width: 6px;
+}
+
+.slots::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.slots::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.slots::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .slot {
@@ -215,26 +423,30 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 14px;
-  background: rgba(255,255,255,0.03);
-  border: 0.5px solid rgba(255,255,255,0.07);
+  background: rgba(255, 255, 255, 0.03);
+  border: 0.5px solid rgba(255, 255, 255, 0.07);
   border-radius: 10px;
 }
 
 .slot-time {
   font-size: 13px;
-  color: rgba(255,255,255,0.6);
+  color: rgba(255, 255, 255, 0.6);
 }
 
-/* ---------- CONFIRM BUTTON ---------- */
 .confirm-btn {
   padding: 6px 14px;
   border-radius: 7px;
   font-size: 12px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
   cursor: pointer;
-  border: none;
   background: rgba(52, 211, 153, 0.12);
   border: 0.5px solid rgba(52, 211, 153, 0.3);
   color: #34d399;
+}
+
+.confirm-btn:hover:not(:disabled) {
+  background: rgba(52, 211, 153, 0.2);
 }
 
 .confirm-btn:disabled {
@@ -242,7 +454,6 @@
   cursor: not-allowed;
 }
 
-/* ---------- MOBILE ---------- */
 @media (max-width: 640px) {
   .page {
     padding: 24px 16px;
@@ -250,5 +461,19 @@
 
   .provider-header {
     flex-direction: column;
+  }
+
+  .service-body {
+    flex-direction: column;
+  }
+
+  .service-left {
+    border-right: none;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
+    width: 100%;
+  }
+
+  .service-right {
+    width: 100%;
   }
 }

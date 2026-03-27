@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue"
+import { onMounted, ref, computed, watch } from "vue"
 import { useRoute } from "vue-router"
 import { useProviderStore } from "../../stores/providerStore"
 import { useAppointmentStore } from "../../stores/appointmentStore"
@@ -21,6 +21,12 @@ const loadingSlots = ref(false)
 const bookingLoading = ref(false)
 const errorMsg = ref("")
 
+const calendarYear = ref(new Date().getFullYear())
+const calendarMonth = ref(new Date().getMonth())
+
+const availableDates = ref<Set<string>>(new Set())
+const loadingAvailable = ref(false)
+
 const imgUrl = (path: string) =>
   path ? `${api.defaults.baseURL}${path.startsWith("/") ? path : "/" + path}` : ""
 
@@ -34,18 +40,50 @@ onMounted(async () => {
 
 async function loadSlots(serviceId: number) {
   activeServiceId.value = serviceId
+  selectedDate.value = ""
   errorMsg.value = ""
+  await loadAvailableDatesForMonth()
 }
+
+async function loadAvailableDatesForMonth() {
+  if (!activeServiceId.value) return
+  loadingAvailable.value = true
+  availableDates.value = new Set()
+
+  const year = calendarYear.value
+  const month = calendarMonth.value
+  const daysInMonth = new Date(year, month + 1, 0).getDate()
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const checks: Promise<void>[] = []
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateObj = new Date(year, month, d)
+    if (dateObj < today) continue
+    const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`
+    checks.push(
+      appointmentStore.fetchAvailableSlots(activeServiceId.value!, dateStr).then(() => {
+        if (appointmentStore.slots.length > 0) {
+          availableDates.value = new Set([...availableDates.value, dateStr])
+        }
+      }).catch(() => {})
+    )
+  }
+
+  await Promise.all(checks)
+  loadingAvailable.value = false
+}
+
+watch([calendarYear, calendarMonth], () => {
+  if (activeServiceId.value) loadAvailableDatesForMonth()
+})
 
 async function fetchSlots() {
   if (!activeServiceId.value || !selectedDate.value) return
-
   loadingSlots.value = true
   try {
-    await appointmentStore.fetchAvailableSlots(
-      activeServiceId.value,
-      selectedDate.value
-    )
+    await appointmentStore.fetchAvailableSlots(activeServiceId.value, selectedDate.value)
   } catch (e) {
     errorMsg.value = "Failed to load available slots."
   } finally {
@@ -61,11 +99,9 @@ function setLocation(data: any) {
 async function book(serviceId: number, slot: string) {
   bookingLoading.value = true
   errorMsg.value = ""
-
   try {
-    const date = new Date(slot)
-    const dateStr = date.toISOString().split("T")[0]
-    const timeStr = date.toTimeString().slice(0, 5)
+    const [dateStr, timeStrFull] = slot.split("T")
+    const timeStr = timeStrFull.slice(0, 5)
 
     await appointmentStore.bookAppointment({
       provider_id: id,
@@ -78,7 +114,6 @@ async function book(serviceId: number, slot: string) {
 
     await fetchSlots()
     await appointmentStore.fetchAppointments()
-
   } catch (e) {
     errorMsg.value = "Booking failed. Try again."
   } finally {
@@ -95,13 +130,98 @@ const formatSlot = (iso: string) =>
     minute: "2-digit",
     hour12: true
   })
+
+const formatTimeOnly = (iso: string) =>
+  new Date(iso).toLocaleTimeString("en-PH", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true
+  })
+
+const MONTH_NAMES = [
+  "January","February","March","April","May","June",
+  "July","August","September","October","November","December"
+]
+const DAY_LABELS = ["Su","Mo","Tu","We","Th","Fr","Sa"]
+
+const calendarLabel = computed(() =>
+  `${MONTH_NAMES[calendarMonth.value]} ${calendarYear.value}`
+)
+
+const calendarDays = computed(() => {
+  const year = calendarYear.value
+  const month = calendarMonth.value
+  const firstDay = new Date(year, month, 1).getDay()
+  const daysInMonth = new Date(year, month + 1, 0).getDate()
+  const cells: ({ day: number; dateStr: string } | null)[] = []
+
+  for (let i = 0; i < firstDay; i++) cells.push(null)
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`
+    cells.push({ day: d, dateStr })
+  }
+  return cells
+})
+
+const today = new Date()
+today.setHours(0, 0, 0, 0)
+
+function isPast(dateStr: string) {
+  return new Date(dateStr) < today
+}
+
+function isAvailable(dateStr: string) {
+  return availableDates.value.has(dateStr)
+}
+
+function isSelected(dateStr: string) {
+  return selectedDate.value === dateStr
+}
+
+function isToday(dateStr: string) {
+  const t = new Date()
+  const ts = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,"0")}-${String(t.getDate()).padStart(2,"0")}`
+  return dateStr === ts
+}
+
+function selectDay(dateStr: string) {
+  if (isPast(dateStr)) return
+  selectedDate.value = dateStr
+  fetchSlots()
+}
+
+function prevMonth() {
+  if (calendarMonth.value === 0) {
+    calendarMonth.value = 11
+    calendarYear.value--
+  } else {
+    calendarMonth.value--
+  }
+}
+
+function nextMonth() {
+  if (calendarMonth.value === 11) {
+    calendarMonth.value = 0
+    calendarYear.value++
+  } else {
+    calendarMonth.value++
+  }
+}
+
+const isPrevDisabled = computed(() => {
+  const now = new Date()
+  return calendarYear.value === now.getFullYear() && calendarMonth.value === now.getMonth()
+})
 </script>
 
 <template>
   <div class="page">
 
     <div v-if="providerStore.loading" class="state-msg">
-      <div class="spin">Loading provider...</div>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
+        <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+      </svg>
+      Loading provider...
     </div>
 
     <div v-else-if="errorMsg" class="state-msg">
@@ -109,6 +229,10 @@ const formatSlot = (iso: string) =>
     </div>
 
     <div v-else-if="!providerStore.providerProfile" class="state-msg">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(255,255,255,0.15);margin-bottom:12px">
+        <circle cx="12" cy="8" r="4"/>
+        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+      </svg>
       Provider not found.
     </div>
 
@@ -125,7 +249,6 @@ const formatSlot = (iso: string) =>
           <p class="provider-desc">
             {{ providerStore.providerProfile.provider.description }}
           </p>
-
           <div
             v-if="providerStore.providerProfile.provider.offers_home_service"
             class="home-badge"
@@ -139,10 +262,11 @@ const formatSlot = (iso: string) =>
 
       <h2 class="section-title">Services</h2>
 
-      <div
-        v-if="!providerStore.providerProfile.services.length"
-        class="state-msg"
-      >
+      <div v-if="!providerStore.providerProfile.services.length" class="state-msg">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(255,255,255,0.15);margin-bottom:12px">
+          <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+          <rect x="9" y="3" width="6" height="4" rx="1"/>
+        </svg>
         No services available.
       </div>
 
@@ -181,76 +305,141 @@ const formatSlot = (iso: string) =>
             </button>
           </div>
 
-          <template v-if="activeServiceId === service.id">
+          <div v-if="activeServiceId === service.id" class="service-body">
 
-            <!-- DATE PICKER -->
-            <div class="slots" style="padding-bottom:0">
-              <input
-                type="date"
-                v-model="selectedDate"
-                @change="fetchSlots"
-              />
-            </div>
-
-            <div v-if="loadingSlots" class="state-msg">
-              Loading available slots...
-            </div>
-
-            <div
-              v-else-if="selectedDate && !appointmentStore.slots.length"
-              class="state-msg"
-            >
-              No available slots.
-            </div>
-
-            <template v-else-if="selectedDate">
+            <div class="service-left">
+              <div v-if="loadingSlots" class="state-msg" style="padding: 24px 18px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
+                  <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                </svg>
+                Loading slots...
+              </div>
 
               <div
-                v-if="providerStore.providerProfile.provider.offers_home_service"
-                class="location-section"
+                v-else-if="!selectedDate"
+                class="state-msg"
+                style="padding: 32px 18px;"
               >
-                <div class="location-label">
-                  Set your location
-                </div>
-
-                <div class="location-map">
-                  <LocationPickerMap @location-selected="setLocation" />
-                </div>
-
-                <p v-if="customerLat && customerLng" class="coords-hint">
-                  {{ customerLat.toFixed(4) }},
-                  {{ customerLng.toFixed(4) }}
-                </p>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(255,255,255,0.12);margin-bottom:8px">
+                  <rect x="3" y="4" width="18" height="18" rx="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                Pick a date to see slots.
               </div>
 
-              <div class="slots">
-                <div
-                  v-for="slot in appointmentStore.slots"
-                  :key="slot"
-                  class="slot"
-                >
-                  <span class="slot-time">
-                    {{ formatSlot(slot) }}
-                  </span>
+              <div
+                v-else-if="selectedDate && !appointmentStore.slots.length"
+                class="state-msg"
+                style="padding: 24px 18px;"
+              >
+                No available slots for this date.
+              </div>
 
-                  <button
-                    class="confirm-btn"
-                    :disabled="bookingLoading"
-                    @click="book(service.id, slot)"
+              <template v-else-if="selectedDate">
+                <div
+                  v-if="providerStore.providerProfile.provider.offers_home_service"
+                  class="location-section"
+                >
+                  <div class="location-label">Set your location</div>
+                  <div class="location-map">
+                    <LocationPickerMap @location-selected="setLocation" />
+                  </div>
+                  <p v-if="customerLat && customerLng" class="coords-hint">
+                    {{ customerLat.toFixed(4) }}, {{ customerLng.toFixed(4) }}
+                  </p>
+                </div>
+
+                <div class="slots">
+                  <div
+                    v-for="slot in appointmentStore.slots"
+                    :key="slot.start_time"
+                    class="slot"
                   >
-                    {{ bookingLoading ? "Booking..." : "Confirm" }}
+                    <span class="slot-time">{{ formatSlot(slot.start_time) }} - {{ formatTimeOnly(slot.end_time) }}</span>
+                    <button
+                      class="confirm-btn"
+                      :disabled="bookingLoading"
+                      @click="book(service.id, slot.start_time)"
+                    >
+                      {{ bookingLoading ? "Booking..." : "Confirm" }}
+                    </button>
+                  </div>
+                </div>
+              </template>
+            </div>
+
+            <div class="service-right">
+              <div class="calendar-section">
+                <div class="calendar-header">
+                  <button class="cal-nav" :disabled="isPrevDisabled" @click="prevMonth">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <polyline points="15 18 9 12 15 6"/>
+                    </svg>
+                  </button>
+                  <span class="cal-label">
+                    {{ calendarLabel }}
+                    <span v-if="loadingAvailable" class="cal-loading">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
+                        <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                      </svg>
+                    </span>
+                  </span>
+                  <button class="cal-nav" @click="nextMonth">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <polyline points="9 18 15 12 9 6"/>
+                    </svg>
                   </button>
                 </div>
+
+                <div class="cal-grid">
+                  <div v-for="label in DAY_LABELS" :key="label" class="cal-day-label">
+                    {{ label }}
+                  </div>
+
+                  <template v-for="(cell, idx) in calendarDays" :key="idx">
+                    <div v-if="cell === null" class="cal-cell cal-empty" />
+                    <div
+                      v-else
+                      class="cal-cell"
+                      :class="{
+                        'cal-past': isPast(cell.dateStr),
+                        'cal-available': !isPast(cell.dateStr) && isAvailable(cell.dateStr),
+                        'cal-selected': isSelected(cell.dateStr),
+                        'cal-today': isToday(cell.dateStr) && !isSelected(cell.dateStr),
+                      }"
+                      @click="selectDay(cell.dateStr)"
+                    >
+                      {{ cell.day }}
+                      <span
+                        v-if="!isPast(cell.dateStr) && isAvailable(cell.dateStr) && !isSelected(cell.dateStr)"
+                        class="cal-dot"
+                      />
+                    </div>
+                  </template>
+                </div>
+
+                <div class="cal-legend">
+                  <span class="legend-item">
+                    <span class="legend-dot legend-dot-available" />
+                    Available
+                  </span>
+                  <span class="legend-item">
+                    <span class="legend-dot legend-dot-past" />
+                    Unavailable
+                  </span>
+                </div>
               </div>
+            </div>
 
-            </template>
-
-          </template>
+          </div>
 
         </div>
       </div>
 
     </template>
+
   </div>
 </template>
 
