@@ -46,7 +46,11 @@ def create_appointment(
             customer_latitude=appointment.customer_latitude,
             customer_longitude=appointment.customer_longitude,
         )
-        return booking
+        return {
+            **booking.__dict__,
+            "service_name": booking.service.name,
+            "customer_name": booking.user.full_name
+        }
 
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -64,13 +68,22 @@ def get_appointments(
 
         provider_ids = [p.id for p in providers]
 
-        return db.query(Appointment).filter(
+        appointments = db.query(Appointment).filter(
             Appointment.provider_id.in_(provider_ids)
         ).order_by(Appointment.id.desc()).all()
+    else:
+        appointments = db.query(Appointment).filter(
+            Appointment.user_id == current_user.id
+        ).order_by(Appointment.id.desc()).all()
 
-    return db.query(Appointment).filter(
-        Appointment.user_id == current_user.id
-    ).order_by(Appointment.id.desc()).all()
+    return [
+        {
+            **a.__dict__,
+            "service_name": a.service.name,
+            "customer_name": a.user.full_name
+        }
+        for a in appointments
+    ]
 
 
 @router.put("/{appointment_id}/approve")
@@ -306,7 +319,11 @@ def get_appointment(
         if provider.owner_id != current_user.id:
             raise HTTPException(status_code=403, detail="Not authorized")
 
-    return appointment
+    return {
+                **appointment.__dict__,
+                "service_name": appointment.service.name,
+                "customer_name": appointment.user.full_name
+            }
 
 
 @router.put("/{appointment_id}", response_model=AppointmentResponse, dependencies=[Depends(get_current_user)])
@@ -341,7 +358,11 @@ def update_appointment(
     db.commit()
     db.refresh(db_appointment)
 
-    return db_appointment
+    return {
+                **db_appointment.__dict__,
+                "service_name": db_appointment.service.name,
+                "customer_name": db_appointment.user.full_name
+            }
 
 
 @router.delete("/{appointment_id}", dependencies=[Depends(get_current_user)])

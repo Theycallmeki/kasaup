@@ -86,8 +86,8 @@ const formatTime = (iso: string) =>
       >
         <div class="card-top">
           <div>
-            <div class="service-name">Service #{{ appointment.service_id }}</div>
-            <div class="customer-label">Customer · #{{ appointment.user_id }}</div>
+            <div class="service-name">{{ appointment.service_name }}</div>
+            <div class="customer-label">{{ appointment.customer_name }}</div>
           </div>
           <span class="badge" :class="statusClass(appointment.status)">
             {{ appointment.status }}

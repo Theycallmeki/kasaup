@@ -24,5 +24,8 @@ class AppointmentResponse(BaseModel):
     customer_latitude: float | None = None
     customer_longitude: float | None = None
 
+    service_name: str
+    customer_name: str
+
     class Config:
         from_attributes = True
