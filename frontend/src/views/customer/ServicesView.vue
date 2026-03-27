@@ -90,8 +90,8 @@ const firstImage = (svc: any): string | null => {
 
     <header class="hd">
       <div>
-        <p class="ey">Discover</p>
-        <h1 class="ht">Services</h1>
+        <p class="ey">Marketplace</p>
+        <h1 class="ht">Discover Services</h1>
       </div>
       <div class="hd-r">
         <div class="ps"><b>{{ svcStore.services.length }}</b><span>Total</span></div>
@@ -99,58 +99,91 @@ const firstImage = (svc: any): string | null => {
       </div>
     </header>
 
-    <ServiceFilters
-      :categories="catStore.categories ?? []"
-      :searching="searching"
-      @update:query="onQuery"
-      @update:activeCat="activeCat = $event"
-      @update:sort="sort = $event"
-    />
+    <div class="marketplace-layout">
+      <!-- Left Sidebar for Filters -->
+      <aside class="sidebar">
+        <ServiceFilters 
+          :categories="catStore.categories ?? []"
+          :activeCat="activeCat"
+          @update:activeCat="activeCat = $event"
+        />
+      </aside>
 
-    <div v-if="svcStore.loading" class="state">
-      <span class="spin" /><p>Loading services…</p>
-    </div>
-
-    <div v-else-if="!filtered.length" class="state">
-      <span>🔍</span>
-      <p>No services found.</p>
-      <button class="rst" @click="query=''; activeCat='all'; svcStore.fetchServices()">Clear filters</button>
-    </div>
-
-    <div v-else class="grid">
-      <div
-        v-for="svc in filtered" :key="svc.id"
-        class="card" :style="{ '--a': accent(svc.category_id) }"
-        @click="selected = svc"
-      >
-        <div v-if="firstImage(svc)" class="thumb">
-          <img :src="firstImage(svc)!" :alt="svc.name" />
-          <div class="thumb-fade" />
-        </div>
-
-        <div class="ct">
-          <span class="badge">{{ catName(svc.category_id) }}</span>
-          <span class="dur">
+      <!-- Main Content Grid -->
+      <main class="content-area">
+        
+        <div class="top-bar">
+          <div class="srch">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+              <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
             </svg>
-            {{ svc.duration_minutes }} min
-          </span>
+            <input
+              placeholder="Search services, providers…"
+              :value="query"
+              @input="onQuery(($event.target as HTMLInputElement).value)"
+            />
+            <span v-if="searching" class="spin" />
+          </div>
+
+          <div class="sort-tabs">
+            <span class="sort-label">Sort by:</span>
+            <button class="st" :class="{active: sort === 'price_asc'}" @click="sort = 'price_asc'">Price: Low to High</button>
+            <button class="st" :class="{active: sort === 'price_desc'}" @click="sort = 'price_desc'">Price: High to Low</button>
+            <button class="st" :class="{active: sort === 'duration'}" @click="sort = 'duration'">Duration</button>
+          </div>
         </div>
 
-        <h3 class="ti">{{ svc.name }}</h3>
-        <p class="by">{{ shopName(svc.provider_id) }}</p>
-        <p v-if="svc.description" class="desc">{{ svc.description }}</p>
-
-        <div class="cf">
-          <span class="pr">₱{{ Number(svc.price).toLocaleString() }}</span>
-          <button class="bk" @click.stop="goBook(svc)">Book</button>
+        <div v-if="svcStore.loading" class="state">
+          <span class="spin-lg" /><p>Finding top choices…</p>
         </div>
 
-        <div class="glow" />
-      </div>
+        <div v-else-if="!filtered.length" class="state">
+          <span>🔍</span>
+          <p>No services found matching your criteria.</p>
+          <button class="rst" @click="query=''; activeCat='all'; svcStore.fetchServices()">Clear all filters</button>
+        </div>
+
+        <div v-else class="grid">
+          <div
+            v-for="svc in filtered" :key="svc.id"
+            class="card" :style="{ '--a': accent(svc.category_id) }"
+            @click="selected = svc"
+          >
+            <!-- Image top half -->
+            <div class="thumb" :class="{'no-img': !firstImage(svc)}">
+              <img v-if="firstImage(svc)" :src="firstImage(svc)!" :alt="svc.name" />
+              <div v-else class="img-placeholder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Details below -->
+            <div class="c-body">
+              <h3 class="ti" :title="svc.name">{{ svc.name }}</h3>
+              <p class="by">{{ shopName(svc.provider_id) }}</p>
+              
+              <div class="tags">
+                <span class="dur">⏱ {{ svc.duration_minutes }}m</span>
+                <span class="cat-pill">{{ catName(svc.category_id) }}</span>
+              </div>
+
+              <!-- Price & Book row -->
+              <div class="cf">
+                <span class="pr">{{ Number(svc.price).toLocaleString() }}</span>
+                <button class="bk" @click.stop="goBook(svc)">Book</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
     </div>
 
+    <!-- Modal for Preview -->
     <Teleport to="body">
       <div class="ov" :class="{ show: !!selected }" @click.self="selected = null">
         <div class="modal" v-if="selected" :style="{ '--a': accent(selected.category_id) }">

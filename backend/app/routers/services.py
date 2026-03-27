@@ -88,7 +88,7 @@ def get_services(
     return db.query(Service).offset(offset).limit(limit).all()
 
 
-@router.get("/search")
+@router.get("/search", response_model=list[ServiceResponse])
 def search(
     q: str | None = None,
     category_id: int | None = None,
