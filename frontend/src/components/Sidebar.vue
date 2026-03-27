@@ -113,11 +113,11 @@ const icons: Record<string, string> = {
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@700&family=DM+Sans:wght@400;500&display=swap');
 
 .sidebar {
-  width: 220px;
+  width: 200px;
   height: 100vh;
   background: #0e0c1a;
   border-right: 0.5px solid rgba(255, 255, 255, 0.08);
-  padding: 24px 14px;
+  padding: 20px 10px;
   display: flex;
   flex-direction: column;
   transition: width 0.25s cubic-bezier(0.22, 1, 0.36, 1);
@@ -127,7 +127,7 @@ const icons: Record<string, string> = {
 }
 
 .sidebar.collapsed {
-  width: 66px;
+  width: 54px;
 }
 
 .top {

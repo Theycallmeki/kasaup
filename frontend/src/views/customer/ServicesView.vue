@@ -18,6 +18,7 @@ const activeCat = ref<number | "all">("all")
 const sort      = ref("price_asc")
 const selected  = ref<any | null>(null)
 const searching = ref(false)
+const viewingImage = ref<string | null>(null)
 
 onMounted(async () => {
   await Promise.all([
@@ -195,6 +196,8 @@ const firstImage = (svc: any): string | null => {
               :src="imgUrl(img.image_url)"
               :alt="selected.name"
               class="modal-thumb"
+              @click="viewingImage = imgUrl(img.image_url)"
+              style="cursor: zoom-in;"
             />
           </div>
 
@@ -211,6 +214,14 @@ const firstImage = (svc: any): string | null => {
 
           <button class="mbk" @click="goBook(selected)">Book This Service</button>
         </div>
+      </div>
+    </Teleport>
+
+    <!-- Fullscreen Image Viewer -->
+    <Teleport to="body">
+      <div v-if="viewingImage" class="img-viewer-ov" @click="viewingImage = null">
+        <button class="close-viewer">✕</button>
+        <img :src="viewingImage" />
       </div>
     </Teleport>
 
