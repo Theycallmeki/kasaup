@@ -6,6 +6,7 @@ const router = useRouter()
 function goServices()     { router.push("/provider/services") }
 function goAppointments() { router.push("/provider/appointments") }
 function goAvailability() { router.push("/provider/availability") }
+function goProfile()      { router.push("/provider/profile") }
 </script>
 
 <template>
@@ -64,6 +65,22 @@ function goAvailability() { router.push("/provider/availability") }
         <p class="card-desc">Set your working hours and schedule.</p>
         <button class="card-btn" @click="goAvailability">
           Manage Availability
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <h3 class="card-title">My Profile</h3>
+        <p class="card-desc">View how customers see your provider profile.</p>
+        <button class="card-btn" @click="goProfile">
+          View Profile
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="9 18 15 12 9 6"/>
           </svg>

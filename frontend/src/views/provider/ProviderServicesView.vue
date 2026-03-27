@@ -11,6 +11,7 @@ const providerId = ref<number | null>(null)
 const editingId = ref<number | null>(null)
 const imageFiles = ref<File[]>([])
 const imagePreviews = ref<string[]>([])
+const viewingImage = ref<string | null>(null)
 
 const form = ref({
   name: "",
@@ -151,6 +152,8 @@ function getService(id: number) {
               :src="imgUrl(img.image_url)"
               class="service-img"
               alt=""
+              @click="viewingImage = imgUrl(img.image_url)"
+              style="cursor: zoom-in;"
             />
           </div>
 
@@ -258,6 +261,14 @@ function getService(id: number) {
 
       </div>
     </div>
+
+    <!-- Fullscreen Image Viewer -->
+    <Teleport to="body">
+      <div v-if="viewingImage" class="img-viewer-ov" @click="viewingImage = null">
+        <button class="close-viewer">✕</button>
+        <img :src="viewingImage" />
+      </div>
+    </Teleport>
 
   </div>
 </template>
@@ -541,5 +552,50 @@ label {
 @media (max-width: 540px) {
   .page { padding: 24px 16px; }
   .field-row { grid-template-columns: 1fr; }
+}
+
+/* Image Viewer Lightbox */
+.img-viewer-ov {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  cursor: zoom-out;
+  animation: fadeIn 0.15s ease-out;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.img-viewer-ov img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+.close-viewer {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: background 0.2s;
+  backdrop-filter: blur(4px);
+}
+.close-viewer:hover {
+  background: rgba(255, 255, 255, 0.25);
 }
 </style>
