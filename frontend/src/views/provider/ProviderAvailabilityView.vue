@@ -84,7 +84,7 @@ function resetForm() {
   }
 }
 
-const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 </script>
 
 <template>
@@ -143,7 +143,7 @@ const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
         class="slot-card"
       >
         <div class="slot-left">
-          <div class="slot-day">{{ days[slot.day_of_week] }}</div>
+          <div class="slot-day">{{ days[(slot.day_of_week + 1) % 7] }}</div>
           <div class="slot-time">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10"/>

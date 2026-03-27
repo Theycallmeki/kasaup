@@ -13,6 +13,7 @@ const appointmentStore = useAppointmentStore()
 const id = Number(route.params.id)
 
 const activeServiceId = ref<number | null>(null)
+const selectedDate = ref<string>("")
 const customerLat = ref<number | null>(null)
 const customerLng = ref<number | null>(null)
 
@@ -33,11 +34,18 @@ onMounted(async () => {
 
 async function loadSlots(serviceId: number) {
   activeServiceId.value = serviceId
-  loadingSlots.value = true
   errorMsg.value = ""
+}
 
+async function fetchSlots() {
+  if (!activeServiceId.value || !selectedDate.value) return
+
+  loadingSlots.value = true
   try {
-    await appointmentStore.fetchAvailableSlots(serviceId)
+    await appointmentStore.fetchAvailableSlots(
+      activeServiceId.value,
+      selectedDate.value
+    )
   } catch (e) {
     errorMsg.value = "Failed to load available slots."
   } finally {
@@ -55,21 +63,20 @@ async function book(serviceId: number, slot: string) {
   errorMsg.value = ""
 
   try {
+    const date = new Date(slot)
+    const dateStr = date.toISOString().split("T")[0]
+    const timeStr = date.toTimeString().slice(0, 5)
+
     await appointmentStore.bookAppointment({
       provider_id: id,
       service_id: serviceId,
-      appointment_time: slot,
+      date: dateStr,
+      time: timeStr,
       customer_latitude: customerLat.value,
       customer_longitude: customerLng.value
     })
 
-    activeServiceId.value = null
-    customerLat.value = null
-    customerLng.value = null
-
-    await appointmentStore.fetchAvailableSlots(serviceId)
-
-  
+    await fetchSlots()
     await appointmentStore.fetchAppointments()
 
   } catch (e) {
@@ -85,7 +92,8 @@ const formatSlot = (iso: string) =>
     month: "short",
     day: "numeric",
     hour: "numeric",
-    minute: "2-digit"
+    minute: "2-digit",
+    hour12: true
   })
 </script>
 
@@ -175,18 +183,27 @@ const formatSlot = (iso: string) =>
 
           <template v-if="activeServiceId === service.id">
 
+            <!-- DATE PICKER -->
+            <div class="slots" style="padding-bottom:0">
+              <input
+                type="date"
+                v-model="selectedDate"
+                @change="fetchSlots"
+              />
+            </div>
+
             <div v-if="loadingSlots" class="state-msg">
               Loading available slots...
             </div>
 
             <div
-              v-else-if="!appointmentStore.slots.length"
+              v-else-if="selectedDate && !appointmentStore.slots.length"
               class="state-msg"
             >
               No available slots.
             </div>
 
-            <template v-else>
+            <template v-else-if="selectedDate">
 
               <div
                 v-if="providerStore.providerProfile.provider.offers_home_service"

@@ -10,12 +10,12 @@ class Appointment(Base):
     id = Column(Integer, primary_key=True)
 
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-
     provider_id = Column(Integer, ForeignKey("providers.id"), nullable=False)
-
     service_id = Column(Integer, ForeignKey("services.id"), nullable=False)
 
-    appointment_time = Column(DateTime, nullable=False)
+    appointment_time = Column(DateTime, nullable=False, index=True)
+
+    duration_minutes = Column(Integer, nullable=False)
 
     status = Column(String, default="pending", nullable=False)
 
@@ -26,7 +26,5 @@ class Appointment(Base):
     completed_at = Column(DateTime, nullable=True)
 
     user = relationship("User", back_populates="appointments")
-
     provider = relationship("Provider", back_populates="appointments")
-
-    service = relationship("Service")
+    service = relationship("Service", back_populates="appointments")

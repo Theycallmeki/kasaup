@@ -8,12 +8,17 @@ import {
   completeAppointment
 } from "../services/appointments"
 
+function toISO(date: string, time: string) {
+  return `${date}T${time}`
+}
+
 export const useAppointmentStore = defineStore("appointments", {
 
   state: () => ({
     appointments: [] as any[],
     slots: [] as string[],
-    loading: false
+    loading: false,
+    selectedDate: "" as string
   }),
 
   actions: {
@@ -27,10 +32,11 @@ export const useAppointmentStore = defineStore("appointments", {
       }
     },
 
-    async fetchAvailableSlots(serviceId: number) {
+    async fetchAvailableSlots(serviceId: number, date: string) {
       this.loading = true
       try {
-        this.slots = await getAvailableSlots(serviceId)
+        this.selectedDate = date
+        this.slots = await getAvailableSlots(serviceId, date)
       } finally {
         this.loading = false
       }
@@ -39,11 +45,19 @@ export const useAppointmentStore = defineStore("appointments", {
     async bookAppointment(data: {
       provider_id: number
       service_id: number
-      appointment_time: string
+      date: string
+      time: string
       customer_latitude?: number | null
       customer_longitude?: number | null
     }) {
-      const res = await createAppointment(data)
+      const res = await createAppointment({
+        provider_id: data.provider_id,
+        service_id: data.service_id,
+        appointment_time: toISO(data.date, data.time),
+        customer_latitude: data.customer_latitude,
+        customer_longitude: data.customer_longitude
+      })
+
       await this.fetchAppointments()
       return res
     },

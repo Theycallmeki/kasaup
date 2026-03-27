@@ -25,7 +25,7 @@ def create_booking(
         if booking.status in ("cancelled", "completed"):
             continue
 
-        booking_end = booking.appointment_time + timedelta(minutes=duration_minutes)
+        booking_end = booking.appointment_time + timedelta(minutes=booking.duration_minutes)
 
         if (
             appointment_time < booking_end and
@@ -46,7 +46,10 @@ def create_booking(
     valid_slot = False
 
     for avail in availability:
-        if avail.start_time <= appointment_time.time() < avail.end_time:
+        avail_start = datetime.combine(appointment_time.date(), avail.start_time)
+        avail_end = datetime.combine(appointment_time.date(), avail.end_time)
+
+        if appointment_time >= avail_start and end_time <= avail_end:
             valid_slot = True
             break
 
@@ -58,6 +61,7 @@ def create_booking(
         provider_id=provider_id,
         service_id=service_id,
         appointment_time=appointment_time,
+        duration_minutes=duration_minutes,
         status="pending",
         customer_latitude=customer_latitude,
         customer_longitude=customer_longitude
@@ -78,7 +82,6 @@ def update_status(
     allowed_transitions = {
         "pending": ["approved", "cancelled"],
         "approved": ["completed", "cancelled"],
-        # legacy rows from before "approved" existed
         "confirmed": ["completed", "cancelled"],
         "completed": [],
         "cancelled": [],

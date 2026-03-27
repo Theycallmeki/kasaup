@@ -233,6 +233,7 @@ def get_available_slots(
 @router.get("/services/{service_id}/available-slots")
 def get_service_available_slots(
     service_id: int,
+    date: str,
     db: Session = Depends(get_db)
 ):
     service = db.query(Service).filter(Service.id == service_id).first()
@@ -245,52 +246,68 @@ def get_service_available_slots(
     if not provider:
         raise HTTPException(status_code=404, detail="Provider not found")
 
-    start = datetime.now().replace(minute=0, second=0, microsecond=0)
-    end = start + timedelta(days=7)
+    try:
+        selected_date = datetime.strptime(date, "%Y-%m-%d")
+    except:
+        raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD")
+
+    weekday = selected_date.weekday()
 
     availability = db.query(ProviderAvailability).filter(
-        ProviderAvailability.provider_id == provider.id
+        ProviderAvailability.provider_id == provider.id,
+        ProviderAvailability.day_of_week == weekday
     ).all()
 
     if not availability:
         return {"available_slots": []}
 
+    day_start = selected_date.replace(hour=0, minute=0, second=0, microsecond=0)
+    day_end = selected_date.replace(hour=23, minute=59, second=59, microsecond=0)
+
     appointments = (
         db.query(Appointment)
         .filter(
             Appointment.provider_id == provider.id,
-            Appointment.appointment_time >= start,
-            Appointment.appointment_time <= end,
+            Appointment.appointment_time >= day_start,
+            Appointment.appointment_time <= day_end,
             Appointment.status.in_(["pending", "approved", "confirmed"]),
         )
         .all()
     )
 
-    booked_times = {a.appointment_time for a in appointments}
-
     slots = []
-    current = start
 
-    while current <= end:
-        weekday = current.weekday()
+    for avail in availability:
+        slot_time = selected_date.replace(
+            hour=avail.start_time.hour,
+            minute=avail.start_time.minute,
+            second=0,
+            microsecond=0
+        )
 
-        day_availability = [
-            a for a in availability if a.day_of_week == weekday
-        ]
+        end_time = selected_date.replace(
+            hour=avail.end_time.hour,
+            minute=avail.end_time.minute,
+            second=0,
+            microsecond=0
+        )
 
-        for avail in day_availability:
-            slot_time = current.replace(
-                hour=avail.start_time.hour,
-                minute=avail.start_time.minute
-            )
+        while slot_time + timedelta(minutes=service.duration_minutes) <= end_time:
+            slot_end = slot_time + timedelta(minutes=service.duration_minutes)
 
-            while slot_time.time() < avail.end_time:
-                if slot_time not in booked_times and slot_time >= start:
-                    slots.append(slot_time)
+            overlap = False
+            for appt in appointments:
+                appt_start = appt.appointment_time
+                appt_end = appt_start + timedelta(minutes=appt.service.duration_minutes)
 
-                slot_time += timedelta(minutes=service.duration_minutes)
+                if not (slot_end <= appt_start or slot_time >= appt_end):
+                    overlap = True
+                    break
 
-        current += timedelta(days=1)
+            if not overlap and slot_time >= datetime.now():
+                slots.append(slot_time)
+
+            slot_time += timedelta(minutes=service.duration_minutes)
 
     return {"available_slots": slots}
 

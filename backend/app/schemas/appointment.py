@@ -20,6 +20,7 @@ class AppointmentResponse(BaseModel):
     provider_id: int
     service_id: int
     appointment_time: datetime
+    duration_minutes: int
     status: str
     customer_latitude: float | None = None
     customer_longitude: float | None = None

@@ -48,12 +48,10 @@ export async function completeAppointment(id: number) {
   return res.data
 }
 
-export async function getAvailableSlots(serviceId: number) {
-  const res = await api.get(`/appointments/services/${serviceId}/available-slots`)
-  return res.data.available_slots
-}
-
-export async function getProviderSlots(providerId: number) {
-  const res = await api.get(`/appointments/providers/${providerId}/available-slots`)
+export async function getAvailableSlots(serviceId: number, date: string) {
+  const res = await api.get(
+    `/appointments/services/${serviceId}/available-slots`,
+    { params: { date } }
+  )
   return res.data.available_slots
 }

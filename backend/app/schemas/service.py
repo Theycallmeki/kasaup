@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List
 
 
@@ -16,15 +16,15 @@ class ServiceCreate(BaseModel):
     description: str | None = None
     price: float
     duration_minutes: int
-    images: List[str] = []
+    images: List[str] = Field(default_factory=list)
 
 
 class ServiceUpdate(BaseModel):
-    category_id: int
-    name: str
+    category_id: int | None = None
+    name: str | None = None
     description: str | None = None
-    price: float
-    duration_minutes: int
+    price: float | None = None
+    duration_minutes: int | None = None
 
 
 class ServiceResponse(BaseModel):
@@ -35,7 +35,7 @@ class ServiceResponse(BaseModel):
     description: str | None
     price: float
     duration_minutes: int
-    images: List[ServiceImage] = []
+    images: List[ServiceImage] = Field(default_factory=list)
 
     class Config:
         from_attributes = True
