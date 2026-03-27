@@ -172,8 +172,6 @@ const firstImage = (svc: any): string | null => {
         </div>
 
       </main>
-
-      <!-- Right Sidebar for Filters -->
       <aside class="sidebar">
         <ServiceFilters 
           :categories="catStore.categories ?? []"
