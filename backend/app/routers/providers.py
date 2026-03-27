@@ -8,11 +8,54 @@ from app.models.service import Service
 from app.models.category import Category
 from app.models.users import User
 from app.schemas.providers import ProviderCreate, ProviderUpdate, ProviderResponse, ProviderListItem
-from app.core.dependencies import require_provider
+from app.core.dependencies import require_provider, get_current_user
 from app.services.location_service import is_within_philippines, find_nearby_providers
 from app.services.upload_service import save_image
 
 router = APIRouter()
+
+
+@router.get("/me")
+def get_my_provider(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    provider = db.query(Provider).filter(
+        Provider.owner_id == current_user.id
+    ).first()
+
+    if not provider:
+        raise HTTPException(status_code=404, detail="Provider not found")
+
+    return provider
+
+
+@router.put("/me")
+def update_my_provider(
+    provider: ProviderUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    db_provider = db.query(Provider).filter(
+        Provider.owner_id == current_user.id
+    ).first()
+
+    if not db_provider:
+        raise HTTPException(status_code=404, detail="Provider not found")
+
+    update_data = provider.dict(exclude_unset=True)
+
+    if "latitude" in update_data and "longitude" in update_data:
+        if not is_within_philippines(update_data["latitude"], update_data["longitude"]):
+            raise HTTPException(status_code=400, detail="Provider location must be inside the Philippines")
+
+    for key, value in update_data.items():
+        setattr(db_provider, key, value)
+
+    db.commit()
+    db.refresh(db_provider)
+
+    return db_provider
 
 
 @router.post("/", response_model=ProviderResponse, dependencies=[Depends(require_provider)])
@@ -51,10 +94,7 @@ def upload_profile_image(
     if provider.owner_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized")
 
-    try:
-        path = save_image(file)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    path = save_image(file)
 
     provider.profile_image = path
 
@@ -114,10 +154,7 @@ def get_nearby(
     radius: float = 10,
     db: Session = Depends(get_db)
 ):
-    try:
-        return find_nearby_providers(db, lat, lng, radius)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    return find_nearby_providers(db, lat, lng, radius)
 
 
 @router.get("/map")

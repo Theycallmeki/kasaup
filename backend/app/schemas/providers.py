@@ -14,14 +14,17 @@ class ProviderCreate(BaseModel):
 
 
 class ProviderUpdate(BaseModel):
-    shop_name: str
+    shop_name: str | None = None
     description: str | None = None
     phone: str | None = None
     email: str | None = None
     address: str | None = None
-    latitude: float
-    longitude: float
-    offers_home_service: bool
+    latitude: float | None = None
+    longitude: float | None = None
+    offers_home_service: bool | None = None
+
+    class Config:
+        from_attributes = True
 
 
 class ProviderResponse(BaseModel):

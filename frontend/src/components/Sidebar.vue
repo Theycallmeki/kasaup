@@ -30,7 +30,9 @@ const menus = {
     { label: "Dashboard",    path: "/provider/dashboard",    icon: "grid"     },
     { label: "Services",     path: "/provider/services",     icon: "wrench"   },
     { label: "Appointments", path: "/provider/appointments", icon: "calendar" },
-    { label: "Availability", path: "/provider/availability", icon: "clock"    }
+    { label: "Availability", path: "/provider/availability", icon: "clock"    },
+    { label: "View Profile",   path: "/provider/profile",   icon: "users"    }
+
   ],
   admin: [
     { label: "Dashboard",  path: "/admin/dashboard",  icon: "grid"   },

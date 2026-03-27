@@ -87,3 +87,13 @@ export async function uploadProviderImage(providerId: number, file: File) {
 
   return res.data
 }
+
+export async function getMyProvider() {
+  const res = await api.get("/providers/me")
+  return res.data
+}
+
+export async function updateMyProvider(data: any) {
+  const res = await api.put("/providers/me", data)
+  return res.data
+}

@@ -18,6 +18,7 @@ import ProviderAvailabilityView from "../views/provider/ProviderAvailabilityView
 import ProviderAppointmentsView from "../views/provider/ProviderAppointmentsView.vue"
 import CreateServiceView from "../views/provider/CreateServiceView.vue"
 import CreateProviderProfileView from "../views/provider/CreateProviderProfileView.vue"
+import ProviderProfileViewProvider from "../views/provider/ProviderProfileView.vue"
 
 import AdminDashboardView from "../views/admin/AdminDashboardView.vue"
 import AdminCategoriesView from "../views/admin/AdminCategoriesView.vue"
@@ -129,6 +130,13 @@ const routes = [
     component: ProviderAppointmentsView,
     meta: { requiresAuth: true, roles: ["provider"] }
   },
+
+  {
+  path: "/provider/profile",
+  name: "providerProfileEdit",
+  component: ProviderProfileViewProvider,
+  meta: { requiresAuth: true, roles: ["provider"] }
+},
 
   {
     path: "/admin/dashboard",
