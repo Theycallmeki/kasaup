@@ -1,70 +1,166 @@
 <script setup lang="ts">
-defineProps<{
+import { ref, computed } from "vue"
+
+const props = defineProps<{
   categories: any[]
-  searching: boolean
+  activeCat: number | "all"
 }>()
 
 const emit = defineEmits<{
-  "update:query":     [v: string]
   "update:activeCat": [v: number | "all"]
-  "update:sort":      [v: string]
 }>()
+
+const isExpanded = ref(true)
+
+const activeCatName = computed(() => {
+  if (props.activeCat === 'all') return 'All Services'
+  const c = props.categories.find(c => c.id === props.activeCat)
+  return c ? c.name : 'All Services'
+})
+
+const handleSelect = (val: number | "all") => {
+  emit('update:activeCat', val)
+  // Auto-collapse on mobile, but let's just collapse it for UX as requested
+  if (val !== 'all') isExpanded.value = false
+}
 </script>
 
 <template>
-  <div class="filters">
-
-    <!-- Search + Sort -->
-    <div class="row">
-      <div class="srch">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+  <div class="sidebar-filters">
+    <div class="filter-section">
+      <h3 class="fs-title" @click="isExpanded = !isExpanded" style="cursor: pointer; justify-content: space-between; user-select: none;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <svg viewBox="0 0 24 24" fill="none" class="icon-h" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"/>
+            <line x1="8" y1="12" x2="21" y2="12"/>
+            <line x1="8" y1="18" x2="21" y2="18"/>
+            <line x1="3" y1="6" x2="3.01" y2="6"/>
+            <line x1="3" y1="12" x2="3.01" y2="12"/>
+            <line x1="3" y1="18" x2="3.01" y2="18"/>
+          </svg>
+          Categories
+        </div>
+        <svg :style="{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0)' }"
+             style="transition: 0.2s; width: 16px; height: 16px; color: rgba(255,255,255,0.4);"
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"/>
         </svg>
-        <input
-          placeholder="Search services, providers…"
-          @input="emit('update:query', ($event.target as HTMLInputElement).value)"
-        />
-        <span v-if="searching" class="spin" />
-      </div>
-      <select class="sel" @change="emit('update:sort', ($event.target as HTMLSelectElement).value)">
-        <option value="price_asc">Price ↑</option>
-        <option value="price_desc">Price ↓</option>
-        <option value="duration">Duration</option>
-      </select>
+      </h3>
+      
+      <ul class="cat-list" v-if="categories.length">
+        <template v-if="isExpanded">
+          <li>
+            <button 
+              class="cat-item" 
+              :class="{ active: activeCat === 'all' }" 
+              @click="handleSelect('all')"
+            >
+              <span class="bullet" />
+              All Services
+            </button>
+          </li>
+          <li v-for="cat in categories" :key="cat.id">
+            <button 
+              class="cat-item" 
+              :class="{ active: activeCat === cat.id }" 
+              @click="handleSelect(cat.id)"
+            >
+              <span class="bullet" />
+              {{ cat.name }}
+            </button>
+          </li>
+        </template>
+        
+        <template v-else>
+          <li>
+            <button class="cat-item active" @click="isExpanded = true">
+              <span class="bullet" />
+              {{ activeCatName }}
+            </button>
+          </li>
+        </template>
+      </ul>
     </div>
-
-    <!-- Category pills -->
-    <div class="cats" v-if="categories.length">
-      <button class="cp active" @click="emit('update:activeCat', 'all')">✦ All</button>
-      <button
-        v-for="cat in categories" :key="cat.id"
-        class="cp"
-        @click="emit('update:activeCat', cat.id)"
-      >{{ cat.name }}</button>
-    </div>
-
   </div>
 </template>
 
 <style scoped>
-.filters { display:flex; flex-direction:column; gap:14px; margin-bottom:20px; }
-
-.row { display:flex; gap:10px; flex-wrap:wrap; }
-
-.srch { position:relative; flex:1; min-width:180px; }
-.srch svg { position:absolute; left:12px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:rgba(255,255,255,.25); pointer-events:none; }
-.srch input { width:100%; box-sizing:border-box; background:rgba(255,255,255,.04); border:0.5px solid rgba(255,255,255,.1); border-radius:10px; padding:10px 36px; color:#fff; font-family:'DM Sans',sans-serif; font-size:.875rem; outline:none; transition:border-color .15s; }
-.srch input::placeholder { color:rgba(255,255,255,.22); }
-.srch input:focus { border-color:rgba(130,90,255,.45); }
-
-.spin { display:inline-block; width:13px; height:13px; border:2px solid rgba(255,255,255,.1); border-top-color:#a78bfa; border-radius:50%; animation:sp .6s linear infinite; position:absolute; right:12px; top:50%; transform:translateY(-50%); }
-@keyframes sp { to { transform:translateY(-50%) rotate(360deg) } }
-
-.sel { background:rgba(255,255,255,.04); border:0.5px solid rgba(255,255,255,.1); border-radius:10px; padding:10px 14px; color:#fff; font-family:'DM Sans',sans-serif; font-size:.875rem; outline:none; cursor:pointer; }
-.sel option { background:#1a1730; }
-
-.cats { display:flex; gap:8px; flex-wrap:wrap; }
-.cp { padding:6px 14px; border-radius:100px; border:0.5px solid rgba(255,255,255,.1); background:rgba(255,255,255,.03); color:rgba(255,255,255,.45); font-family:'DM Sans',sans-serif; font-size:.82rem; font-weight:500; cursor:pointer; transition:all .15s; white-space:nowrap; }
-.cp:hover { background:rgba(255,255,255,.07); color:#fff; }
-.cp.active { background:rgba(99,60,220,.2); border-color:rgba(130,90,255,.4); color:#c4b5fd; }
+.sidebar-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px 16px;
+}
+.filter-section {
+  display: flex;
+  flex-direction: column;
+}
+.fs-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Sora', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 16px 0;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 14px;
+}
+.icon-h {
+  width: 18px;
+  height: 18px;
+  color: #a78bfa;
+}
+.cat-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.cat-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.55);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.cat-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.9);
+}
+.cat-item.active {
+  background: rgba(167, 139, 250, 0.15);
+  color: #c4b5fd;
+}
+.bullet {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.2s;
+}
+.cat-item:hover .bullet {
+  border-color: rgba(255, 255, 255, 0.8);
+}
+.cat-item.active .bullet {
+  background: #a78bfa;
+  border-color: #a78bfa;
+  box-shadow: 0 0 8px rgba(167, 139, 250, 0.6);
+}
 </style>
