@@ -10,6 +10,7 @@ const email = ref("")
 const password = ref("")
 const error = ref("")
 const loading = ref(false)
+const showPassword = ref(false)
 
 const login = async () => {
   error.value = ""
@@ -48,13 +49,25 @@ const login = async () => {
           required
           autofocus
         />
-        <input
-          v-model="password"
-          class="field"
-          type="password"
-          placeholder="Password"
-          required
-        />
+        <div class="password-wrapper">
+          <input
+            v-model="password"
+            class="field pr-field"
+            :type="showPassword ? 'text' : 'password'"
+            placeholder="Password"
+            required
+          />
+          <button type="button" class="toggle-password" @click="showPassword = !showPassword">
+            <svg v-if="showPassword" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <line x1="2" y1="2" x2="22" y2="22" />
+            </svg>
+            <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </button>
+        </div>
 
         <p v-if="error" class="error">{{ error }}</p>
 
@@ -173,6 +186,7 @@ form {
 
 .field {
   width: 100%;
+  box-sizing: border-box;
   padding: 13px 16px;
   background: rgba(255, 255, 255, 0.06);
   border: 0.5px solid rgba(255, 255, 255, 0.12);
@@ -188,6 +202,32 @@ form {
 }
 .field:focus {
   border-color: rgba(167, 139, 250, 0.5);
+}
+
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.pr-field {
+  padding-right: 40px !important;
+}
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.18s;
+}
+.toggle-password:hover {
+  color: #fff;
 }
 
 .error {
