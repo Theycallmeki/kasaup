@@ -39,8 +39,11 @@ onMounted(async () => {
 
 function onImagesChange(e: Event) {
   const files = Array.from((e.target as HTMLInputElement).files || [])
-  imageFiles.value = files
-  imagePreviews.value = files.map(f => URL.createObjectURL(f))
+imageFiles.value = [...imageFiles.value, ...files]
+imagePreviews.value = [
+  ...imagePreviews.value,
+  ...files.map(f => URL.createObjectURL(f))
+]
 }
 
 function removeImage(index: number) {
