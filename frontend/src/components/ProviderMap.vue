@@ -2,6 +2,7 @@
 import { onMounted, watch, ref } from "vue"
 import { useRouter } from "vue-router"
 import L from "leaflet"
+import api from "../services/api"
 
 const props = defineProps<{
   providers: Record<string, unknown>[]
@@ -86,7 +87,6 @@ async function drawOptimizedRoute(provider: Record<string, unknown>) {
       map.fitBounds(bounds, { padding: [24, 24], maxZoom: 16, animate: true })
     }
 
-    // Set active directions — triggers re-render with only this provider
     activeDirections.value = provider
     refreshProviderMarkers()
 
@@ -138,7 +138,6 @@ function refreshProviderMarkers() {
 
   providerMarkersLayer = L.layerGroup()
 
-  // If directions are active, show only the targeted provider
   const visibleProviders = activeDirections.value
     ? props.providers.filter(p => p.id === activeDirections.value!.id)
     : props.providers
@@ -155,6 +154,15 @@ function refreshProviderMarkers() {
         ? `<p class="kasaup-popup-sub">${provider.distance_km.toFixed(1)} km away</p>`
         : ""
 
+    // Avatar: photo or initials fallback
+    const rawImage = typeof provider.profile_image === "string" && provider.profile_image
+      ? provider.profile_image.replace(/^\//, "")
+      : null
+    const initials = name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase()
+    const avatarHTML = rawImage
+      ? `<img src="${api.defaults.baseURL}/${rawImage}" class="kasaup-popup-avatar kasaup-popup-avatar--img" alt="${escapeHtml(name)}" />`
+      : `<div class="kasaup-popup-avatar kasaup-popup-avatar--initials">${escapeHtml(initials)}</div>`
+
     const providerIcon = L.divIcon({
       className: "",
       html: `<div class="kasaup-provider-pin${activeDirections.value ? ' kasaup-provider-pin--active' : ''}"></div>`,
@@ -168,8 +176,13 @@ function refreshProviderMarkers() {
     popupDiv.className = "kasaup-popup"
 
     popupDiv.innerHTML = `
-      <p class="kasaup-popup-name">${escapeHtml(name)}</p>
-      ${dist}
+      <div class="kasaup-popup-header">
+        ${avatarHTML}
+        <div class="kasaup-popup-header-info">
+          <p class="kasaup-popup-name">${escapeHtml(name)}</p>
+          ${dist}
+        </div>
+      </div>
       <div class="kasaup-popup-btns">
         <button class="kasaup-popup-btn kasaup-btn-view" id="view-${id}">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -242,7 +255,6 @@ onMounted(() => {
 watch(
   () => props.providers,
   (providers) => {
-    // Don't reset directions when providers list changes
     refreshProviderMarkers()
     if (!activeDirections.value) fitMapToProviders(providers)
   }
@@ -263,7 +275,6 @@ watch(
   <div class="map-root">
     <div ref="mapContainer" class="map" />
 
-    <!-- Floating Cancel Directions button -->
     <Transition name="cancel-btn">
       <div v-if="activeDirections" class="cancel-directions-bar">
         <div class="cancel-directions-inner">
@@ -300,7 +311,6 @@ watch(
   will-change: transform;
 }
 
-/* Cancel directions bar */
 .cancel-directions-bar {
   position: absolute;
   top: 90px;
@@ -351,7 +361,6 @@ watch(
 }
 .cancel-btn:hover { background: rgba(248, 113, 113, 0.18); }
 
-/* Transition */
 .cancel-btn-enter-active,
 .cancel-btn-leave-active {
   transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -403,20 +412,67 @@ watch(
 .kasaup-leaflet-popup .leaflet-popup-tip-container {
   display: none;
 }
+
+/* Popup layout */
 .kasaup-popup {
   padding: 14px 16px;
   font-family: 'DM Sans', sans-serif;
 }
+
+.kasaup-popup-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.kasaup-popup-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.kasaup-popup-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.kasaup-popup-avatar--img {
+  object-fit: cover;
+  border: 1px solid rgba(167, 139, 250, 0.25);
+}
+
+.kasaup-popup-avatar--initials {
+  background: rgba(124, 58, 237, 0.25);
+  border: 1px solid rgba(124, 58, 237, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(167, 139, 250, 0.9);
+  font-family: 'Sora', sans-serif;
+}
+
 .kasaup-popup-name {
   font-size: 14px;
   font-weight: 500;
   color: #fff;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
 .kasaup-popup-sub {
   font-size: 12px;
   color: rgba(255, 255, 255, 0.4);
-  margin: 0 0 14px;
+  margin: 0;
 }
+
 .kasaup-popup-btns {
   display: flex;
   gap: 7px;

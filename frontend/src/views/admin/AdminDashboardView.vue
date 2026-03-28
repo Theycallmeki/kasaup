@@ -17,66 +17,198 @@ function goCategories() {
 </script>
 
 <template>
+  <div class="page">
 
-<div class="dashboard">
-
-  <h1>Admin Dashboard</h1>
-  <p>Manage platform users, providers, and categories.</p>
-
-  <div class="cards">
-
-    <div class="card">
-      <h3>Users</h3>
-      <p>View and manage registered users</p>
-      <button @click="goUsers">Manage Users</button>
+    <div class="page-header">
+      <div class="header-label">Admin</div>
+      <h1 class="title">Dashboard</h1>
+      <p class="hint">Manage platform users, providers, and categories.</p>
     </div>
 
-    <div class="card">
-      <h3>Providers</h3>
-      <p>Verify and manage service providers</p>
-      <button @click="goProviders">Manage Providers</button>
-    </div>
+    <div class="cards">
 
-    <div class="card">
-      <h3>Categories</h3>
-      <p>Manage service categories</p>
-      <button @click="goCategories">Manage Categories</button>
+      <div class="card" @click="goUsers">
+        <div class="card-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Users</h3>
+          <p class="card-desc">View and manage registered users</p>
+        </div>
+        <div class="card-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="card" @click="goProviders">
+        <div class="card-icon card-icon--teal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Providers</h3>
+          <p class="card-desc">Verify and manage service providers</p>
+        </div>
+        <div class="card-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="card" @click="goCategories">
+        <div class="card-icon card-icon--pink">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="3" y="3" width="7" height="7"/>
+            <rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Categories</h3>
+          <p class="card-desc">Manage service categories</p>
+        </div>
+        <div class="card-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+      </div>
+
     </div>
 
   </div>
-
-</div>
-
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@700&family=DM+Sans:wght@400;500&display=swap');
 
-.dashboard{
-  padding:20px;
+.page {
+  min-height: 100vh;
+  background: #0e0c1a;
+  padding: 36px 32px;
+  font-family: 'DM Sans', sans-serif;
 }
 
-.cards{
-  display:flex;
-  gap:20px;
-  margin-top:20px;
+.page-header {
+  margin-bottom: 32px;
 }
 
-.card{
-  background:white;
-  padding:20px;
-  border-radius:8px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.08);
-  width:220px;
+.header-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(167, 139, 250, 0.6);
+  margin-bottom: 6px;
 }
 
-button{
-  margin-top:10px;
-  padding:8px 12px;
-  border:none;
-  background:#ef4444;
-  color:white;
-  border-radius:6px;
-  cursor:pointer;
+.title {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.01em;
+  margin: 0 0 6px;
 }
 
+.hint {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.3);
+  margin: 0;
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 480px;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(167, 139, 250, 0.25);
+}
+
+.card-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(124, 58, 237, 0.2);
+  border: 0.5px solid rgba(124, 58, 237, 0.3);
+  color: #a78bfa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-icon--teal {
+  background: rgba(20, 184, 166, 0.15);
+  border-color: rgba(20, 184, 166, 0.3);
+  color: #2dd4bf;
+}
+
+.card-icon--pink {
+  background: rgba(236, 72, 153, 0.15);
+  border-color: rgba(236, 72, 153, 0.3);
+  color: #f472b6;
+}
+
+.card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  margin: 0 0 3px;
+}
+
+.card-desc {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.35);
+  margin: 0;
+}
+
+.card-arrow {
+  color: rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+  transition: color 0.15s, transform 0.15s;
+}
+
+.card:hover .card-arrow {
+  color: rgba(167, 139, 250, 0.7);
+  transform: translateX(2px);
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 24px 16px;
+  }
+}
 </style>
