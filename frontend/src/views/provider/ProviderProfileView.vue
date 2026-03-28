@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
+import { ref, onMounted, computed } from "vue"
 import { useProviderStore } from "../../stores/providerStore"
+import api from "../../services/api"
 
 const providerStore = useProviderStore()
 
@@ -13,6 +14,25 @@ const offers_home_service = ref(false)
 
 const loading = ref(false)
 const saved = ref(false)
+
+const imageLoading = ref(false)
+const imagePreview = ref<string | null>(null)
+const pendingImageFile = ref<File | null>(null)
+const fileInput = ref<HTMLInputElement | null>(null)
+
+const displayImage = computed(() => {
+  if (imagePreview.value) return imagePreview.value
+  if (providerStore.myProvider?.profile_image) {
+    const path = providerStore.myProvider.profile_image.replace(/^\//, "")
+    return `${api.defaults.baseURL}/${path}`
+  }
+  return null
+})
+
+const shopInitials = computed(() => {
+  const name = shop_name.value || providerStore.myProvider?.shop_name || ""
+  return name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase()
+})
 
 onMounted(async () => {
   await providerStore.fetchMyProvider()
@@ -28,9 +48,38 @@ onMounted(async () => {
   }
 })
 
+const triggerFileInput = () => {
+  fileInput.value?.click()
+}
+
+const onFileChange = (e: Event) => {
+  const target = e.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (!file) return
+
+  pendingImageFile.value = file
+
+  const reader = new FileReader()
+  reader.onload = (ev) => {
+    imagePreview.value = ev.target?.result as string
+  }
+  reader.readAsDataURL(file)
+
+  if (fileInput.value) fileInput.value.value = ""
+}
+
 const save = async () => {
   loading.value = true
   saved.value = false
+
+  if (pendingImageFile.value) {
+    const providerId = providerStore.myProvider?.id
+    if (providerId) {
+      await providerStore.uploadProfileImage(providerId, pendingImageFile.value)
+      pendingImageFile.value = null
+      imagePreview.value = null
+    }
+  }
 
   await providerStore.updateMy({
     shop_name: shop_name.value,
@@ -56,6 +105,45 @@ const save = async () => {
     </div>
 
     <div class="form-card">
+
+      <!-- Profile Picture -->
+      <div class="avatar-section">
+        <div class="avatar-wrapper" @click="triggerFileInput">
+          <img v-if="displayImage" :src="displayImage" class="avatar-img" alt="Profile" />
+          <div v-else class="avatar-placeholder">
+            <span class="avatar-initials">{{ shopInitials || "?" }}</span>
+          </div>
+
+          <div class="avatar-overlay" :class="{ uploading: imageLoading }">
+            <svg v-if="!imageLoading" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
+              <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="avatar-info">
+          <span class="avatar-label">Profile Photo</span>
+          <button class="avatar-change-btn" @click="triggerFileInput" :disabled="imageLoading">
+            {{ imageLoading ? "Uploading..." : "Change photo" }}
+          </button>
+          <span class="avatar-hint">JPG or PNG, max 5MB</span>
+        </div>
+
+        <input
+          ref="fileInput"
+          type="file"
+          accept="image/jpeg,image/png"
+          style="display: none"
+          @change="onFileChange"
+        />
+      </div>
+
+      <div class="card-divider" />
 
       <div class="field-group">
         <label class="field-label">Shop Name</label>
@@ -149,6 +237,108 @@ const save = async () => {
   gap: 16px;
 }
 
+/* Avatar */
+.avatar-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.avatar-img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+}
+
+.avatar-placeholder {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(124, 58, 237, 0.2);
+  border: 0.5px solid rgba(124, 58, 237, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-initials {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: rgba(167, 139, 250, 0.9);
+}
+
+.avatar-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.avatar-wrapper:hover .avatar-overlay,
+.avatar-overlay.uploading {
+  opacity: 1;
+}
+
+.avatar-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.avatar-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.avatar-change-btn {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(167, 139, 250, 0.85);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  text-align: left;
+  transition: color 0.15s;
+}
+
+.avatar-change-btn:hover:not(:disabled) {
+  color: rgba(167, 139, 250, 1);
+}
+
+.avatar-change-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.avatar-hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.2);
+}
+
+/* Fields */
 .field-group {
   display: flex;
   flex-direction: column;
