@@ -132,7 +132,12 @@ const formatDateTime = (iso: string) => {
         <div class="card-body">
           <div class="cb-top">
             <h3 class="svc-name">{{ app.service_name }}</h3>
-            <span class="badge" :class="statusClass(app.status)">{{ app.status }}</span>
+            <div class="cb-badges">
+              <span class="badge" :class="statusClass(app.status)">{{ app.status }}</span>
+              <span v-if="app.customer_latitude && app.customer_longitude" class="badge badge-home">
+                🚗 Home Service
+              </span>
+            </div>
           </div>
 
           <div class="cust-info">
@@ -386,6 +391,15 @@ const formatDateTime = (iso: string) => {
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 12px;
+  gap: 12px;
+}
+
+.cb-badges {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .svc-name {
@@ -524,6 +538,7 @@ const formatDateTime = (iso: string) => {
 .badge-cancelled { background: rgba(248,113,113,0.1);  color: rgba(248,113,113,0.6); border: 0.5px solid rgba(248,113,113,0.2); }
 .badge-completed { background: rgba(167,139,250,0.15); color: #a78bfa; border: 0.5px solid rgba(167,139,250,0.3); }
 .badge-default   { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); border: 0.5px solid rgba(255,255,255,0.12); }
+.badge-home      { background: rgba(56,189,248,0.15); color: #38bdf8; border: 0.5px solid rgba(56,189,248,0.3); }
 
 @media (max-width: 600px) {
   .page { padding: 20px 14px; }

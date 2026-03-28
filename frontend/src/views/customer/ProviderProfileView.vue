@@ -3,7 +3,7 @@ import { onMounted, ref, computed, watch } from "vue"
 import { useRoute } from "vue-router"
 import { useProviderStore } from "../../stores/providerStore"
 import { useAppointmentStore } from "../../stores/appointmentStore"
-import LocationPickerMap from "../../components/LocationPickerMap.vue"
+import HomeServiceMapCard from "../../components/HomeServiceMapCard.vue"
 import api from "../../services/api"
 
 const route = useRoute()
@@ -14,6 +14,7 @@ const id = Number(route.params.id)
 
 const activeServiceId = ref<number | null>(null)
 const selectedDate = ref<string>("")
+const serviceLocationType = ref<"shop" | "home">("shop")
 const customerLat = ref<number | null>(null)
 const customerLng = ref<number | null>(null)
 
@@ -41,6 +42,7 @@ onMounted(async () => {
 async function loadSlots(serviceId: number) {
   activeServiceId.value = serviceId
   selectedDate.value = ""
+  serviceLocationType.value = "shop"
   errorMsg.value = ""
   await loadAvailableDatesForMonth()
 }
@@ -103,13 +105,20 @@ async function book(serviceId: number, slot: string) {
     const [dateStr, timeStrFull] = slot.split("T")
     const timeStr = timeStrFull.slice(0, 5)
 
+    const isHome = serviceLocationType.value === "home"
+    if (isHome && (!customerLat.value || !customerLng.value)) {
+      errorMsg.value = "Please pin your location for Home Service."
+      bookingLoading.value = false
+      return
+    }
+
     await appointmentStore.bookAppointment({
       provider_id: id,
       service_id: serviceId,
       date: dateStr,
       time: timeStr,
-      customer_latitude: customerLat.value,
-      customer_longitude: customerLng.value
+      customer_latitude: isHome ? customerLat.value : null,
+      customer_longitude: isHome ? customerLng.value : null
     })
 
     await fetchSlots()
@@ -237,7 +246,6 @@ const isPrevDisabled = computed(() => {
     </div>
 
     <template v-else>
-
       <div class="provider-header">
         <div class="provider-avatar">
           {{ providerStore.providerProfile.provider.shop_name?.charAt(0) }}
@@ -262,7 +270,9 @@ const isPrevDisabled = computed(() => {
 
       <h2 class="section-title">Services</h2>
 
-      <div v-if="!providerStore.providerProfile.services.length" class="state-msg">
+      <div class="profile-layout">
+        <div class="profile-main">
+          <div v-if="!providerStore.providerProfile.services.length" class="state-msg">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(255,255,255,0.15);margin-bottom:12px">
           <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
           <rect x="9" y="3" width="6" height="4" rx="1"/>
@@ -341,14 +351,13 @@ const isPrevDisabled = computed(() => {
                 <div
                   v-if="providerStore.providerProfile.provider.offers_home_service"
                   class="location-section"
+                  style="margin-bottom: 24px; border-top: none; padding-top: 0;"
                 >
-                  <div class="location-label">Set your location</div>
-                  <div class="location-map">
-                    <LocationPickerMap @location-selected="setLocation" />
+                  <div class="location-label">Service Location</div>
+                  <div class="location-toggle">
+                    <button :class="{ active: serviceLocationType === 'shop' }" @click="serviceLocationType = 'shop'">At Shop</button>
+                    <button :class="{ active: serviceLocationType === 'home' }" @click="serviceLocationType = 'home'">Home Service</button>
                   </div>
-                  <p v-if="customerLat && customerLng" class="coords-hint">
-                    {{ customerLat.toFixed(4) }}, {{ customerLng.toFixed(4) }}
-                  </p>
                 </div>
 
                 <div class="slots">
@@ -432,12 +441,19 @@ const isPrevDisabled = computed(() => {
                 </div>
               </div>
             </div>
-
           </div>
-
         </div>
-      </div>
+        </div>
+        </div>
 
+        <HomeServiceMapCard
+          :show="Boolean(selectedDate && serviceLocationType === 'home' && providerStore.providerProfile.provider.offers_home_service)"
+          :customerLat="customerLat"
+          :customerLng="customerLng"
+          @location-selected="setLocation"
+        />
+
+      </div>
     </template>
 
   </div>

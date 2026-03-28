@@ -11,26 +11,35 @@ let map: any = null
 let marker: any = null
 
 function useMyLocation() {
-  navigator.geolocation.getCurrentPosition((pos) => {
-    const newLat = pos.coords.latitude
-    const newLng = pos.coords.longitude
+  if (!navigator.geolocation) return
 
-    lat.value = newLat
-    lng.value = newLng
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const newLat = pos.coords.latitude
+      const newLng = pos.coords.longitude
 
-    emit("location-selected", {
-      latitude: newLat,
-      longitude: newLng
-    })
+      lat.value = newLat
+      lng.value = newLng
 
-    map.setView([newLat, newLng], 15)
+      emit("location-selected", {
+        latitude: newLat,
+        longitude: newLng
+      })
 
-    if (marker) {
-      marker.setLatLng([newLat, newLng])
-    } else {
-      marker = L.marker([newLat, newLng]).addTo(map)
+      if (map) {
+        map.setView([newLat, newLng], 15)
+
+        if (marker) {
+          marker.setLatLng([newLat, newLng])
+        } else {
+          marker = L.marker([newLat, newLng]).addTo(map)
+        }
+      }
+    },
+    (err) => {
+      console.warn("Location permission denied or unavailable.", err)
     }
-  })
+  )
 }
 
 onMounted(() => {
@@ -68,6 +77,9 @@ onMounted(() => {
   }, 100)
   window.setTimeout(() => {
     map?.invalidateSize()
+    
+    // Auto-fetch location if possible
+    useMyLocation()
   }, 400)
 })
 </script>
