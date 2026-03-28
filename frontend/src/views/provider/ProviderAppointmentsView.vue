@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick } from "vue"
+import { ref, computed, onMounted, watch } from "vue"
 import { useAppointmentStore } from "../../stores/appointmentStore"
-import L from "leaflet"
+import CustomerLocationMapCard from "../../components/CustomerLocationMapCard.vue"
 
 const appointmentStore = useAppointmentStore()
 const activeTab = ref<"pending" | "upcoming" | "past">("pending")
-const visibleMaps = ref<Record<number, boolean>>({})
+const selectedApp = ref<any>(null)
 
 onMounted(async () => {
   await appointmentStore.fetchAppointments()
@@ -20,37 +20,14 @@ const filteredItems = computed(() => {
   }).sort((a,b) => new Date(a.appointment_time).getTime() - new Date(b.appointment_time).getTime())
 })
 
-const toggleMap = async (appointment: any) => {
-  const id = appointment.id
-  visibleMaps.value[id] = !visibleMaps.value[id]
-  
-  if (visibleMaps.value[id]) {
-    await nextTick()
-    if (appointment.customer_latitude && appointment.customer_longitude) {
-      const mapId = `map-${id}`
-      const map = L.map(mapId).setView(
-        [appointment.customer_latitude, appointment.customer_longitude],
-        15
-      )
-
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "&copy; OpenStreetMap contributors"
-      }).addTo(map)
-
-      const customerIcon = L.divIcon({
-        className: "",
-        html: `<div class="kasaup-provider-pin"></div>`,
-        iconSize: [14, 14],
-        iconAnchor: [7, 7]
-      })
-
-      L.marker(
-        [appointment.customer_latitude, appointment.customer_longitude],
-        { icon: customerIcon }
-      ).addTo(map)
-    }
-  }
+function selectApp(app: any) {
+  if (!app.customer_latitude || !app.customer_longitude) return
+  selectedApp.value = selectedApp.value?.id === app.id ? null : app
 }
+
+watch(activeTab, () => {
+  selectedApp.value = null
+})
 
 const approve  = async (id: number) => { await appointmentStore.approve(id) }
 const cancel   = async (id: number) => { await appointmentStore.cancel(id) }
@@ -109,70 +86,82 @@ const formatDateTime = (iso: string) => {
       </div>
     </div>
 
-    <div v-if="appointmentStore.loading" class="state-msg">
-      <span class="spin"></span> <p>Syncing schedule...</p>
-    </div>
-
-    <div v-else-if="filteredItems.length === 0" class="state-msg empty">
-      <div class="empty-icon">🎉</div>
-      <h3 class="empt-text">No {{ activeTab }} appointments!</h3>
-      <p class="empt-sub">You have a clear schedule right now.</p>
-    </div>
-
-    <div v-else class="cards-grid">
-      <div v-for="app in filteredItems" :key="app.id" class="app-card">
-        
-        <!-- Left Strip for Timing -->
-        <div class="card-left-strip">
-          <div class="cd-date">{{ formatDateTime(app.appointment_time).date }}</div>
-          <div class="cd-time">{{ formatDateTime(app.appointment_time).time }}</div>
+    <div class="appointments-layout">
+      <div class="appointments-main">
+        <div v-if="appointmentStore.loading" class="state-msg">
+          <span class="spin"></span> <p>Syncing schedule...</p>
         </div>
 
-        <!-- Main Content Body -->
-        <div class="card-body">
-          <div class="cb-top">
-            <h3 class="svc-name">{{ app.service_name }}</h3>
-            <div class="cb-badges">
-              <span class="badge" :class="statusClass(app.status)">{{ app.status }}</span>
-              <span v-if="app.customer_latitude && app.customer_longitude" class="badge badge-home">
-                🚗 Home Service
-              </span>
-            </div>
-          </div>
+        <div v-else-if="filteredItems.length === 0" class="state-msg empty">
+          <div class="empty-icon">🎉</div>
+          <h3 class="empt-text">No {{ activeTab }} appointments!</h3>
+          <p class="empt-sub">You have a clear schedule right now.</p>
+        </div>
 
-          <div class="cust-info">
-             <div class="ci-avatar">{{ app.customer_name.charAt(0).toUpperCase() }}</div>
-             <div class="ci-name">{{ app.customer_name }}</div>
-          </div>
-
-          <!-- Actions & Map Toggle row -->
-          <div class="cb-bottom">
-            <div class="cb-actions">
-              <button v-if="app.status === 'pending'" class="abtn abtn-green" @click="approve(app.id)">Approve</button>
-              <button v-if="app.status === 'approved' || app.status === 'confirmed'" class="abtn abtn-blue" @click="complete(app.id)">Complete</button>
-              <button v-if="app.status === 'pending' || app.status === 'approved' || app.status === 'confirmed'" class="abtn abtn-red" @click="cancel(app.id)">Cancel</button>
-            </div>
+        <div v-else class="cards-grid">
+          <div
+            v-for="app in filteredItems"
+            :key="app.id"
+            class="app-card"
+            :class="{ 'app-card-selected': selectedApp?.id === app.id }"
+          >
             
-            <button 
-              v-if="app.customer_latitude && app.customer_longitude"
-              class="map-toggle-btn"
-              :class="{ open: visibleMaps[app.id] }"
-              @click="toggleMap(app)"
-            >
-              {{ visibleMaps[app.id] ? 'Locating...' : 'Show Map' }}
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-              </svg>
-            </button>
-          </div>
+            <!-- Left Strip for Timing -->
+            <div class="card-left-strip">
+              <div class="cd-date">{{ formatDateTime(app.appointment_time).date }}</div>
+              <div class="cd-time">{{ formatDateTime(app.appointment_time).time }}</div>
+            </div>
 
-          <!-- Dynamic Leaflet Map -->
-          <div class="map-dropdown" :class="{ show: visibleMaps[app.id] }">
-            <div :id="`map-${app.id}`" class="map-container"></div>
-          </div>
+            <!-- Main Content Body -->
+            <div class="card-body">
+              <div class="cb-top">
+                <h3 class="svc-name">{{ app.service_name }}</h3>
+                <div class="cb-badges">
+                  <span class="badge" :class="statusClass(app.status)">{{ app.status }}</span>
+                  <span v-if="app.customer_latitude && app.customer_longitude" class="badge badge-home">
+                    🚗 Home Service
+                  </span>
+                </div>
+              </div>
 
+              <div class="cust-info">
+                 <div class="ci-avatar">{{ app.customer_name.charAt(0).toUpperCase() }}</div>
+                 <div class="ci-name">{{ app.customer_name }}</div>
+              </div>
+
+              <!-- Actions row -->
+              <div class="cb-bottom">
+                <div class="cb-actions">
+                  <button v-if="app.status === 'pending'" class="abtn abtn-green" @click="approve(app.id)">Approve</button>
+                  <button v-if="app.status === 'approved' || app.status === 'confirmed'" class="abtn abtn-blue" @click="complete(app.id)">Complete</button>
+                  <button v-if="app.status === 'pending' || app.status === 'approved' || app.status === 'confirmed'" class="abtn abtn-red" @click="cancel(app.id)">Cancel</button>
+                </div>
+                
+                <button 
+                  v-if="app.customer_latitude && app.customer_longitude"
+                  class="map-toggle-btn"
+                  :class="{ open: selectedApp?.id === app.id }"
+                  @click="selectApp(app)"
+                >
+                  {{ selectedApp?.id === app.id ? 'Hide Map' : 'View Location' }}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                  </svg>
+                </button>
+              </div>
+
+            </div>
+          </div>
         </div>
       </div>
+
+      <!-- Customer Location Map Card (right sidebar) -->
+      <CustomerLocationMapCard
+        :show="Boolean(selectedApp && selectedApp.customer_latitude && selectedApp.customer_longitude)"
+        :lat="selectedApp?.customer_latitude ?? null"
+        :lng="selectedApp?.customer_longitude ?? null"
+        :customerName="selectedApp?.customer_name"
+      />
     </div>
   </div>
 </template>
@@ -330,11 +319,22 @@ const formatDateTime = (iso: string) => {
 }
 
 /* Grid layout */
+.appointments-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+}
+
+.appointments-main {
+  flex: 1;
+  min-width: 0;
+  max-width: 760px;
+}
+
 .cards-grid {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 800px;
 }
 
 /* Timeline Card */
@@ -349,6 +349,10 @@ const formatDateTime = (iso: string) => {
 .app-card:hover {
   background: rgba(255, 255, 255, 0.035);
   border-color: rgba(255, 255, 255, 0.08);
+}
+.app-card-selected {
+  border-color: rgba(56, 189, 248, 0.35) !important;
+  background: rgba(56, 189, 248, 0.04) !important;
 }
 
 /* Left Strip */

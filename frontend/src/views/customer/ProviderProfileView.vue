@@ -17,6 +17,7 @@ const selectedDate = ref<string>("")
 const serviceLocationType = ref<"shop" | "home">("shop")
 const customerLat = ref<number | null>(null)
 const customerLng = ref<number | null>(null)
+const lightboxImg = ref<string | null>(null)
 
 const loadingSlots = ref(false)
 const bookingLoading = ref(false)
@@ -294,6 +295,8 @@ const isPrevDisabled = computed(() => {
               :key="img.id"
               :src="imgUrl(img.image_url)"
               class="service-img"
+              style="cursor:zoom-in;"
+              @click="lightboxImg = imgUrl(img.image_url)"
             />
           </div>
 
@@ -455,6 +458,14 @@ const isPrevDisabled = computed(() => {
 
       </div>
     </template>
+
+    <!-- Lightbox -->
+    <Teleport to="body">
+      <div v-if="lightboxImg" class="lightbox-overlay" @click="lightboxImg = null">
+        <img :src="lightboxImg" class="lightbox-img" @click.stop />
+        <button class="lightbox-close" @click="lightboxImg = null">✕</button>
+      </div>
+    </Teleport>
 
   </div>
 </template>
