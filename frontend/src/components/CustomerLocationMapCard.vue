@@ -24,8 +24,8 @@ function initMap() {
 
   map = L.map("provider-view-map").setView([props.lat, props.lng], 15)
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "© OpenStreetMap contributors",
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+    attribution: "© CartoDB",
     noWrap: true
   }).addTo(map)
 
@@ -62,7 +62,10 @@ watch(() => [props.show, props.lat, props.lng], ([show]) => {
     <div v-if="show" class="map-sidebar">
       <div class="map-card">
         <div class="map-card-header">
-          <div class="map-card-icon">📍</div>
+          <svg class="map-pin-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
           <div>
             <h3 class="map-card-title">Customer Location</h3>
             <p class="map-card-desc">
@@ -116,8 +119,10 @@ watch(() => [props.show, props.lat, props.lng], ([show]) => {
   margin-bottom: 20px;
 }
 
-.map-card-icon {
-  font-size: 1.5rem;
+.map-pin-icon {
+  width: 22px;
+  height: 22px;
+  color: #38bdf8;
   flex-shrink: 0;
   margin-top: 2px;
 }

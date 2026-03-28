@@ -130,7 +130,10 @@ const firstImage = (svc: any): string | null => {
         </div>
 
         <div v-else-if="!filtered.length" class="state">
-          <span>🔍</span>
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(255,255,255,0.2)">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="M21 21l-4.35-4.35"/>
+          </svg>
           <p>No services found matching your criteria.</p>
           <button class="rst" @click="query=''; activeCat='all'; svcStore.fetchServices()">Clear all filters</button>
         </div>

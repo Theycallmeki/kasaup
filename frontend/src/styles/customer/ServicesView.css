@@ -248,35 +248,35 @@
 /* Grid & Cards - Shopee Style */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
 }
 
 .card {
   position: relative;
-  background: #181525;
-  border: 1px solid rgba(255, 255, 255, .06);
-  border-radius: 12px;
+  background: #13111f;
+  border: 1px solid rgba(255, 255, 255, .07);
+  border-radius: 18px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform .2s, border-color .2s, box-shadow .2s;
+  transition: transform .25s cubic-bezier(.16,1,.3,1), border-color .25s, box-shadow .25s;
   display: flex;
   flex-direction: column;
 }
 
 .card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px);
   border-color: var(--a);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px color-mix(in srgb, var(--a) 25%, transparent);
 }
 
 .thumb {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 3 / 2;
   flex-shrink: 0;
-  background: #0e0c1a;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  background: linear-gradient(135deg, rgba(99, 60, 220, 0.08), rgba(56, 189, 248, 0.06));
+  overflow: hidden;
 }
 
 .thumb img {
@@ -304,22 +304,22 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding: 14px;
+  padding: 18px;
+  gap: 0;
 }
 
 .ti {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 500;
+  font-family: 'Sora', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
   margin: 0 0 6px 0;
   color: #fff;
-  line-height: 1.4;
+  line-height: 1.35;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  height: 2.8em;
 }
 
 .by {
@@ -349,9 +349,12 @@
 }
 
 .dur {
-  font-size: 10px;
+  font-size: 11px;
   color: rgba(255, 255, 255, .5);
-  font-weight: 500;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 3px 8px;
+  border-radius: 6px;
 }
 
 .cat-pill {
@@ -379,9 +382,9 @@
 
 .pr {
   font-family: 'Sora', sans-serif;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: #a78bfa;
+  color: #c4b5fd;
   letter-spacing: -0.02em;
 }
 
@@ -393,21 +396,22 @@
 }
 
 .bk {
-  padding: 6px 16px;
-  border-radius: 6px;
+  padding: 8px 20px;
+  border-radius: 8px;
   border: none;
-  background: #a78bfa;
-  color: #0e0c1a;
+  background: linear-gradient(135deg, rgba(99, 60, 220, 0.9), rgba(130, 90, 255, 0.9));
+  color: #fff;
   font-family: 'DM Sans', sans-serif;
-  font-size: .8rem;
+  font-size: .85rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all .15s;
+  transition: all .2s;
+  letter-spacing: 0.01em;
 }
 
 .bk:hover {
-  background: #8b5cf6;
-  box-shadow: 0 4px 12px rgba(167, 139, 250, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(130, 90, 255, 0.4);
 }
 
 /* Modal */
@@ -655,7 +659,8 @@
   }
 
   .grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
   }
 
   .mst {

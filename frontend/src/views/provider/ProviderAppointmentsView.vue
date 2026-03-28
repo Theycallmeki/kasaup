@@ -93,7 +93,12 @@ const formatDateTime = (iso: string) => {
         </div>
 
         <div v-else-if="filteredItems.length === 0" class="state-msg empty">
-          <div class="empty-icon">🎉</div>
+          <div class="empty-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M8 12l3 3 5-5"/>
+            </svg>
+          </div>
           <h3 class="empt-text">No {{ activeTab }} appointments!</h3>
           <p class="empt-sub">You have a clear schedule right now.</p>
         </div>
@@ -119,7 +124,10 @@ const formatDateTime = (iso: string) => {
                 <div class="cb-badges">
                   <span class="badge" :class="statusClass(app.status)">{{ app.status }}</span>
                   <span v-if="app.customer_latitude && app.customer_longitude" class="badge badge-home">
-                    🚗 Home Service
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline;vertical-align:middle;margin-right:4px">
+                      <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+                    </svg>
+                    Home Service
                   </span>
                 </div>
               </div>
@@ -293,9 +301,8 @@ const formatDateTime = (iso: string) => {
   border-radius: 20px;
 }
 .empty-icon {
-  font-size: 2.5rem;
+  color: rgba(167,139,250,0.6);
   margin-bottom: 8px;
-  opacity: 0.8;
 }
 .empt-text {
   font-family: 'Sora', sans-serif;
@@ -554,6 +561,15 @@ const formatDateTime = (iso: string) => {
     padding: 12px 20px;
     border-right: none;
     border-bottom: 1px dashed rgba(255,255,255,0.05);
+  }
+}
+
+@media (max-width: 900px) {
+  .appointments-layout {
+    flex-direction: column;
+  }
+  .appointments-main {
+    max-width: 100%;
   }
 }
 </style>

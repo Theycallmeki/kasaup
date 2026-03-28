@@ -16,7 +16,11 @@ onMounted(() => {
     <Sidebar v-if="auth.user" />
 
     <main class="content">
-      <router-view />
+      <RouterView v-slot="{ Component }">
+        <Transition name="page" mode="out-in">
+          <component :is="Component" :key="$route.fullPath" />
+        </Transition>
+      </RouterView>
     </main>
   </div>
 </template>
@@ -61,5 +65,18 @@ onMounted(() => {
     height:100%;
     padding:0;
   }
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
 }
 </style>

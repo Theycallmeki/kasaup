@@ -244,6 +244,16 @@ const icons: Record<string, string> = {
     border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
   }
   .sidebar.collapsed { width: 100%; }
-  .nav { overflow: visible; }
+  .nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: visible;
+    gap: 2px;
+  }
+  .link {
+    flex: 0 0 auto;
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
 }
 </style>
