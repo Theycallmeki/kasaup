@@ -185,12 +185,14 @@ function goCategories() {
 .card-title {
   font-size: 14px;
   font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
   color: #fff;
   margin: 0 0 3px;
 }
 
 .card-desc {
   font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
   color: rgba(255, 255, 255, 0.35);
   margin: 0;
 }
