@@ -112,6 +112,17 @@ const login = async () => {
   font-family: 'DM Sans', sans-serif;
 }
 
+/* ── Responsive overrides ── */
+@media (max-width: 480px) {
+  .login-page {
+    position: relative;
+    min-height: 100svh;
+    overflow-y: auto;
+    align-items: flex-start;
+    padding: 32px 0 40px;
+  }
+}
+
 .bg-orb {
   position: absolute;
   border-radius: 50%;
@@ -145,6 +156,21 @@ const login = async () => {
   animation: rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+@media (max-width: 480px) {
+  .login-card {
+    padding: 36px 24px 32px;
+    border-radius: 20px;
+    width: calc(100% - 32px);
+    margin: auto;
+  }
+}
+
+@media (max-width: 360px) {
+  .login-card {
+    padding: 28px 18px 28px;
+  }
+}
+
 .eyebrow {
   display: inline-block;
   font-size: 11px;
@@ -169,6 +195,13 @@ const login = async () => {
 }
 .accent {
   color: #a78bfa;
+}
+
+@media (max-width: 480px) {
+  .title { font-size: 2rem; }
+  .subtitle { margin-bottom: 20px; }
+  .orb1 { width: 260px; height: 260px; }
+  .orb2 { width: 220px; height: 220px; }
 }
 
 .subtitle {

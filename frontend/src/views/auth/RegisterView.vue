@@ -132,6 +132,16 @@ const register = async () => {
   font-family: 'DM Sans', sans-serif;
 }
 
+@media (max-width: 480px) {
+  .register-page {
+    position: relative;
+    min-height: 100svh;
+    overflow-y: auto;
+    align-items: flex-start;
+    padding: 32px 0 40px;
+  }
+}
+
 .bg-orb {
   position: absolute;
   border-radius: 50%;
@@ -163,6 +173,21 @@ const register = async () => {
   text-align: center;
   backdrop-filter: blur(12px);
   animation: rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (max-width: 480px) {
+  .register-card {
+    padding: 32px 20px 28px;
+    border-radius: 20px;
+    width: calc(100% - 32px);
+    margin: auto;
+  }
+}
+
+@media (max-width: 360px) {
+  .register-card {
+    padding: 24px 16px 24px;
+  }
 }
 
 .eyebrow {
@@ -199,6 +224,31 @@ const register = async () => {
 .role-label {
   color: rgba(167, 139, 250, 0.8);
   text-transform: capitalize;
+}
+
+@media (max-width: 480px) {
+  .title { font-size: 2rem; }
+  .subtitle { margin-bottom: 18px; }
+  .eyebrow { margin-bottom: 14px; }
+  .orb1 { width: 260px; height: 260px; }
+  .orb2 { width: 220px; height: 220px; }
+}
+
+/* Landscape mobile: reduce gaps so form fits without scrolling if possible */
+@media (max-height: 600px) and (max-width: 900px) {
+  .register-page {
+    position: relative;
+    min-height: 100svh;
+    overflow-y: auto;
+    align-items: flex-start;
+    padding: 20px 0 32px;
+  }
+  .register-card {
+    padding: 24px 20px 20px;
+  }
+  .title { font-size: 1.8rem; margin-bottom: 4px; }
+  .eyebrow { margin-bottom: 10px; }
+  .subtitle { margin-bottom: 14px; }
 }
 
 form {

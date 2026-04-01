@@ -69,6 +69,16 @@ const goProvider = () => router.push("/register?role=provider")
   font-family: 'DM Sans', sans-serif;
 }
 
+@media (max-width: 480px) {
+  .auth-page {
+    position: relative;
+    min-height: 100svh;
+    overflow-y: auto;
+    align-items: flex-start;
+    padding: 40px 0 48px;
+  }
+}
+
 .bg-orb {
   position: absolute;
   border-radius: 50%;
@@ -102,6 +112,21 @@ const goProvider = () => router.push("/register?role=provider")
   animation: rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 36px 24px 32px;
+    border-radius: 20px;
+    width: calc(100% - 32px);
+    margin: auto;
+  }
+}
+
+@media (max-width: 360px) {
+  .auth-card {
+    padding: 28px 18px 28px;
+  }
+}
+
 .eyebrow {
   display: inline-block;
   font-size: 11px;
@@ -132,6 +157,14 @@ const goProvider = () => router.push("/register?role=provider")
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.4);
   margin-bottom: 32px;
+}
+
+@media (max-width: 480px) {
+  .title { font-size: 2rem; }
+  .subtitle { margin-bottom: 24px; }
+  .orb1 { width: 260px; height: 260px; }
+  .orb2 { width: 220px; height: 220px; }
+  .btn { font-size: 0.9rem; padding: 12px 16px; }
 }
 
 .btn {

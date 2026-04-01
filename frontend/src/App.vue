@@ -57,13 +57,16 @@ onMounted(() => {
 }
 
 @media (max-width: 768px){
+  /* sidebar is hidden via Sidebar.vue, layout stays row */
   .layout{
-    flex-direction:column;
+    flex-direction: row;
   }
 
   .content{
-    height:100%;
-    padding:0;
+    height: 100%;
+    padding: 0;
+    /* prevent content from hiding under the fixed bottom nav */
+    padding-bottom: 64px;
   }
 }
 
