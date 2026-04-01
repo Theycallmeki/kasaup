@@ -8,15 +8,15 @@ import { useRouter } from "vue-router"
 import ServiceFilters from "../../components/ServiceFilters.vue"
 import api from "../../services/api"
 
-const router    = useRouter()
-const svcStore  = useServiceStore()
+const router = useRouter()
+const svcStore = useServiceStore()
 const provStore = useProviderStore()
-const catStore  = useCategoryStore()
+const catStore = useCategoryStore()
 
-const query     = ref("")
+const query = ref("")
 const activeCat = ref<number | "all">("all")
-const sort      = ref("price_asc")
-const selected  = ref<any | null>(null)
+const sort = ref("price_asc")
+const selected = ref<any | null>(null)
 const searching = ref(false)
 const viewingImage = ref<string | null>(null)
 
@@ -46,7 +46,7 @@ const filtered = computed(() => {
     )
   }
   return [...list].sort((a, b) => {
-    if (sort.value === "price_asc")  return a.price - b.price
+    if (sort.value === "price_asc") return a.price - b.price
     if (sort.value === "price_desc") return b.price - a.price
     return a.duration_minutes - b.duration_minutes
   })
@@ -72,9 +72,9 @@ function goBook(svc: any) {
   if (p) router.push(`/providers/${p.id}`)
 }
 
-const palette  = ["#38bdf8","#a78bfa","#fbbf24","#86efac","#f9a8d4","#6ee7b7","#fb923c","#818cf8"]
-const accent   = (id: number) => palette[(id ?? 0) % palette.length]
-const catName  = (id: number) => catStore.categories?.find((c: any) => c.id === id)?.name ?? "Service"
+const palette = ["#38bdf8", "#a78bfa", "#fbbf24", "#86efac", "#f9a8d4", "#6ee7b7", "#fb923c", "#818cf8"]
+const accent = (id: number) => palette[(id ?? 0) % palette.length]
+const catName = (id: number) => catStore.categories?.find((c: any) => c.id === id)?.name ?? "Service"
 const shopName = (id: number) => providerMap.value[id]?.shop_name ?? "—"
 
 const imgUrl = (path: string) =>
@@ -103,63 +103,59 @@ const firstImage = (svc: any): string | null => {
     <div class="marketplace-layout">
       <!-- Main Content Grid -->
       <main class="content-area">
-        
+
         <div class="top-bar">
           <div class="srch">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+              <circle cx="11" cy="11" r="8" />
+              <path d="M21 21l-4.35-4.35" />
             </svg>
-            <input
-              placeholder="Search services, providers…"
-              :value="query"
-              @input="onQuery(($event.target as HTMLInputElement).value)"
-            />
+            <input placeholder="Search services, providers…" :value="query"
+              @input="onQuery(($event.target as HTMLInputElement).value)" />
             <span v-if="searching" class="spin" />
           </div>
 
           <div class="sort-tabs">
             <span class="sort-label">Sort by:</span>
-            <button class="st" :class="{active: sort === 'price_asc'}" @click="sort = 'price_asc'">Price: Low to High</button>
-            <button class="st" :class="{active: sort === 'price_desc'}" @click="sort = 'price_desc'">Price: High to Low</button>
-            <button class="st" :class="{active: sort === 'duration'}" @click="sort = 'duration'">Duration</button>
+            <button class="st" :class="{ active: sort === 'price_asc' }" @click="sort = 'price_asc'">Price: Low to
+              High</button>
+            <button class="st" :class="{ active: sort === 'price_desc' }" @click="sort = 'price_desc'">Price: High to
+              Low</button>
+            <button class="st" :class="{ active: sort === 'duration' }" @click="sort = 'duration'">Duration</button>
           </div>
         </div>
 
         <aside class="sidebar">
-          <ServiceFilters 
-            :categories="catStore.categories ?? []"
-            :activeCat="activeCat"
-            @update:activeCat="activeCat = $event"
-          />
+          <ServiceFilters :categories="catStore.categories ?? []" :activeCat="activeCat"
+            @update:activeCat="activeCat = $event" />
         </aside>
 
         <div v-if="svcStore.loading" class="state">
-          <span class="spin-lg" /><p>Finding top choices…</p>
+          <span class="spin-lg" />
+          <p>Finding top choices…</p>
         </div>
 
         <div v-else-if="!filtered.length" class="state">
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(255,255,255,0.2)">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="M21 21l-4.35-4.35"/>
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+            style="color:rgba(255,255,255,0.2)">
+            <circle cx="11" cy="11" r="8" />
+            <path d="M21 21l-4.35-4.35" />
           </svg>
           <p>No services found matching your criteria.</p>
-          <button class="rst" @click="query=''; activeCat='all'; svcStore.fetchServices()">Clear all filters</button>
+          <button class="rst" @click="query = ''; activeCat = 'all'; svcStore.fetchServices()">Clear all filters</button>
         </div>
 
         <div v-else class="grid">
-          <div
-            v-for="svc in filtered" :key="svc.id"
-            class="card" :style="{ '--a': accent(svc.category_id) }"
-            @click="selected = svc"
-          >
+          <div v-for="svc in filtered" :key="svc.id" class="card" :style="{ '--a': accent(svc.category_id) }"
+            @click="selected = svc">
             <!-- Image top half -->
-            <div class="thumb" :class="{'no-img': !firstImage(svc)}">
+            <div class="thumb" :class="{ 'no-img': !firstImage(svc) }">
               <img v-if="firstImage(svc)" :src="firstImage(svc)!" :alt="svc.name" />
               <div v-else class="img-placeholder">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                  <circle cx="8.5" cy="8.5" r="1.5"/>
-                  <polyline points="21 15 16 10 5 21"/>
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <polyline points="21 15 16 10 5 21" />
                 </svg>
               </div>
             </div>
@@ -168,7 +164,7 @@ const firstImage = (svc: any): string | null => {
             <div class="c-body">
               <h3 class="ti" :title="svc.name">{{ svc.name }}</h3>
               <p class="by">{{ shopName(svc.provider_id) }}</p>
-              
+
               <div class="tags">
                 <span class="dur">⏱ {{ svc.duration_minutes }}m</span>
                 <span class="cat-pill">{{ catName(svc.category_id) }}</span>
@@ -193,15 +189,8 @@ const firstImage = (svc: any): string | null => {
           <button class="mc" @click="selected = null">✕</button>
 
           <div v-if="selected.images?.length" class="modal-gallery">
-            <img
-              v-for="(img, i) in selected.images"
-              :key="i"
-              :src="imgUrl(img.image_url)"
-              :alt="selected.name"
-              class="modal-thumb"
-              @click="viewingImage = imgUrl(img.image_url)"
-              style="cursor: zoom-in;"
-            />
+            <img v-for="(img, i) in selected.images" :key="i" :src="imgUrl(img.image_url)" :alt="selected.name"
+              class="modal-thumb" @click="viewingImage = imgUrl(img.image_url)" style="cursor: zoom-in;" />
           </div>
 
           <span class="badge lg">{{ catName(selected.category_id) }}</span>

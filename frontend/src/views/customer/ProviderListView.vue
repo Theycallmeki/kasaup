@@ -21,6 +21,7 @@ const pinnedProviderId = ref<number | null>(null)
 const suggestionsOpen = ref(false)
 const highlightIndex = ref(0)
 const inputFocused = ref(false)
+const showFilters = ref(false)
 
 const USER_LOCATION_KEY = "kasaup:user_location_v1"
 const SUGGESTION_LIMIT = 8
@@ -101,6 +102,7 @@ function runSearch() {
   pinnedProviderId.value = null
   activeSearchQuery.value = searchDraft.value.trim()
   suggestionsOpen.value = false
+  showFilters.value = false
 }
 
 function clearSearch() {
@@ -118,6 +120,7 @@ function selectSuggestion(p: Record<string, unknown>) {
   searchDraft.value = typeof p.shop_name === "string" ? p.shop_name : ""
   activeSearchQuery.value = ""
   suggestionsOpen.value = false
+  showFilters.value = false
 }
 
 function onSearchFocus() {
@@ -274,56 +277,109 @@ const categoryHasNoProviders = computed(
     !providerStore.loading &&
     categoryFilteredProviders.value.length === 0
 )
+
+const activeFilterCount = computed(() => {
+  let count = 0
+  if (categoryFilter.value !== "") count++
+  return count
+})
 </script>
 
 <template>
   <div class="providers-page">
 
-    <form class="search-bar" @submit.prevent="runSearch">
-      <label class="category-field">
-        <span class="category-label">Category</span>
-        <select v-model="categoryFilter" class="category-select">
-          <option value="">All categories</option>
-          <option v-for="c in categories" :key="c.id" :value="String(c.id)">
-            {{ c.name }}
-          </option>
-        </select>
-      </label>
+    <!-- Unified Search Bar -->
+    <div class="search-bar-wrapper">
+      <form class="search-bar" @submit.prevent="runSearch">
 
-      <div class="search-combo">
-        <div class="search-input-wrap">
-          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2">
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.35-4.35" />
-          </svg>
-          <input v-model="searchDraft" type="search" placeholder="Search category, services, shop, address…"
-            autocomplete="off" @focus="onSearchFocus" @blur="onSearchBlur" @input="onSearchInput"
-            @keydown="onSearchKeydown" />
+        <!-- Search Input with Dropdown Toggle (Mobile) -->
+        <div class="search-input-section search-with-filter">
+          <div class="search-input-wrap">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+            <input v-model="searchDraft" type="search" placeholder="Search providers, services…" autocomplete="off"
+              @focus="onSearchFocus" @blur="onSearchBlur" @input="onSearchInput" @keydown="onSearchKeydown" />
+          </div>
+
+          <!-- FILTER ICON (moved here) -->
+          <button type="button" class="filter-toggle filter-toggle--mobile" @click.prevent="showFilters = !showFilters">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+            </svg>
+          </button>
+
+          <!-- Suggestion Dropdown -->
+          <ul v-show="showSuggestionDropdown" class="suggest-dropdown">
+            <li v-for="(p, i) in suggestions" :key="String(p.id)" class="suggest-item"
+              :class="{ active: i === highlightIndex }" @mousedown.prevent="selectSuggestion(p)">
+              <div class="suggest-title">{{ p.shop_name }}</div>
+              <div class="suggest-loc">{{ locationLine(p) }}</div>
+              <div v-if="categoryLabel(p)" class="suggest-cat">{{ categoryLabel(p) }}</div>
+            </li>
+          </ul>
         </div>
 
-        <ul v-show="showSuggestionDropdown" class="suggest-dropdown">
-          <li v-for="(p, i) in suggestions" :key="String(p.id)" class="suggest-item"
-            :class="{ active: i === highlightIndex }" @mousedown.prevent="selectSuggestion(p)">
-            <div class="suggest-title">{{ p.shop_name }}</div>
-            <div class="suggest-loc">{{ locationLine(p) }}</div>
-            <div v-if="categoryLabel(p)" class="suggest-cat">{{ categoryLabel(p) }}</div>
-          </li>
-        </ul>
+        <!-- Filter Toggle Button (Mobile) / Category Dropdown (Desktop) -->
+        <div class="filter-section">
+          <select v-model="categoryFilter" class="category-select">
+            <option value="">All Categories</option>
+            <option v-for="c in categories" :key="c.id" :value="String(c.id)">
+              {{ c.name }}
+            </option>
+          </select>
+        </div>
+
+
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button type="button" class="location-btn" @click="useMyLocation">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12" />
+            </svg>
+            <span class="btn-label">Use my location</span>
+          </button>
+
+          <button type="submit" class="search-btn">Search</button>
+        </div>
+      </form>
+
+      <!-- Mobile Filter Dropdown Panel -->
+      <div v-if="showFilters" class="mobile-filter-panel">
+        <div class="filter-panel-content">
+          <h3 class="filter-panel-title">Category</h3>
+          <div class="filter-options">
+            <button type="button" class="filter-option" :class="{ active: categoryFilter === '' }"
+              @click="categoryFilter = ''; showFilters = false">
+              All Categories
+              <svg v-if="categoryFilter === ''" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+              </svg>
+            </button>
+            <button v-for="c in categories" :key="c.id" type="button" class="filter-option"
+              :class="{ active: categoryFilter === String(c.id) }"
+              @click="categoryFilter = String(c.id); showFilters = false">
+              {{ c.name }}
+              <svg v-if="categoryFilter === String(c.id)" width="16" height="16" viewBox="0 0 24 24"
+                fill="currentColor">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+              </svg>
+            </button>
+          </div>
+          <button v-if="categoryFilter !== ''" type="button" class="clear-filter-btn"
+            @click="categoryFilter = ''; showFilters = false">
+            Clear Filter
+          </button>
+        </div>
       </div>
+    </div>
 
-      <button type="submit" class="search-btn">Search</button>
-
-      <button type="button" class="location-btn" @click="useMyLocation">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="3" />
-          <path
-            d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12" />
-        </svg>
-        Use My Location
-      </button>
-    </form>
-
+    <!-- Error/Empty States -->
     <p v-if="categoryHasNoProviders" class="search-empty search-empty--muted">
       No providers in this category yet.
       <button type="button" class="link-clear" @click="clearSearch">clear filters</button>
@@ -334,9 +390,11 @@ const categoryHasNoProviders = computed(
       <button type="button" class="link-clear" @click="clearSearch">Clear search</button>
     </p>
 
+    <!-- Map -->
     <div v-if="providerStore.loading" class="map-loading">Loading providers…</div>
 
-    <ProviderMap v-else :providers="filteredProviders" :userLat="userLat" :userLng="userLng" />
+    <ProviderMap v-else :providers="filteredProviders" :userLat="userLat" :userLng="userLng"
+      :hide-zoom-controls="true" />
 
   </div>
 </template>

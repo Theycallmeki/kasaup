@@ -70,7 +70,7 @@ async function loadAvailableDatesForMonth() {
         if (appointmentStore.slots.length > 0) {
           availableDates.value = new Set([...availableDates.value, dateStr])
         }
-      }).catch(() => {})
+      }).catch(() => { })
     )
   }
 
@@ -149,10 +149,10 @@ const formatTimeOnly = (iso: string) =>
   })
 
 const MONTH_NAMES = [
-  "January","February","March","April","May","June",
-  "July","August","September","October","November","December"
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
 ]
-const DAY_LABELS = ["Su","Mo","Tu","We","Th","Fr","Sa"]
+const DAY_LABELS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
 
 const calendarLabel = computed(() =>
   `${MONTH_NAMES[calendarMonth.value]} ${calendarYear.value}`
@@ -190,7 +190,7 @@ function isSelected(dateStr: string) {
 
 function isToday(dateStr: string) {
   const t = new Date()
-  const ts = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,"0")}-${String(t.getDate()).padStart(2,"0")}`
+  const ts = `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`
   return dateStr === ts
 }
 
@@ -239,9 +239,10 @@ const isPrevDisabled = computed(() => {
     </div>
 
     <div v-else-if="!providerStore.providerProfile" class="state-msg">
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(255,255,255,0.15);margin-bottom:12px">
-        <circle cx="12" cy="8" r="4"/>
-        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+        style="color:rgba(255,255,255,0.15);margin-bottom:12px">
+        <circle cx="12" cy="8" r="4" />
+        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
       </svg>
       Provider not found.
     </div>
@@ -258,10 +259,7 @@ const isPrevDisabled = computed(() => {
           <p class="provider-desc">
             {{ providerStore.providerProfile.provider.description }}
           </p>
-          <div
-            v-if="providerStore.providerProfile.provider.offers_home_service"
-            class="home-badge"
-          >
+          <div v-if="providerStore.providerProfile.provider.offers_home_service" class="home-badge">
             Offers Home Service
           </div>
         </div>
@@ -274,187 +272,156 @@ const isPrevDisabled = computed(() => {
       <div class="profile-layout">
         <div class="profile-main">
           <div v-if="!providerStore.providerProfile.services.length" class="state-msg">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(255,255,255,0.15);margin-bottom:12px">
-          <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
-          <rect x="9" y="3" width="6" height="4" rx="1"/>
-        </svg>
-        No services available.
-      </div>
-
-      <div v-else class="services">
-        <div
-          v-for="service in providerStore.providerProfile.services"
-          :key="service.id"
-          class="service-card"
-          :class="{ 'service-active': activeServiceId === service.id }"
-        >
-
-          <div v-if="service.images?.length" class="service-images">
-            <img
-              v-for="img in service.images"
-              :key="img.id"
-              :src="imgUrl(img.image_url)"
-              class="service-img"
-              style="cursor:zoom-in;"
-              @click="lightboxImg = imgUrl(img.image_url)"
-            />
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+              style="color:rgba(255,255,255,0.15);margin-bottom:12px">
+              <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
+              <rect x="9" y="3" width="6" height="4" rx="1" />
+            </svg>
+            No services available.
           </div>
 
-          <div class="service-top">
-            <div>
-              <div class="service-name">{{ service.name }}</div>
-              <div class="service-meta">
-                <span class="meta-pill">₱{{ service.price }}</span>
-                <span class="meta-pill">{{ service.duration_minutes }} min</span>
-              </div>
-            </div>
+          <div v-else class="services">
+            <div v-for="service in providerStore.providerProfile.services" :key="service.id" class="service-card"
+              :class="{ 'service-active': activeServiceId === service.id }">
 
-            <button
-              class="book-btn"
-              :class="{ 'book-btn-active': activeServiceId === service.id }"
-              @click="loadSlots(service.id)"
-            >
-              {{ activeServiceId === service.id ? 'Viewing slots' : 'Book' }}
-            </button>
-          </div>
-
-          <div v-if="activeServiceId === service.id" class="service-body">
-
-            <div class="service-left">
-              <div v-if="loadingSlots" class="state-msg" style="padding: 24px 18px;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
-                  <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-                </svg>
-                Loading slots...
+              <div v-if="service.images?.length" class="service-images">
+                <img v-for="img in service.images" :key="img.id" :src="imgUrl(img.image_url)" class="service-img"
+                  style="cursor:zoom-in;" @click="lightboxImg = imgUrl(img.image_url)" />
               </div>
 
-              <div
-                v-else-if="!selectedDate"
-                class="state-msg"
-                style="padding: 32px 18px;"
-              >
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(255,255,255,0.12);margin-bottom:8px">
-                  <rect x="3" y="4" width="18" height="18" rx="2"/>
-                  <line x1="16" y1="2" x2="16" y2="6"/>
-                  <line x1="8" y1="2" x2="8" y2="6"/>
-                  <line x1="3" y1="10" x2="21" y2="10"/>
-                </svg>
-                Pick a date to see slots.
-              </div>
-
-              <div
-                v-else-if="selectedDate && !appointmentStore.slots.length"
-                class="state-msg"
-                style="padding: 24px 18px;"
-              >
-                No available slots for this date.
-              </div>
-
-              <template v-else-if="selectedDate">
-                <div
-                  v-if="providerStore.providerProfile.provider.offers_home_service"
-                  class="location-section"
-                  style="margin-bottom: 24px; border-top: none; padding-top: 0;"
-                >
-                  <div class="location-label">Service Location</div>
-                  <div class="location-toggle">
-                    <button :class="{ active: serviceLocationType === 'shop' }" @click="serviceLocationType = 'shop'">At Shop</button>
-                    <button :class="{ active: serviceLocationType === 'home' }" @click="serviceLocationType = 'home'">Home Service</button>
+              <div class="service-top">
+                <div>
+                  <div class="service-name">{{ service.name }}</div>
+                  <div class="service-meta">
+                    <span class="meta-pill">₱{{ service.price }}</span>
+                    <span class="meta-pill">{{ service.duration_minutes }} min</span>
                   </div>
                 </div>
 
-                <div class="slots">
-                  <div
-                    v-for="slot in appointmentStore.slots"
-                    :key="slot.start_time"
-                    class="slot"
-                  >
-                    <span class="slot-time">{{ formatSlot(slot.start_time) }} - {{ formatTimeOnly(slot.end_time) }}</span>
-                    <button
-                      class="confirm-btn"
-                      :disabled="bookingLoading"
-                      @click="book(service.id, slot.start_time)"
-                    >
-                      {{ bookingLoading ? "Booking..." : "Confirm" }}
-                    </button>
-                  </div>
-                </div>
-              </template>
-            </div>
+                <button class="book-btn" :class="{ 'book-btn-active': activeServiceId === service.id }"
+                  @click="loadSlots(service.id)">
+                  {{ activeServiceId === service.id ? 'Viewing slots' : 'Book' }}
+                </button>
+              </div>
 
-            <div class="service-right">
-              <div class="calendar-section">
-                <div class="calendar-header">
-                  <button class="cal-nav" :disabled="isPrevDisabled" @click="prevMonth">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                      <polyline points="15 18 9 12 15 6"/>
+              <div v-if="activeServiceId === service.id" class="service-body">
+
+                <div class="service-left">
+                  <div v-if="loadingSlots" class="state-msg" style="padding: 24px 18px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      class="spin">
+                      <path d="M21 12a9 9 0 1 1-6.219-8.56" />
                     </svg>
-                  </button>
-                  <span class="cal-label">
-                    {{ calendarLabel }}
-                    <span v-if="loadingAvailable" class="cal-loading">
-                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
-                        <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-                      </svg>
-                    </span>
-                  </span>
-                  <button class="cal-nav" @click="nextMonth">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                      <polyline points="9 18 15 12 9 6"/>
-                    </svg>
-                  </button>
-                </div>
-
-                <div class="cal-grid">
-                  <div v-for="label in DAY_LABELS" :key="label" class="cal-day-label">
-                    {{ label }}
+                    Loading slots...
                   </div>
 
-                  <template v-for="(cell, idx) in calendarDays" :key="idx">
-                    <div v-if="cell === null" class="cal-cell cal-empty" />
-                    <div
-                      v-else
-                      class="cal-cell"
-                      :class="{
-                        'cal-past': isPast(cell.dateStr),
-                        'cal-available': !isPast(cell.dateStr) && isAvailable(cell.dateStr),
-                        'cal-selected': isSelected(cell.dateStr),
-                        'cal-today': isToday(cell.dateStr) && !isSelected(cell.dateStr),
-                      }"
-                      @click="selectDay(cell.dateStr)"
-                    >
-                      {{ cell.day }}
-                      <span
-                        v-if="!isPast(cell.dateStr) && isAvailable(cell.dateStr) && !isSelected(cell.dateStr)"
-                        class="cal-dot"
-                      />
+                  <div v-else-if="!selectedDate" class="state-msg" style="padding: 32px 18px;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                      style="color:rgba(255,255,255,0.12);margin-bottom:8px">
+                      <rect x="3" y="4" width="18" height="18" rx="2" />
+                      <line x1="16" y1="2" x2="16" y2="6" />
+                      <line x1="8" y1="2" x2="8" y2="6" />
+                      <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>
+                    Pick a date to see slots.
+                  </div>
+
+                  <div v-else-if="selectedDate && !appointmentStore.slots.length" class="state-msg"
+                    style="padding: 24px 18px;">
+                    No available slots for this date.
+                  </div>
+
+                  <template v-else-if="selectedDate">
+                    <div v-if="providerStore.providerProfile.provider.offers_home_service" class="location-section"
+                      style="margin-bottom: 24px; border-top: none; padding-top: 0;">
+                      <div class="location-label">Service Location</div>
+                      <div class="location-toggle">
+                        <button :class="{ active: serviceLocationType === 'shop' }"
+                          @click="serviceLocationType = 'shop'">At Shop</button>
+                        <button :class="{ active: serviceLocationType === 'home' }"
+                          @click="serviceLocationType = 'home'">Home Service</button>
+                      </div>
+                    </div>
+
+                    <div class="slots">
+                      <div v-for="slot in appointmentStore.slots" :key="slot.start_time" class="slot">
+                        <span class="slot-time">{{ formatSlot(slot.start_time) }} - {{ formatTimeOnly(slot.end_time)
+                          }}</span>
+                        <button class="confirm-btn" :disabled="bookingLoading"
+                          @click="book(service.id, slot.start_time)">
+                          {{ bookingLoading ? "Booking..." : "Confirm" }}
+                        </button>
+                      </div>
                     </div>
                   </template>
                 </div>
 
-                <div class="cal-legend">
-                  <span class="legend-item">
-                    <span class="legend-dot legend-dot-available" />
-                    Available
-                  </span>
-                  <span class="legend-item">
-                    <span class="legend-dot legend-dot-past" />
-                    Unavailable
-                  </span>
+                <div class="service-right">
+                  <div class="calendar-section">
+                    <div class="calendar-header">
+                      <button class="cal-nav" :disabled="isPrevDisabled" @click="prevMonth">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2.5">
+                          <polyline points="15 18 9 12 15 6" />
+                        </svg>
+                      </button>
+                      <span class="cal-label">
+                        {{ calendarLabel }}
+                        <span v-if="loadingAvailable" class="cal-loading">
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" class="spin">
+                            <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                          </svg>
+                        </span>
+                      </span>
+                      <button class="cal-nav" @click="nextMonth">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2.5">
+                          <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    <div class="cal-grid">
+                      <div v-for="label in DAY_LABELS" :key="label" class="cal-day-label">
+                        {{ label }}
+                      </div>
+
+                      <template v-for="(cell, idx) in calendarDays" :key="idx">
+                        <div v-if="cell === null" class="cal-cell cal-empty" />
+                        <div v-else class="cal-cell" :class="{
+                          'cal-past': isPast(cell.dateStr),
+                          'cal-available': !isPast(cell.dateStr) && isAvailable(cell.dateStr),
+                          'cal-selected': isSelected(cell.dateStr),
+                          'cal-today': isToday(cell.dateStr) && !isSelected(cell.dateStr),
+                        }" @click="selectDay(cell.dateStr)">
+                          {{ cell.day }}
+                          <span v-if="!isPast(cell.dateStr) && isAvailable(cell.dateStr) && !isSelected(cell.dateStr)"
+                            class="cal-dot" />
+                        </div>
+                      </template>
+                    </div>
+
+                    <div class="cal-legend">
+                      <span class="legend-item">
+                        <span class="legend-dot legend-dot-available" />
+                        Available
+                      </span>
+                      <span class="legend-item">
+                        <span class="legend-dot legend-dot-past" />
+                        Unavailable
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        </div>
-        </div>
 
         <HomeServiceMapCard
           :show="Boolean(selectedDate && serviceLocationType === 'home' && providerStore.providerProfile.provider.offers_home_service)"
-          :customerLat="customerLat"
-          :customerLng="customerLng"
-          @location-selected="setLocation"
-        />
+          :customerLat="customerLat" :customerLng="customerLng" @location-selected="setLocation" />
 
       </div>
     </template>

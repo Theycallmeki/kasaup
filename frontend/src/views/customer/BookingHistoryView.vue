@@ -108,9 +108,10 @@ watch(totalPages, (tp) => {
     </div>
 
     <div v-else-if="sortedAppointments.length === 0" class="state-msg">
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(255,255,255,0.15);margin-bottom:12px">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-        <polyline points="14 2 14 8 20 8"/>
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+        style="color:rgba(255,255,255,0.15);margin-bottom:12px">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <polyline points="14 2 14 8 20 8" />
       </svg>
       <p>No bookings yet.</p>
     </div>
@@ -121,12 +122,8 @@ watch(totalPages, (tp) => {
       </p>
 
       <div class="cards-scroll">
-        <div
-          v-for="appointment in paginatedAppointments"
-          :key="appointment.id"
-          class="card"
-          :class="{ 'card-cancelled': appointment.status === 'cancelled' }"
-        >
+        <div v-for="appointment in paginatedAppointments" :key="appointment.id" class="card"
+          :class="{ 'card-cancelled': appointment.status === 'cancelled' }">
           <div class="card-top">
             <div>
               <div class="service-name">Service #{{ appointment.service_id }}</div>
@@ -139,10 +136,10 @@ watch(totalPages, (tp) => {
 
           <div class="card-meta">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="4" width="18" height="18" rx="2"/>
-              <line x1="16" y1="2" x2="16" y2="6"/>
-              <line x1="8" y1="2" x2="8" y2="6"/>
-              <line x1="3" y1="10" x2="21" y2="10"/>
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
             </svg>
             {{ formatTime(appointment.appointment_time) }}
           </div>
@@ -164,12 +161,7 @@ watch(totalPages, (tp) => {
         <div class="page-numbers">
           <template v-for="(p, idx) in pageNumbers" :key="idx">
             <span v-if="p === '...'" class="page-ellipsis">…</span>
-            <button
-              v-else
-              class="page-num"
-              :class="{ active: p === currentPage }"
-              @click="goToPage(p as number)"
-            >
+            <button v-else class="page-num" :class="{ active: p === currentPage }" @click="goToPage(p as number)">
               {{ p }}
             </button>
           </template>

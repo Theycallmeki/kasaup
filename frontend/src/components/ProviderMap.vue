@@ -225,7 +225,7 @@ onMounted(() => {
     minZoom: 6,
     maxZoom: 18,
     worldCopyJump: false,
-    zoomControl: true,
+    zoomControl: false,
     zoomAnimation: true,
     fadeAnimation: true,
     markerZoomAnimation: true,
@@ -459,7 +459,7 @@ watch(
 
 .kasaup-popup-name {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   color: #fff;
   margin: 0;
   white-space: nowrap;

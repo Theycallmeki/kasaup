@@ -62,25 +62,22 @@ const canCancel = (status: string) =>
     </div>
 
     <div v-else-if="activeAppointments.length === 0" class="state-msg">
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(255,255,255,0.15);margin-bottom:12px">
-        <rect x="3" y="4" width="18" height="18" rx="2"/>
-        <line x1="16" y1="2" x2="16" y2="6"/>
-        <line x1="8" y1="2" x2="8" y2="6"/>
-        <line x1="3" y1="10" x2="21" y2="10"/>
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+        style="color:rgba(255,255,255,0.15);margin-bottom:12px">
+        <rect x="3" y="4" width="18" height="18" rx="2" />
+        <line x1="16" y1="2" x2="16" y2="6" />
+        <line x1="8" y1="2" x2="8" y2="6" />
+        <line x1="3" y1="10" x2="21" y2="10" />
       </svg>
       <p>No active appointments.</p>
       <p class="state-sub">
-        Cancelled bookings are in 
+        Cancelled bookings are in
         <router-link to="/appointments/history">booking history</router-link>.
       </p>
     </div>
 
     <div v-else class="cards">
-      <div
-        v-for="appointment in activeAppointments"
-        :key="appointment.id"
-        class="card"
-      >
+      <div v-for="appointment in activeAppointments" :key="appointment.id" class="card">
         <div class="card-top">
           <div>
             <div class="service-name">
@@ -98,21 +95,17 @@ const canCancel = (status: string) =>
 
         <div class="card-meta">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2"/>
-            <line x1="16" y1="2" x2="16" y2="6"/>
-            <line x1="8" y1="2" x2="8" y2="6"/>
-            <line x1="3" y1="10" x2="21" y2="10"/>
+            <rect x="3" y="4" width="18" height="18" rx="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
           </svg>
           {{ formatTime(appointment.appointment_time) }}
         </div>
 
         <div class="card-divider" />
 
-        <button
-          v-if="canCancel(appointment.status)"
-          class="cancel-btn"
-          @click="cancel(appointment.id)"
-        >
+        <button v-if="canCancel(appointment.status)" class="cancel-btn" @click="cancel(appointment.id)">
           Cancel Appointment
         </button>
       </div>

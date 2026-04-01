@@ -33,7 +33,7 @@ const menus = {
   customer: [
     { label: "Services",         path: "/services",             icon: "search"   },
     { label: "Providers",        path: "/providers",            icon: "map"      },
-    { label: "My Appts",         path: "/appointments",         icon: "calendar" },
+    { label: "Appointments",         path: "/appointments",         icon: "calendar" },
     { label: "History",          path: "/appointments/history", icon: "clock"    }
   ],
   provider: [
