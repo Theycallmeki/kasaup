@@ -5,12 +5,27 @@ import { useProviderStore } from "../../stores/providerStore"
 import { useAppointmentStore } from "../../stores/appointmentStore"
 import HomeServiceMapCard from "../../components/HomeServiceMapCard.vue"
 import api from "../../services/api"
+import { useRouter } from "vue-router"
 
+const router = useRouter()
 const route = useRoute()
 const providerStore = useProviderStore()
 const appointmentStore = useAppointmentStore()
 
 const id = Number(route.params.id)
+
+const messageProvider = async () => {
+    const provider = providerStore.providerProfile.provider;
+    // Redirect to messages with provider_id and receiver_id to auto-start chat
+    router.push({ 
+        path: '/messages', 
+        query: { 
+            provider_id: provider.id,
+            receiver_id: provider.owner_id,
+            shop_name: provider.shop_name
+        } 
+    });
+}
 
 const activeServiceId = ref<number | null>(null)
 const selectedDate = ref<string>("")
@@ -256,11 +271,28 @@ const isPrevDisabled = computed(() => {
           <h1 class="provider-name">
             {{ providerStore.providerProfile.provider.shop_name }}
           </h1>
+          <div class="provider-stats">
+            <div class="rating-display">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+              <span>{{ providerStore.providerProfile.provider.rating.toFixed(1) }}</span>
+              <span class="review-count">({{ providerStore.providerProfile.provider.total_reviews }} reviews)</span>
+            </div>
+          </div>
           <p class="provider-desc">
             {{ providerStore.providerProfile.provider.description }}
           </p>
-          <div v-if="providerStore.providerProfile.provider.offers_home_service" class="home-badge">
-            Offers Home Service
+          <div class="header-actions">
+            <div v-if="providerStore.providerProfile.provider.offers_home_service" class="home-badge">
+              Offers Home Service
+            </div>
+            <button class="chat-btn" @click="messageProvider">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+              Message
+            </button>
           </div>
         </div>
       </div>

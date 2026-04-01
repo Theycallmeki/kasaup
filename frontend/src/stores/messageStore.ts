@@ -1,0 +1,90 @@
+import { defineStore } from "pinia"
+import { getConversations, getConversationMessages, sendMessage } from "../services/messages"
+
+export const useMessageStore = defineStore("messages", {
+
+  state: () => ({
+    conversations: [] as any[],
+    activeMessages: [] as any[],
+    activeConversationId: null as number | null,
+    loading: false,
+    socket: null as WebSocket | null,
+  }),
+
+  actions: {
+
+    async fetchConversations() {
+      this.loading = true
+      try {
+        this.conversations = await getConversations()
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async fetchMessages(conversationId: number) {
+      this.activeConversationId = conversationId
+      this.activeMessages = await getConversationMessages(conversationId)
+    },
+
+    async send(receiverId: number, content: string) {
+      const msg = await sendMessage(receiverId, content)
+      // Check if we already have this conversation in the list
+      const index = this.conversations.findIndex(c => c.id === msg.conversation_id)
+      if (index !== -1) {
+        this.conversations[index].last_message = content
+        this.conversations[index].updated_at = msg.created_at
+      } else {
+        await this.fetchConversations()
+      }
+      
+      if (this.activeConversationId === msg.conversation_id) {
+          this.activeMessages.push(msg)
+      }
+      
+      return msg
+    },
+
+    connectWS(userId: number) {
+      if (this.socket) return
+
+      const protocol = window.location.protocol === "https:" ? "wss:" : "ws:"
+      const host = "localhost:8000" // Adjust as needed
+      this.socket = new WebSocket(`${protocol}//${host}/messages/ws`)
+
+      this.socket.onmessage = (event) => {
+        const data = JSON.parse(event.data)
+        if (data.type === "new_message") {
+          this.handleIncomingMessage(data.data)
+        }
+      }
+
+      this.socket.onclose = () => {
+        this.socket = null
+        // Optional: auto-reconnect
+        setTimeout(() => this.connectWS(userId), 5000)
+      }
+    },
+
+    handleIncomingMessage(message: any) {
+      // If we are looking at this conversation, push it
+      if (this.activeConversationId === message.conversation_id) {
+        this.activeMessages.push(message)
+      }
+
+      // Update the conversation list preview
+      const index = this.conversations.findIndex(c => c.id === message.conversation_id)
+      if (index !== -1) {
+        this.conversations[index].last_message = message.content
+        this.conversations[index].updated_at = message.created_at
+        // Move to top
+        const conv = this.conversations.splice(index, 1)[0]
+        this.conversations.unshift(conv)
+      } else {
+        this.fetchConversations()
+      }
+    }
+
+  }
+
+})

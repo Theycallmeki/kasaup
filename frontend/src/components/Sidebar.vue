@@ -34,13 +34,15 @@ const menus = {
     { label: "Services",         path: "/services",             icon: "search"   },
     { label: "Providers",        path: "/providers",            icon: "map"      },
     { label: "Appointments",         path: "/appointments",         icon: "calendar" },
-    { label: "History",          path: "/appointments/history", icon: "clock"    }
+    { label: "History",          path: "/appointments/history", icon: "clock"    },
+    { label: "Messages",         path: "/messages",             icon: "message"  }
   ],
   provider: [
     { label: "Dashboard",    path: "/provider/dashboard",    icon: "grid"     },
     { label: "Services",     path: "/provider/services",     icon: "wrench"   },
     { label: "Appointments", path: "/provider/appointments", icon: "calendar" },
     { label: "Availability", path: "/provider/availability", icon: "clock"    },
+    { label: "Messages",     path: "/messages",             icon: "message"  },
     { label: "Profile",      path: "/provider/profile",      icon: "users"    }
   ],
   admin: [
@@ -65,6 +67,7 @@ const icons: Record<string, string> = {
   wrench:   "M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z",
   users:    "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75",
   tag:      "M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 7h.01",
+  message:  "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",
   logout:   "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9",
   menu:     "M3 12h18M3 6h18M3 18h18",
   close:    "M18 6L6 18M6 6l12 12"

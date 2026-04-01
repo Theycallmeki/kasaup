@@ -171,6 +171,33 @@
   opacity: 0.8;
 }
 
+.rate-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 12px;
+  background: rgba(167, 139, 250, 0.15);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  color: #c4b5fd;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  width: auto;
+}
+
+.rate-btn:hover {
+  background: rgba(167, 139, 250, 0.25);
+  border-color: #a78bfa;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(167, 139, 250, 0.2);
+}
+
+.rate-btn:active {
+  transform: translateY(0);
+}
+
 .pagination {
   display: flex;
   flex-wrap: wrap;

@@ -1,8 +1,22 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue"
 import { useAppointmentStore } from "../../stores/appointmentStore"
+import RatingModal from "../../components/RatingModal.vue"
 
 const appointmentStore = useAppointmentStore()
+
+const ratingModalOpen = ref(false)
+const selectedAppointmentId = ref<number | null>(null)
+
+const openRatingModal = (id: number) => {
+  selectedAppointmentId.value = id
+  ratingModalOpen.value = true
+}
+
+const onRatingSuccess = () => {
+  // Optionally refresh appointments to reflect rating status
+  appointmentStore.fetchAppointments()
+}
 
 onMounted(async () => {
   await appointmentStore.fetchAppointments()
@@ -150,8 +164,25 @@ watch(totalPages, (tp) => {
               Cancel Appointment
             </button>
           </div>
+
+          <div v-if="appointment.status === 'completed'">
+            <div class="card-divider" />
+            <button class="rate-btn" @click="openRatingModal(appointment.id)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-right:6px">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+              Rate Service
+            </button>
+          </div>
         </div>
       </div>
+
+      <RatingModal 
+        :is-open="ratingModalOpen" 
+        :appointment-id="selectedAppointmentId || 0"
+        @close="ratingModalOpen = false"
+        @success="onRatingSuccess"
+      />
 
       <nav v-if="totalPages > 1" class="pagination">
         <button class="page-nav-btn" :disabled="currentPage <= 1" @click="goToPage(currentPage - 1)">

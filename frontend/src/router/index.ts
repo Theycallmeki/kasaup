@@ -27,13 +27,20 @@ import AdminProvidersView from "../views/admin/AdminProvidersView.vue"
 
 import { useAuthStore } from "../stores/authStore"
 import api from "../services/api"
+import MessagesView from "../views/MessagesView.vue"
 
 const routes = [
-
   {
     path: "/",
     name: "home",
     component: HomeView
+  },
+
+  {
+    path: "/messages",
+    name: "messages",
+    component: MessagesView,
+    meta: { requiresAuth: true }
   },
 
   {
@@ -55,11 +62,11 @@ const routes = [
   },
 
   {
-  path: '/services',
-  name: 'services',
-  component: ServicesView,
-  meta: { requiresAuth: true, role: 'customer' }
-},
+    path: '/services',
+    name: 'services',
+    component: ServicesView,
+    meta: { requiresAuth: true, role: 'customer' }
+  },
 
   {
     path: "/providers",
@@ -132,11 +139,11 @@ const routes = [
   },
 
   {
-  path: "/provider/profile",
-  name: "providerProfileEdit",
-  component: ProviderProfileViewProvider,
-  meta: { requiresAuth: true, roles: ["provider"] }
-},
+    path: "/provider/profile",
+    name: "providerProfileEdit",
+    component: ProviderProfileViewProvider,
+    meta: { requiresAuth: true, roles: ["provider"] }
+  },
 
   {
     path: "/admin/dashboard",
@@ -216,7 +223,7 @@ router.beforeEach(async (to) => {
         const res = await api.get("/providers")
 
         const provider = res.data.find(
-          (p:any) => p.owner_id === auth.user.id
+          (p: any) => p.owner_id === auth.user.id
         )
 
         if (!provider && to.path !== "/provider/create-profile") {
@@ -227,7 +234,7 @@ router.beforeEach(async (to) => {
           return { path: "/provider/dashboard" }
         }
 
-      } catch {}
+      } catch { }
 
     }
 

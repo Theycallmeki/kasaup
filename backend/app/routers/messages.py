@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisco
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from typing import List
+from datetime import datetime
 import json
 
 from app.db import get_db
@@ -17,12 +18,15 @@ from app.core.security import SECRET_KEY, ALGORITHM
 router = APIRouter()
 
 
+@router.get("/test-cors")
+def test_cors():
+    return {"status": "CORS works for messages router"}
+
+
 async def get_ws_user(websocket: WebSocket, db: Session):
     token = websocket.cookies.get("access_token")
     if not token:
-        
         token = websocket.query_params.get("token")
-        
     if not token:
         return None
     try:
@@ -46,9 +50,7 @@ async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)
     await manager.connect(user.id, websocket)
     try:
         while True:
-           
             data = await websocket.receive_text()
-            
     except WebSocketDisconnect:
         manager.disconnect(user.id)
 
@@ -58,7 +60,6 @@ def get_conversations(
     db: Session = Depends(get_db), 
     current_user: User = Depends(get_current_user)
 ):
-  
     my_providers = db.query(Provider).filter(Provider.owner_id == current_user.id).all()
     provider_ids = [p.id for p in my_providers]
     
@@ -68,7 +69,11 @@ def get_conversations(
             Conversation.provider_id.in_(provider_ids)
         )
     ).order_by(Conversation.updated_at.desc()).all()
-    
+
+    for convo in conversations:
+        if convo.updated_at is None:
+            convo.updated_at = datetime.utcnow()
+
     return conversations
 
 
@@ -98,18 +103,15 @@ async def send_message(
     current_user: User = Depends(get_current_user)
 ):
 
-    
     recipient = db.query(User).filter(User.id == msg_in.receiver_id).first()
     if not recipient:
         raise HTTPException(status_code=404, detail="Recipient not found")
     
- 
     provider = db.query(Provider).filter(Provider.owner_id == recipient.id).first()
     customer_id = current_user.id
     provider_id = provider.id if provider else None
     
     if not provider:
-  
         my_provider = db.query(Provider).filter(Provider.owner_id == current_user.id).first()
         if my_provider:
             provider_id = my_provider.id
@@ -125,8 +127,7 @@ async def send_message(
     if not conversation:
         conversation = Conversation(user_id=customer_id, provider_id=provider_id)
         db.add(conversation)
-        db.flush() 
-    
+        db.flush()
 
     db_msg = Message(
         conversation_id=conversation.id,
@@ -134,15 +135,13 @@ async def send_message(
         content=msg_in.content
     )
     db.add(db_msg)
-    
 
     conversation.last_message = msg_in.content
-    conversation.updated_at = db_msg.created_at 
-    
+    conversation.updated_at = db_msg.created_at
+
     db.commit()
     db.refresh(db_msg)
-    
-   
+
     msg_data = {
         "type": "new_message",
         "data": {
