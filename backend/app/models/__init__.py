@@ -5,3 +5,5 @@ from .service import Service
 from .service_image import ServiceImage
 from .appointment import Appointment
 from .provider_availability import ProviderAvailability
+from .review import Review
+from .message import Conversation, Message

@@ -12,7 +12,9 @@ from app.routers import (
     services,
     categories,
     appointments,
-    provider_availability
+    provider_availability,
+    ratings,
+    messages
 )
 
 app = FastAPI(
@@ -43,6 +45,8 @@ app.include_router(services.router, prefix="/services", tags=["Services"])
 app.include_router(categories.router, prefix="/categories", tags=["Categories"])
 app.include_router(appointments.router, prefix="/appointments", tags=["Appointments"])
 app.include_router(provider_availability.router, prefix="/availability", tags=["Provider Availability"])
+app.include_router(ratings.router, prefix="/ratings", tags=["Ratings"])
+app.include_router(messages.router, prefix="/messages", tags=["Messages"])
 
 
 @app.get("/")

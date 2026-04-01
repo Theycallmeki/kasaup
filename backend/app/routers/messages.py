@@ -1,0 +1,158 @@
+from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect, status
+from sqlalchemy.orm import Session
+from sqlalchemy import or_
+from typing import List
+import json
+
+from app.db import get_db
+from app.models.message import Conversation, Message
+from app.models.users import User
+from app.models.providers import Provider
+from app.schemas.message import MessageCreate, Message as MessageSchema, Conversation as ConversationSchema
+from app.core.dependencies import get_current_user
+from app.services.websocket_manager import manager
+from jose import jwt, JWTError
+from app.core.security import SECRET_KEY, ALGORITHM
+
+router = APIRouter()
+
+
+async def get_ws_user(websocket: WebSocket, db: Session):
+    token = websocket.cookies.get("access_token")
+    if not token:
+        
+        token = websocket.query_params.get("token")
+        
+    if not token:
+        return None
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("user_id")
+        if user_id is None:
+            return None
+        user = db.query(User).filter(User.id == user_id).first()
+        return user
+    except JWTError:
+        return None
+
+
+@router.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)):
+    user = await get_ws_user(websocket, db)
+    if not user:
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return
+
+    await manager.connect(user.id, websocket)
+    try:
+        while True:
+           
+            data = await websocket.receive_text()
+            
+    except WebSocketDisconnect:
+        manager.disconnect(user.id)
+
+
+@router.get("/conversations", response_model=List[ConversationSchema])
+def get_conversations(
+    db: Session = Depends(get_db), 
+    current_user: User = Depends(get_current_user)
+):
+  
+    my_providers = db.query(Provider).filter(Provider.owner_id == current_user.id).all()
+    provider_ids = [p.id for p in my_providers]
+    
+    conversations = db.query(Conversation).filter(
+        or_(
+            Conversation.user_id == current_user.id,
+            Conversation.provider_id.in_(provider_ids)
+        )
+    ).order_by(Conversation.updated_at.desc()).all()
+    
+    return conversations
+
+
+@router.get("/conversations/{conversation_id}/messages", response_model=List[MessageSchema])
+def get_messages(
+    conversation_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+
+    conversation = db.query(Conversation).filter(Conversation.id == conversation_id).first()
+    if not conversation:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    
+    provider = db.query(Provider).filter(Provider.id == conversation.provider_id).first()
+    if conversation.user_id != current_user.id and (not provider or provider.owner_id != current_user.id):
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    messages = db.query(Message).filter(Message.conversation_id == conversation_id).order_by(Message.created_at.asc()).all()
+    return messages
+
+
+@router.post("/send", response_model=MessageSchema)
+async def send_message(
+    msg_in: MessageCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+
+    
+    recipient = db.query(User).filter(User.id == msg_in.receiver_id).first()
+    if not recipient:
+        raise HTTPException(status_code=404, detail="Recipient not found")
+    
+ 
+    provider = db.query(Provider).filter(Provider.owner_id == recipient.id).first()
+    customer_id = current_user.id
+    provider_id = provider.id if provider else None
+    
+    if not provider:
+  
+        my_provider = db.query(Provider).filter(Provider.owner_id == current_user.id).first()
+        if my_provider:
+            provider_id = my_provider.id
+            customer_id = recipient.id
+        else:
+            raise HTTPException(status_code=400, detail="One party must be a provider")
+
+    conversation = db.query(Conversation).filter(
+        Conversation.user_id == customer_id,
+        Conversation.provider_id == provider_id
+    ).first()
+    
+    if not conversation:
+        conversation = Conversation(user_id=customer_id, provider_id=provider_id)
+        db.add(conversation)
+        db.flush() 
+    
+
+    db_msg = Message(
+        conversation_id=conversation.id,
+        sender_id=current_user.id,
+        content=msg_in.content
+    )
+    db.add(db_msg)
+    
+
+    conversation.last_message = msg_in.content
+    conversation.updated_at = db_msg.created_at 
+    
+    db.commit()
+    db.refresh(db_msg)
+    
+   
+    msg_data = {
+        "type": "new_message",
+        "data": {
+            "id": db_msg.id,
+            "conversation_id": db_msg.conversation_id,
+            "sender_id": db_msg.sender_id,
+            "content": db_msg.content,
+            "created_at": str(db_msg.created_at)
+        }
+    }
+    await manager.send_personal_message(msg_data, recipient.id)
+    
+    return db_msg
