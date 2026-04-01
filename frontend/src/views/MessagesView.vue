@@ -56,17 +56,28 @@ const sendMessage = async () => {
   } else if (messageStore.activeConversationId) {
     const conv = messageStore.conversations.find(c => c.id === messageStore.activeConversationId);
     if (conv) {
-      targetReceiverId = authStore.user.id === conv.user_id ? conv.provider_id : conv.user_id;
+      // If current user is the customer (user_id), send to provider owner.
+      // If current user is the provider owner, send to the customer (user_id).
+      targetReceiverId = authStore.user.id === conv.user_id 
+        ? conv.provider_owner_id 
+        : conv.user_id;
     }
   }
 
-  if (!targetReceiverId) return;
+  if (!targetReceiverId) {
+    console.error("Could not determine recipient ID", {
+      activeId: messageStore.activeConversationId,
+      pendingId: pendingReceiverId.value,
+      conv: messageStore.conversations.find(c => c.id === messageStore.activeConversationId)
+    });
+    return;
+  }
 
   try {
     const msg = await messageStore.send(targetReceiverId, newMessage.value);
     newMessage.value = '';
     
-    // If it was a new conversation, we might need to select it
+    // If it was a new conversation, update the active state
     if (messageStore.activeConversationId === -1) {
        messageStore.activeConversationId = msg.conversation_id;
        pendingReceiverId.value = null;
@@ -174,7 +185,7 @@ const getDisplayName = (conv: any) => {
             <div class="input-wrapper">
               <input 
                 v-model="newMessage" 
-                @keyup.enter="sendMessage"
+               @keydown.enter.prevent="sendMessage"
                 placeholder="Type a message..."
               />
               <button @click="sendMessage" :disabled="!newMessage.trim()">

@@ -73,6 +73,8 @@ def get_conversations(
     for convo in conversations:
         if convo.updated_at is None:
             convo.updated_at = datetime.utcnow()
+        # Add provider_owner_id for schema fulfillment
+        convo.provider_owner_id = convo.provider.owner_id
 
     return conversations
 
@@ -102,22 +104,36 @@ async def send_message(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-
     recipient = db.query(User).filter(User.id == msg_in.receiver_id).first()
     if not recipient:
         raise HTTPException(status_code=404, detail="Recipient not found")
     
-    provider = db.query(Provider).filter(Provider.owner_id == recipient.id).first()
-    customer_id = current_user.id
-    provider_id = provider.id if provider else None
-    
-    if not provider:
-        my_provider = db.query(Provider).filter(Provider.owner_id == current_user.id).first()
-        if my_provider:
-            provider_id = my_provider.id
-            customer_id = recipient.id
+    # 1. Determine who is the customer and which provider is involved
+    # Check if current_user is the provider
+    current_provider = db.query(Provider).filter(Provider.owner_id == current_user.id).first()
+    # Check if recipient is the provider
+    recipient_provider = db.query(Provider).filter(Provider.owner_id == recipient.id).first()
+
+    customer_id = None
+    provider_id = None
+
+    if current_provider and not recipient_provider:
+        # Current user is provider, recipient is customer
+        customer_id = recipient.id
+        provider_id = current_provider.id
+    elif not current_provider and recipient_provider:
+        # Current user is customer, recipient is provider
+        customer_id = current_user.id
+        provider_id = recipient_provider.id
+    else:
+        # Both or neither are providers - might be a chat between two users who are both providers
+        # but in this context, we need to know which provider profile we are chatting with.
+        # If recipient is a provider, prioritize that.
+        if recipient_provider:
+            customer_id = current_user.id
+            provider_id = recipient_provider.id
         else:
-            raise HTTPException(status_code=400, detail="One party must be a provider")
+             raise HTTPException(status_code=400, detail="Cannot determine conversation parties. One must be a provider.")
 
     conversation = db.query(Conversation).filter(
         Conversation.user_id == customer_id,

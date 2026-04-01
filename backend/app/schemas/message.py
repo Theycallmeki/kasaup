@@ -30,6 +30,7 @@ class Conversation(ConversationBase):
     id: int
     last_message: Optional[str] = None
     updated_at: datetime
+    provider_owner_id: int
     
 
     model_config = ConfigDict(from_attributes=True)
