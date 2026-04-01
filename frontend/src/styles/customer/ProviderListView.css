@@ -212,3 +212,42 @@
   justify-content: center;
   background: #0e0c1a;
 }
+
+@media (max-width: 600px) {
+  .search-bar {
+    top: 12px;
+    width: calc(100% - 24px);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .category-field {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .category-select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .search-combo {
+    min-width: 0;
+  }
+
+  .search-btn,
+  .location-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .search-empty {
+    top: auto;
+    bottom: 80px;
+    left: 12px;
+    right: 12px;
+    transform: none;
+    width: auto;
+  }
+}

@@ -144,6 +144,24 @@
 
 @media (max-width: 640px) {
   .page {
-    padding: 24px 16px;
+    padding: 20px 14px;
+  }
+
+  .card {
+    padding: 14px 16px;
+  }
+
+  .service-name {
+    font-size: 14px;
+  }
+
+  .card-meta {
+    font-size: 12px;
+  }
+
+  .cancel-btn {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
   }
 }

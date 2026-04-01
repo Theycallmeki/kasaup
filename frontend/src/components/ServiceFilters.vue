@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, onMounted } from "vue"
 
 const props = defineProps<{
   categories: any[]
@@ -10,7 +10,13 @@ const emit = defineEmits<{
   "update:activeCat": [v: number | "all"]
 }>()
 
-const isExpanded = ref(true)
+const isExpanded = ref(false)
+
+onMounted(() => {
+  if (window.innerWidth > 800) {
+    isExpanded.value = true
+  }
+})
 
 const activeCatName = computed(() => {
   if (props.activeCat === 'all') return 'All Services'
@@ -20,8 +26,10 @@ const activeCatName = computed(() => {
 
 const handleSelect = (val: number | "all") => {
   emit('update:activeCat', val)
-  // Auto-collapse on mobile, but let's just collapse it for UX as requested
-  if (val !== 'all') isExpanded.value = false
+  // Auto-collapse on mobile after selection
+  if (window.innerWidth <= 800) {
+    isExpanded.value = false
+  }
 }
 </script>
 
@@ -93,7 +101,41 @@ const handleSelect = (val: number | "all") => {
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   padding: 20px 16px;
+  transition: all 0.3s ease;
 }
+
+@media (max-width: 800px) {
+  .sidebar-filters {
+    background: transparent;
+    border: none;
+    padding: 0;
+    gap: 12px;
+  }
+
+  .fs-title {
+    background: rgba(255, 255, 255, 0.04);
+    border: 0.5px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 12px 16px !important;
+    border-radius: 10px;
+    margin-bottom: 0 !important;
+  }
+
+  .fs-title:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .cat-list {
+    background: rgba(18, 16, 30, 0.95);
+    border: 1px solid rgba(167, 139, 250, 0.2);
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    position: relative;
+    z-index: 10;
+  }
+}
+
 .filter-section {
   display: flex;
   flex-direction: column;
@@ -109,6 +151,7 @@ const handleSelect = (val: number | "all") => {
   margin: 0 0 16px 0;
   border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 14px;
+  transition: background 0.2s;
 }
 .icon-h {
   width: 18px;

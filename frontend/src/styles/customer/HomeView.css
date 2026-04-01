@@ -157,6 +157,28 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+@media (max-width: 480px) {
+  .hero-card {
+    padding: 36px 24px;
+    border-radius: 20px;
+  }
+
+  .title {
+    font-size: 2.2rem;
+  }
+
+  .trust-dots {
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 28px;
+  }
+}
+
 @media (min-width: 460px) {
   .actions {
     flex-direction: row;

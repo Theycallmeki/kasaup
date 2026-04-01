@@ -209,6 +209,27 @@ watch(() => [props.show, props.lat, props.lng], ([show]) => {
     position: static;
   }
 }
+
+@media (max-width: 640px) {
+  .map-el {
+    height: 300px;
+  }
+
+  .map-card {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .map-card-title {
+    font-size: 1rem;
+  }
+
+  .slide-in-enter-from,
+  .slide-in-leave-to {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
 </style>
 
 <style>

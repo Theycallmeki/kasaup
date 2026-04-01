@@ -74,32 +74,51 @@
 
 /* Layout - swapped to normal because we moved the sidebar to the right in the DOM */
 .marketplace-layout {
-  display: flex;
-  gap: 32px;
-  align-items: flex-start;
-}
-
-.sidebar {
-  width: 260px;
-  flex-shrink: 0;
-  position: sticky;
-  top: 24px;
+  display: block;
 }
 
 .content-area {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 20px 32px;
+  align-items: flex-start;
 }
 
-/* Top Bar */
 .top-bar {
+  grid-column: 2;
   display: flex;
   flex-direction: column;
   gap: 16px;
   margin-bottom: 8px;
+}
+
+.sidebar {
+  grid-column: 1;
+  grid-row: 1 / 10; /* Span across all content rows */
+  width: 260px;
+  position: sticky;
+  top: 24px;
+}
+
+.grid {
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.state {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 80px 20px;
+  color: rgba(255, 255, 255, .4);
+  font-size: .95rem;
+  background: rgba(255, 255, 255, 0.01);
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
 }
 
 .srch {
@@ -247,7 +266,6 @@
 
 /* Grid & Cards - Shopee Style */
 .grid {
-  display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 24px;
 }
@@ -644,26 +662,125 @@
 
 @media(max-width:800px) {
   .marketplace-layout {
-    flex-direction: column-reverse;
+    display: block;
+  }
+
+  .content-area {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
 
   .sidebar {
     width: 100%;
     position: static;
+    order: 0; /* Keep it in natural DOM order: Search -> Categories -> Grid */
+    margin-bottom: 10px;
+  }
+
+  .top-bar {
+    order: -1; /* Ensure search bar is always first */
+    width: 100%;
+  }
+
+  .grid {
+    width: 100%;
+  }
+
+  .hd-r {
+    display: none !important;
   }
 }
 
 @media(max-width:600px) {
   .pg {
-    padding: 24px 16px 48px;
+    padding: 20px 14px 48px;
+  }
+
+  .hd {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+
+  .hd-r {
+    display: none; /* Remove Total and Providers on mobile */
+  }
+
+  .ps {
+    flex: 1;
+    padding: 8px 12px;
+  }
+
+  .ps b {
+    font-size: 1.1rem;
   }
 
   .grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+  }
+
+  .sort-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 10px;
+  }
+
+  .sort-label {
+    flex-shrink: 0;
+  }
+
+  .st {
+    flex-shrink: 0;
+    font-size: 0.8rem;
+    padding: 5px 10px;
+  }
+
+  .srch input {
+    font-size: 0.95rem;
+    padding: 14px 40px;
   }
 
   .mst {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .modal {
+    max-width: 100%;
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+    padding: 24px 20px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 90vh;
+    margin: 0;
+  }
+
+  .ov {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .ov.show .modal {
+    transform: translateY(0);
+  }
+
+  .ov .modal {
+    transform: translateY(100%);
+  }
+
+  .modal-thumb {
+    width: 120px;
+    height: 85px;
+  }
+
+  .mbk {
+    padding: 14px;
+    font-size: 1rem;
   }
 }

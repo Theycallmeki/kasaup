@@ -230,6 +230,45 @@
 
 @media (max-width: 640px) {
   .page {
-    padding: 24px 16px;
+    padding: 20px 14px;
+  }
+
+  .cards-scroll {
+    max-height: none;
+    overflow-y: visible;
+    padding-right: 0;
+  }
+
+  .card {
+    padding: 14px 16px;
+  }
+
+  .service-name {
+    font-size: 14px;
+  }
+
+  .cancel-btn {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .pagination {
+    gap: 8px 10px;
+  }
+
+  .page-numbers {
+    gap: 4px;
+  }
+
+  .page-num {
+    min-width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+
+  .page-nav-btn {
+    font-size: 12px;
+    padding: 8px 12px;
   }
 }

@@ -125,6 +125,14 @@ const firstImage = (svc: any): string | null => {
           </div>
         </div>
 
+        <aside class="sidebar">
+          <ServiceFilters 
+            :categories="catStore.categories ?? []"
+            :activeCat="activeCat"
+            @update:activeCat="activeCat = $event"
+          />
+        </aside>
+
         <div v-if="svcStore.loading" class="state">
           <span class="spin-lg" /><p>Finding top choices…</p>
         </div>
@@ -176,14 +184,6 @@ const firstImage = (svc: any): string | null => {
         </div>
 
       </main>
-      <aside class="sidebar">
-        <ServiceFilters 
-          :categories="catStore.categories ?? []"
-          :activeCat="activeCat"
-          @update:activeCat="activeCat = $event"
-        />
-      </aside>
-
     </div>
 
     <!-- Modal for Preview -->
