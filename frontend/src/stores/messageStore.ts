@@ -67,9 +67,12 @@ export const useMessageStore = defineStore("messages", {
     },
 
     handleIncomingMessage(message: any) {
-      // If we are looking at this conversation, push it
+      // If we are looking at this conversation, push it (if not already there)
       if (this.activeConversationId === message.conversation_id) {
-        this.activeMessages.push(message)
+        const exists = this.activeMessages.some(m => m.id === message.id)
+        if (!exists) {
+            this.activeMessages.push(message)
+        }
       }
 
       // Update the conversation list preview

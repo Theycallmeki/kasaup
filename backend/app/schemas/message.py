@@ -15,6 +15,7 @@ class Message(MessageBase):
     id: int
     conversation_id: int
     sender_id: int
+    sender_name: str
     is_read: bool = False
     created_at: datetime
 
@@ -31,6 +32,9 @@ class Conversation(ConversationBase):
     last_message: Optional[str] = None
     updated_at: datetime
     provider_owner_id: int
+    user_name: str
+    shop_name: str
+    provider_profile_image: Optional[str] = None
     
 
     model_config = ConfigDict(from_attributes=True)

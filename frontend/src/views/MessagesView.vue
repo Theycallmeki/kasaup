@@ -108,10 +108,12 @@ const formatTime = (iso: string) => {
 };
 
 const getDisplayName = (conv: any) => {
-    // If user is provider, show customer name. If user is customer, show provider name.
-    // This depends on how the backend populates the conversation objects.
-    // For now, let's use a placeholder.
-    return authStore.user.id === conv.user_id ? `Provider #${conv.provider_id}` : `Customer #${conv.user_id}`;
+    // If I am the user (customer), show the shop name.
+    // If I am the provider owner, show the user (customer) name.
+    if (authStore.user.id === conv.user_id) {
+        return conv.shop_name;
+    }
+    return conv.user_name;
 };
 </script>
 
@@ -156,13 +158,28 @@ const getDisplayName = (conv: any) => {
             <div class="header-info">
               <template v-if="messageStore.activeConversationId === -1">
                 <div class="avatar sm">{{ pendingShopName?.charAt(0) }}</div>
-                <h3>{{ pendingShopName }} (New Chat)</h3>
+                <div class="header-details">
+                  <h3>{{ pendingShopName }}</h3>
+                  <span class="status-tag">New Chat</span>
+                </div>
               </template>
               <template v-else-if="messageStore.conversations.find(c => c.id === messageStore.activeConversationId)">
-                <div class="avatar sm">
+                <div class="avatar sm profile-img" v-if="messageStore.conversations.find(c => c.id === messageStore.activeConversationId)?.provider_profile_image">
+                   <img :src="messageStore.conversations.find(c => c.id === messageStore.activeConversationId)?.provider_profile_image" alt="Profile" />
+                </div>
+                <div class="avatar sm" v-else>
                   {{ getDisplayName(messageStore.conversations.find(c => c.id === messageStore.activeConversationId)).charAt(0) }}
                 </div>
-                <h3>{{ getDisplayName(messageStore.conversations.find(c => c.id === messageStore.activeConversationId)) }}</h3>
+                <div class="header-details">
+                  <h3>{{ getDisplayName(messageStore.conversations.find(c => c.id === messageStore.activeConversationId)) }}</h3>
+                  <router-link 
+                    v-if="authStore.user.id === messageStore.conversations.find(c => c.id === messageStore.activeConversationId)?.user_id"
+                    :to="`/provider/${messageStore.conversations.find(c => c.id === messageStore.activeConversationId)?.provider_id}`" 
+                    class="view-profile-btn"
+                  >
+                    View Profile
+                  </router-link>
+                </div>
               </template>
             </div>
           </div>
@@ -339,6 +356,38 @@ const getDisplayName = (conv: any) => {
 .header-info h3 {
   margin: 0;
   font-size: 16px;
+}
+
+.header-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.status-tag {
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.view-profile-btn {
+  font-size: 12px;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.view-profile-btn:hover {
+  text-decoration: underline;
+}
+
+.profile-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .messages-area {

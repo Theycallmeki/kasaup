@@ -73,8 +73,11 @@ def get_conversations(
     for convo in conversations:
         if convo.updated_at is None:
             convo.updated_at = datetime.utcnow()
-        # Add provider_owner_id for schema fulfillment
+        # Add provider_owner_id and names for schema fulfillment
         convo.provider_owner_id = convo.provider.owner_id
+        convo.user_name = convo.user.full_name
+        convo.shop_name = convo.provider.shop_name
+        convo.provider_profile_image = convo.provider.profile_image
 
     return conversations
 
@@ -95,6 +98,8 @@ def get_messages(
         raise HTTPException(status_code=403, detail="Access denied")
     
     messages = db.query(Message).filter(Message.conversation_id == conversation_id).order_by(Message.created_at.asc()).all()
+    for msg in messages:
+        msg.sender_name = msg.sender.full_name
     return messages
 
 
@@ -158,12 +163,16 @@ async def send_message(
     db.commit()
     db.refresh(db_msg)
 
+    # Populate sender_name for the return and websocket
+    db_msg.sender_name = current_user.full_name
+
     msg_data = {
         "type": "new_message",
         "data": {
             "id": db_msg.id,
             "conversation_id": db_msg.conversation_id,
             "sender_id": db_msg.sender_id,
+            "sender_name": db_msg.sender_name,
             "content": db_msg.content,
             "created_at": str(db_msg.created_at)
         }
