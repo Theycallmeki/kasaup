@@ -73,7 +73,7 @@ export const useMessageStore = defineStore("messages", {
       if (this.socket) return
 
       const protocol = window.location.protocol === "https:" ? "wss:" : "ws:"
-      const host = "localhost:8000" // Adjust as needed
+      const host = window.location.hostname === "localhost" ? "localhost:8000" : `${window.location.hostname}:8000`
       this.socket = new WebSocket(`${protocol}//${host}/messages/ws`)
 
       this.socket.onmessage = (event) => {
