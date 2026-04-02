@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: kasaup-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-12345678}
+      POSTGRES_DB: kasaup2
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - kasaup-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: kasaup-backend
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - ./backend/.env
+    environment:
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD:-12345678}@db:5432/kasaup2
+    ports:
+      - "8000:8000"
+    volumes:
+      - backend_uploads:/app/uploads
+    networks:
+      - kasaup-network
+
+  frontend:
+    build: ./frontend
+    container_name: kasaup-frontend
+    restart: always
+    ports:
+      - "3000:80"
+    networks:
+      - kasaup-network
+    depends_on:
+      - backend
+
+networks:
+  kasaup-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  backend_uploads:
