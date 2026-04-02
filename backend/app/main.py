@@ -23,8 +23,6 @@ app = FastAPI(
 )
 
 origins = settings.cors_origins()
-if not origins:
-    origins = ["http://localhost:5173"]
 
 print("CORS ORIGINS:", origins)
 
