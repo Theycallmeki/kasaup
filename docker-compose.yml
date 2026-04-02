@@ -23,6 +23,8 @@ services:
     build: ./backend
     container_name: kasaup-backend
     restart: always
+    env_file:
+      - ./backend/.env
     depends_on:
       db:
         condition: service_healthy

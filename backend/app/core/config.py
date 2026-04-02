@@ -5,8 +5,8 @@ class Settings:
 
     def __init__(self):
         self.DATABASE_URL = os.getenv("DATABASE_URL")
-        self.SECRET_KEY = os.getenv("SECRET_KEY")
-        self.ALGORITHM = os.getenv("ALGORITHM")
+        self.SECRET_KEY = os.getenv("SECRET_KEY", "705273b57368097b876a4a1599814a0e98059045ef88998083bf2f389943fd89")
+        self.ALGORITHM = os.getenv("ALGORITHM", "HS256")
 
         self.ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "")
 
