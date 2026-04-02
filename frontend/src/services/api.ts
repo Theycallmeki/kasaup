@@ -8,10 +8,10 @@ const api = axios.create({
 })
 
 api.interceptors.response.use(
-  (response) => response,
-  (error) => {
+  (response: any) => response,
+  (error: any) => {
     if (error.response?.status === 401) {
-      console.warn("Unauthorized request")
+      // Handle unauthorized if needed
     }
     return Promise.reject(error)
   }

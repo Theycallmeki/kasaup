@@ -1,7 +1,7 @@
 import api from "./api"
 
 export async function getProviders(params?: { limit?: number; offset?: number }) {
-  const res = await api.get("/providers", { params })
+  const res = await api.get("/providers/", { params })
   return res.data
 }
 
@@ -20,7 +20,7 @@ export async function getNearbyProviders(
   lng: number,
   radius: number = 10
 ) {
-  const res = await api.get("/providers/nearby", {
+  const res = await api.get("/providers/nearby/", {
     params: { lat, lng, radius }
   })
   return res.data
@@ -32,7 +32,7 @@ export async function getProvidersInMap(bounds: {
   min_lng: number
   max_lng: number
 }) {
-  const res = await api.get("/providers/map", {
+  const res = await api.get("/providers/map/", {
     params: {
       min_lat: bounds.min_lat,
       max_lat: bounds.max_lat,
@@ -53,7 +53,7 @@ export async function createProvider(data: {
   longitude: number
   offers_home_service: boolean
 }) {
-  const res = await api.post("/providers", data)
+  const res = await api.post("/providers/", data)
   return res.data
 }
 
@@ -89,7 +89,7 @@ export async function uploadProviderImage(providerId: number, file: File) {
 }
 
 export async function getMyProvider() {
-  const res = await api.get("/providers/me")
+  const res = await api.get("/providers/me/")
   return res.data
 }
 

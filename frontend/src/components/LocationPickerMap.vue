@@ -51,8 +51,8 @@ onMounted(() => {
     maxZoom: 18
   }).setView([12.8797, 121.774], 6)
 
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-    attribution: "© CartoDB",
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     noWrap: true
   }).addTo(map)
 

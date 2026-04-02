@@ -233,12 +233,8 @@ onMounted(() => {
     preferCanvas: true
   }).setView([12.8797, 121.774], 6)
 
-  L.tileLayer("https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png", {
-    attribution: '© <a href="https://stadiamaps.com/">Stadia Maps</a> © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    noWrap: true,
-    keepBuffer: 8,
-    updateWhenZooming: false,
-    updateWhenIdle: true
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(map)
 
   refreshProviderMarkers()
