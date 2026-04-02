@@ -51,8 +51,8 @@ onMounted(() => {
     maxZoom: 18
   }).setView([12.8797, 121.774], 6)
 
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a>',
+  L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
+    attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
     noWrap: true
   }).addTo(map)
 
@@ -149,6 +149,7 @@ onMounted(() => {
   height: 100%;
   min-height: 240px;
   border-radius: 10px;
-  background: #e0e0e0;
+  background: #1a1a1a;
+  filter: saturate(0.8) brightness(1.1);
 }
 </style>

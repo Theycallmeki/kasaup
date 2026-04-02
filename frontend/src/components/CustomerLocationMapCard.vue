@@ -24,8 +24,8 @@ function initMap() {
 
   map = L.map("provider-view-map").setView([props.lat, props.lng], 15)
 
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-    attribution: "© CartoDB",
+  L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
+    attribution: "© Esri",
     noWrap: true
   }).addTo(map)
 
@@ -149,7 +149,8 @@ watch(() => [props.show, props.lat, props.lng], ([show]) => {
   border-radius: 12px;
   overflow: hidden;
   border: 0.5px solid rgba(255, 255, 255, 0.08);
-  background: #e0e0e0;
+  background: #1a1a1a;
+  filter: saturate(0.8) brightness(1.1);
 }
 
 .map-el {
