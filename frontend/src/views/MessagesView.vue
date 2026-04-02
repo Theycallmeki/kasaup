@@ -3,6 +3,8 @@ import { onMounted, ref, watch, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
 import { useMessageStore } from '../stores/messageStore';
 import { useAuthStore } from '../stores/authStore';
+import { computed } from 'vue';
+import api from '../services/api';
 
 const route = useRoute();
 const messageStore = useMessageStore();
@@ -110,11 +112,24 @@ const formatTime = (iso: string) => {
 const getDisplayName = (conv: any) => {
     // If I am the user (customer), show the shop name.
     // If I am the provider owner, show the user (customer) name.
+    if (!authStore.user) return '';
     if (authStore.user.id === conv.user_id) {
         return conv.shop_name;
     }
     return conv.user_name;
 };
+
+const imgUrl = (path: string) => {
+  if (!path) return "";
+  if (path.startsWith("http")) return path;
+  return `${api.defaults.baseURL}${path.startsWith("/") ? path : "/" + path}`;
+};
+
+const activeConversation = computed(() => {
+  if (!messageStore.activeConversationId) return null;
+  if (messageStore.activeConversationId === -1) return null;
+  return messageStore.conversations.find(c => c.id === messageStore.activeConversationId) || null;
+});
 </script>
 
 <template>
@@ -133,7 +148,10 @@ const getDisplayName = (conv: any) => {
             :class="{ active: conv.id === messageStore.activeConversationId }"
             @click="selectConversation(conv.id)"
           >
-            <div class="avatar">
+            <div class="avatar profile-img" v-if="authStore.user?.id === conv.user_id && conv.provider_profile_image">
+               <img :src="imgUrl(conv.provider_profile_image)" alt="Profile" />
+            </div>
+            <div class="avatar" v-else>
               {{ getDisplayName(conv).charAt(0) }}
             </div>
             <div class="conv-info">
@@ -163,18 +181,18 @@ const getDisplayName = (conv: any) => {
                   <span class="status-tag">New Chat</span>
                 </div>
               </template>
-              <template v-else-if="messageStore.conversations.find(c => c.id === messageStore.activeConversationId)">
-                <div class="avatar sm profile-img" v-if="messageStore.conversations.find(c => c.id === messageStore.activeConversationId)?.provider_profile_image">
-                   <img :src="messageStore.conversations.find(c => c.id === messageStore.activeConversationId)?.provider_profile_image" alt="Profile" />
+              <template v-else-if="activeConversation">
+                <div class="avatar sm profile-img" v-if="authStore.user?.id === activeConversation.user_id && activeConversation.provider_profile_image">
+                   <img :src="imgUrl(activeConversation.provider_profile_image)" alt="Profile" />
                 </div>
                 <div class="avatar sm" v-else>
-                  {{ getDisplayName(messageStore.conversations.find(c => c.id === messageStore.activeConversationId)).charAt(0) }}
+                  {{ getDisplayName(activeConversation).charAt(0) }}
                 </div>
                 <div class="header-details">
-                  <h3>{{ getDisplayName(messageStore.conversations.find(c => c.id === messageStore.activeConversationId)) }}</h3>
+                  <h3>{{ getDisplayName(activeConversation) }}</h3>
                   <router-link 
-                    v-if="authStore.user.id === messageStore.conversations.find(c => c.id === messageStore.activeConversationId)?.user_id"
-                    :to="`/provider/${messageStore.conversations.find(c => c.id === messageStore.activeConversationId)?.provider_id}`" 
+                    v-if="authStore.user?.id === activeConversation.user_id"
+                    :to="`/providers/${activeConversation.provider_id}`" 
                     class="view-profile-btn"
                   >
                     View Profile

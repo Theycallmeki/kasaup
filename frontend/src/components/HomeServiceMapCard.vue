@@ -42,10 +42,10 @@ function setLocation(data: any) {
 
 <style scoped>
 .profile-sidebar {
-  width: 800px;
+  width: 440px;
   flex-shrink: 0;
   position: sticky;
-  top: 36px;
+  top: 24px;
   animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -90,7 +90,7 @@ function setLocation(data: any) {
   border-radius: 12px;
   overflow: hidden;
   border: 0.5px solid rgba(255, 255, 255, 0.08);
-  height: 600px;
+  height: 480px;
   background: #0e0c1a;
 }
 
@@ -122,10 +122,14 @@ function setLocation(data: any) {
   to { opacity: 1; transform: translateX(0); }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1200px) {
   .profile-sidebar {
     width: 100%;
     position: static;
+    margin-top: 24px;
+  }
+  .location-map {
+    height: 400px;
   }
 }
 </style>

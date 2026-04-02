@@ -264,8 +264,9 @@ const isPrevDisabled = computed(() => {
 
     <template v-else>
       <div class="provider-header">
-        <div class="provider-avatar">
-          {{ providerStore.providerProfile.provider.shop_name?.charAt(0) }}
+        <div class="provider-avatar" :class="{ 'has-img': providerStore.providerProfile.provider.profile_image }">
+          <img v-if="providerStore.providerProfile.provider.profile_image" :src="imgUrl(providerStore.providerProfile.provider.profile_image)" alt="Profile" class="avatar-img" />
+          <span v-else>{{ providerStore.providerProfile.provider.shop_name?.charAt(0) }}</span>
         </div>
         <div>
           <h1 class="provider-name">
