@@ -4,6 +4,7 @@ from sqlalchemy import or_
 from typing import List
 from datetime import datetime
 import json
+from app.core.timezone import get_ph_time
 
 from app.db import get_db
 from app.models.message import Conversation, Message
@@ -72,7 +73,7 @@ def get_conversations(
 
     for convo in conversations:
         if convo.updated_at is None:
-            convo.updated_at = datetime.utcnow()
+            convo.updated_at = get_ph_time()
         # Add provider_owner_id and names for schema fulfillment
         convo.provider_owner_id = convo.provider.owner_id
         convo.user_name = convo.user.full_name
@@ -174,9 +175,30 @@ async def send_message(
             "sender_id": db_msg.sender_id,
             "sender_name": db_msg.sender_name,
             "content": db_msg.content,
-            "created_at": str(db_msg.created_at)
+            "created_at": db_msg.created_at.isoformat()
         }
     }
     await manager.send_personal_message(msg_data, recipient.id)
     
     return db_msg
+
+
+@router.delete("/conversations/{conversation_id}")
+def delete_conversation(
+    conversation_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    conversation = db.query(Conversation).filter(Conversation.id == conversation_id).first()
+    if not conversation:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    
+    is_customer = conversation.user_id == current_user.id
+    is_provider_owner = conversation.provider.owner_id == current_user.id
+    
+    if not is_customer and not is_provider_owner:
+        raise HTTPException(status_code=403, detail="Not authorized to delete this conversation")
+    
+    db.delete(conversation)
+    db.commit()
+    return {"message": "Conversation deleted"}

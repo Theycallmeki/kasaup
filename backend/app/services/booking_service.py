@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
+from app.core.timezone import get_ph_time
 
 from app.models.appointment import Appointment
 from app.models.provider_availability import ProviderAvailability
@@ -97,7 +98,7 @@ def update_status(
     appointment.status = new_status
 
     if new_status == "completed":
-        appointment.completed_at = datetime.utcnow()
+        appointment.completed_at = get_ph_time()
 
     db.commit()
     db.refresh(appointment)

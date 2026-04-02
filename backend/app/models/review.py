@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.db import Base
+from app.core.timezone import get_ph_time
 
 
 class Review(Base):
@@ -16,7 +17,7 @@ class Review(Base):
     rating = Column(Float, nullable=False) # 1.0 to 5.0
     comment = Column(String, nullable=True)
     
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=get_ph_time)
 
    
     user = relationship("User")

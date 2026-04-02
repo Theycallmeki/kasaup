@@ -1,5 +1,5 @@
 import { defineStore } from "pinia"
-import { getConversations, getConversationMessages, sendMessage } from "../services/messages"
+import { getConversations, getConversationMessages, sendMessage, deleteConversation } from "../services/messages"
 
 export const useMessageStore = defineStore("messages", {
 
@@ -43,6 +43,20 @@ export const useMessageStore = defineStore("messages", {
       }
       
       return msg
+    },
+
+    async deleteConversation(conversationId: number) {
+      try {
+        await deleteConversation(conversationId)
+        this.conversations = this.conversations.filter(c => c.id !== conversationId)
+        if (this.activeConversationId === conversationId) {
+          this.activeConversationId = null
+          this.activeMessages = []
+        }
+      } catch (err) {
+        console.error("Failed to delete conversation", err)
+        throw err
+      }
     },
 
     connectWS(userId: number) {

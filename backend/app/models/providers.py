@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime, Foreig
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.db import Base
+from app.core.timezone import get_ph_time
 
 
 class Provider(Base):
@@ -35,7 +36,7 @@ class Provider(Base):
 
     profile_image = Column(String)  
 
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=get_ph_time)
 
     owner = relationship("User")
 

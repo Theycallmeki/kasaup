@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, T
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.db import Base
+from app.core.timezone import get_ph_time
 
 
 class Conversation(Base):
@@ -15,10 +16,10 @@ class Conversation(Base):
     
   
     last_message = Column(Text, nullable=True)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_at = Column(DateTime, default=get_ph_time, onupdate=get_ph_time)
     
  
-    messages = relationship("Message", back_populates="conversation")
+    messages = relationship("Message", back_populates="conversation", cascade="all, delete-orphan")
     user = relationship("User")
     provider = relationship("Provider")
 
@@ -33,7 +34,7 @@ class Message(Base):
     
     content = Column(Text, nullable=False)
     is_read = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=get_ph_time)
     
     # Relationships
     conversation = relationship("Conversation", back_populates="messages")

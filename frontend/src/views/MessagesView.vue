@@ -16,6 +16,9 @@ const messagesDropdown = ref<HTMLElement | null>(null);
 const pendingReceiverId = ref<number | null>(null);
 const pendingShopName = ref<string | null>(null);
 
+const showDeleteConfirm = ref(false);
+const conversationToDelete = ref<any>(null);
+
 onMounted(async () => {
   await messageStore.fetchConversations();
   if (authStore.user) {
@@ -101,12 +104,32 @@ const scrollToBottom = () => {
   });
 };
 
+const confirmDelete = (conv: any) => {
+  conversationToDelete.value = conv;
+  showDeleteConfirm.value = true;
+};
+
+const handleDelete = async () => {
+  if (!conversationToDelete.value) return;
+  try {
+    await messageStore.deleteConversation(conversationToDelete.value.id);
+    showDeleteConfirm.value = false;
+    conversationToDelete.value = null;
+  } catch (err) {
+    alert("Failed to delete conversation");
+  }
+};
+
 watch(() => messageStore.activeMessages.length, () => {
   scrollToBottom();
 });
 
 const formatTime = (iso: string) => {
-  return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  if (!iso) return '';
+  // Ensure the date string is treated as UTC if no timezone is provided
+  // Standardize ' ' to 'T' and add 'Z' suffix
+  const dateStr = (iso.endsWith('Z') || iso.includes('+')) ? iso : iso.replace(' ', 'T') + 'Z';
+  return new Date(dateStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
 const getDisplayName = (conv: any) => {
@@ -133,13 +156,15 @@ const activeConversation = computed(() => {
 </script>
 
 <template>
-  <div class="chat-page">
+  <div class="page">
+    <div class="page-header">
+      <h1 class="title">Messages</h1>
+      <p class="hint">Keep in touch with your service providers and clients.</p>
+    </div>
+
     <div class="chat-container">
       <!-- Sidebar -->
       <div class="sidebar">
-        <div class="sidebar-header">
-          <h2>Messages</h2>
-        </div>
         <div class="conversation-list">
           <div 
             v-for="conv in messageStore.conversations" 
@@ -161,9 +186,17 @@ const activeConversation = computed(() => {
               </div>
               <p class="last-msg">{{ conv.last_message || 'No messages yet' }}</p>
             </div>
+            <button class="delete-btn" @click.stop="confirmDelete(conv)" title="Delete Conversation">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              </svg>
+            </button>
           </div>
           
           <div v-if="messageStore.conversations.length === 0" class="empty-state">
+             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+             </svg>
             <p>No conversations yet</p>
           </div>
         </div>
@@ -243,54 +276,100 @@ const activeConversation = computed(() => {
         </div>
       </div>
     </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div v-if="showDeleteConfirm" class="modal-overlay">
+      <div class="modal-card">
+        <h3>Delete Conversation</h3>
+        <p>Do you want to delete your conversation with <strong>{{ getDisplayName(conversationToDelete) }}</strong>?</p>
+        <p class="warning-text">This action is permanent and will delete the chat for both of you.</p>
+        <div class="modal-actions">
+          <button class="btn-cancel" @click="showDeleteConfirm = false">Cancel</button>
+          <button class="btn-delete" @click="handleDelete">Delete Forever</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.chat-page {
-  height: 100%;
-  padding: 24px;
-  background: var(--bg);
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@700&family=DM+Sans:wght@400;500&display=swap');
+
+.page {
+  height: 100vh;
+  padding: 36px 32px;
+  background: #0e0c1a;
+  display: flex;
+  flex-direction: column;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.page-header {
+  margin-bottom: 24px;
+  flex-shrink: 0;
+}
+
+.title {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.01em;
+  margin: 0 0 6px;
+}
+
+.hint {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.3);
+  margin: 0;
 }
 
 .chat-container {
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   display: flex;
-  background: #1c1c24;
-  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px);
 }
 
 .sidebar {
   width: 320px;
-  border-right: 1px solid var(--border);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
-}
-
-.sidebar-header {
-  padding: 24px;
-  border-bottom: 1px solid var(--border);
-}
-
-.sidebar-header h2 {
-  margin: 0;
-  font-size: 20px;
 }
 
 .conversation-list {
   flex: 1;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #a78bfa rgba(255,255,255,0.05);
+  padding-right: 2px;
+}
+
+.conversation-list::-webkit-scrollbar {
+  width: 5px;
+}
+.conversation-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.conversation-list::-webkit-scrollbar-thumb {
+  background: rgba(167, 139, 250, 0.15);
+  border-radius: 10px;
+}
+.conversation-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(167, 139, 250, 0.3);
 }
 
 .conversation-item {
-  padding: 16px 24px;
+  padding: 18px 20px;
   display: flex;
-  gap: 12px;
+  gap: 14px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 }
 
@@ -299,27 +378,63 @@ const activeConversation = computed(() => {
 }
 
 .conversation-item.active {
-  background: var(--accent-bg);
-  border-right: 2px solid var(--accent);
+  background: rgba(167, 139, 250, 0.1);
+  border-right: 3px solid #a78bfa;
+}
+
+.delete-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(248, 113, 113, 0.1);
+  color: rgba(248, 113, 113, 0.5);
+  border: 0.5px solid rgba(248, 113, 113, 0.2);
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s;
+  align-self: center;
+}
+
+.conversation-item:hover .delete-btn {
+  opacity: 1;
+}
+
+.delete-btn:hover {
+  background: #f87171;
+  color: #fff;
+  border-color: #f87171;
+  transform: scale(1.1);
 }
 
 .avatar {
-  width: 48px;
-  height: 48px;
-  background: var(--accent);
+  width: 50px;
+  height: 50px;
+  background: rgba(167, 139, 250, 0.15);
+  border: 1px solid rgba(167, 139, 250, 0.3);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-weight: 600;
+  color: #c4b5fd;
+  font-weight: 700;
+  font-family: 'Sora', sans-serif;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 .avatar.sm {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   font-size: 14px;
+}
+
+.profile-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .conv-info {
@@ -336,17 +451,18 @@ const activeConversation = computed(() => {
 
 .name {
   font-weight: 500;
-  color: var(--text-h);
+  color: #fff;
+  font-size: 15px;
 }
 
 .time {
-  font-size: 12px;
-  color: var(--text);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .last-msg {
   font-size: 13px;
-  color: var(--text);
+  color: rgba(255, 255, 255, 0.4);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -357,55 +473,49 @@ const activeConversation = computed(() => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: #16161e;
+  background: rgba(255, 255, 255, 0.015);
 }
 
 .chat-header {
   padding: 16px 24px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .header-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
-.header-info h3 {
+.header-details h3 {
   margin: 0;
   font-size: 16px;
-}
-
-.header-details {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  font-family: 'Sora', sans-serif;
+  color: #fff;
 }
 
 .status-tag {
-  font-size: 11px;
-  color: var(--accent);
+  font-size: 10px;
+  color: #a78bfa;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 600;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  margin-top: 2px;
+  display: block;
 }
 
 .view-profile-btn {
   font-size: 12px;
-  color: var(--accent);
+  color: #a78bfa;
   text-decoration: none;
   font-weight: 500;
+  transition: opacity 0.2s;
 }
 
 .view-profile-btn:hover {
   text-decoration: underline;
-}
-
-.profile-img img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
+  opacity: 0.8;
 }
 
 .messages-area {
@@ -415,74 +525,98 @@ const activeConversation = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: #a78bfa rgba(255,255,255,0.02);
+}
+
+.messages-area::-webkit-scrollbar {
+  width: 6px;
+}
+.messages-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+.messages-area::-webkit-scrollbar-thumb {
+  background: rgba(167, 139, 250, 0.1);
+  border-radius: 10px;
+  border: 1px solid transparent;
+}
+.messages-area::-webkit-scrollbar-thumb:hover {
+  background: rgba(167, 139, 250, 0.25);
 }
 
 .message-wrapper {
   display: flex;
   flex-direction: column;
+  max-width: 80%;
 }
 
 .message-bubble {
-  max-width: 70%;
   padding: 12px 16px;
   border-radius: 18px;
-  background: #2e2e3a;
-  color: var(--text-h);
-  position: relative;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+  line-height: 1.5;
 }
 
 .message-bubble p {
   margin: 0;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .msg-time {
   font-size: 10px;
-  color: var(--text);
-  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.3);
+  margin-top: 6px;
   display: block;
-  text-align: right;
 }
 
 .mine {
-  align-items: flex-end;
+  align-self: flex-end;
 }
 
 .mine .message-bubble {
-  background: var(--accent);
-  color: white;
-  border-bottom-right-radius: 4px;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  border: none;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
 }
 
 .mine .msg-time {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.6);
+  text-align: right;
 }
 
 .chat-footer {
   padding: 20px 24px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .input-wrapper {
   display: flex;
   gap: 12px;
-  background: #2e2e3a;
-  padding: 8px 8px 8px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 8px 8px 8px 18px;
   border-radius: 16px;
-  border: 1px solid transparent;
-  transition: border-color 0.2s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s;
 }
 
 .input-wrapper:focus-within {
-  border-color: var(--accent);
+  border-color: #a78bfa;
+  background: rgba(255, 255, 255, 0.07);
 }
 
 .input-wrapper input {
   flex: 1;
   background: none;
   border: none;
-  color: var(--text-h);
-  font-size: 15px;
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.input-wrapper input::placeholder {
+  color: rgba(255, 255, 255, 0.2);
 }
 
 .input-wrapper input:focus {
@@ -490,21 +624,33 @@ const activeConversation = computed(() => {
 }
 
 .input-wrapper button {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 12px;
-  background: var(--accent);
-  color: white;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: #fff;
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.2s;
+  transition: transform 0.2s, opacity 0.2s;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.input-wrapper button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+.input-wrapper button:active {
+  transform: translateY(0);
 }
 
 .input-wrapper button:disabled {
   opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(1);
 }
 
 .chat-empty {
@@ -513,23 +659,147 @@ const activeConversation = computed(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: var(--text);
+  color: rgba(255, 255, 255, 0.2);
+  text-align: center;
 }
 
 .empty-icon {
-  margin-bottom: 20px;
-  opacity: 0.2;
+  margin-bottom: 24px;
+  opacity: 0.1;
+  transform: scale(1.5);
 }
 
 .chat-empty h3 {
-  font-weight: 400;
-  opacity: 0.5;
+  font-weight: 500;
+  font-size: 1.1rem;
+  font-family: 'Sora', sans-serif;
+  letter-spacing: 0.02em;
 }
 
 .empty-state {
-  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 30px;
   text-align: center;
-  color: var(--text);
-  opacity: 0.6;
+  color: rgba(255, 255, 255, 0.15);
+  gap: 12px;
+}
+
+.empty-state p {
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Confirmation Modal Styles */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-card {
+  background: #1c1c24;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 32px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-card h3 {
+  font-family: 'Sora', sans-serif;
+  color: #fff;
+  margin: 0 0 16px;
+}
+
+.modal-card p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.warning-text {
+  color: #f87171 !important;
+  font-weight: 500;
+  font-size: 13px !important;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-cancel {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-delete {
+  background: #f87171;
+  color: #fff;
+}
+
+.btn-delete:hover {
+  background: #ef4444;
+  transform: translateY(-1px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 900px) {
+    .sidebar {
+        width: 80px;
+        min-width: 80px;
+    }
+    .conv-info {
+        display: none;
+    }
+    .avatar {
+        margin: 0 auto;
+    }
+    .conversation-item {
+        padding: 15px 0;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 20px 14px;
+  }
 }
 </style>

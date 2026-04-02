@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.db import Base
+from app.core.timezone import get_ph_time
 
 
 class User(Base):
@@ -19,6 +20,6 @@ class User(Base):
 
     role = Column(String, nullable=False, default="customer")
 
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=get_ph_time)
 
     appointments = relationship("Appointment", back_populates="user")

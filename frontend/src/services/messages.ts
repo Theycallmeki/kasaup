@@ -14,3 +14,8 @@ export async function sendMessage(receiver_id: number, content: string) {
     const res = await api.post("/messages/send", { receiver_id, content })
     return res.data
 }
+
+export async function deleteConversation(conversationId: number) {
+    const res = await api.delete(`/messages/conversations/${conversationId}`)
+    return res.data
+}
