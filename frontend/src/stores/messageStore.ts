@@ -29,6 +29,12 @@ export const useMessageStore = defineStore("messages", {
 
     async send(receiverId: number, content: string) {
       const msg = await sendMessage(receiverId, content)
+      
+      // If this was a new conversation (pending ID -1), sync the ID now
+      if (this.activeConversationId === -1) {
+          this.activeConversationId = msg.conversation_id
+      }
+
       // Check if we already have this conversation in the list
       const index = this.conversations.findIndex(c => c.id === msg.conversation_id)
       if (index !== -1) {
@@ -38,8 +44,12 @@ export const useMessageStore = defineStore("messages", {
         await this.fetchConversations()
       }
       
+      // Push the message if it belongs to the active conversation
       if (this.activeConversationId === msg.conversation_id) {
-          this.activeMessages.push(msg)
+          const exists = this.activeMessages.some(m => m.id === msg.id)
+          if (!exists) {
+              this.activeMessages.push(msg)
+          }
       }
       
       return msg

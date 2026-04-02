@@ -3,8 +3,10 @@ from jose import jwt
 from datetime import datetime, timedelta
 from app.core.timezone import get_ph_time
 
-SECRET_KEY = "supersecretkey"
-ALGORITHM = "HS256"
+from app.core.config import settings
+
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 15
 REFRESH_TOKEN_EXPIRE_DAYS = 7
