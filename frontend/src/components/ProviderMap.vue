@@ -233,7 +233,7 @@ onMounted(() => {
     preferCanvas: true
   }).setView([12.8797, 121.774], 6)
 
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a>',
     noWrap: true
   }).addTo(map)
@@ -304,7 +304,7 @@ watch(
 .map {
   height: 100%;
   width: 100%;
-  background: #0e0c1a;
+  background: #e0e0e0;
   transform: translateZ(0);
   will-change: transform;
 }
@@ -372,7 +372,7 @@ watch(
 
 <style>
 .leaflet-container {
-  background: #0e0c1a;
+  background: #e0e0e0;
   transform: translateZ(0);
 }
 

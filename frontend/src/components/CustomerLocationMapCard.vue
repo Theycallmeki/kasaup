@@ -24,7 +24,7 @@ function initMap() {
 
   map = L.map("provider-view-map").setView([props.lat, props.lng], 15)
 
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
     attribution: "© CartoDB",
     noWrap: true
   }).addTo(map)
@@ -149,7 +149,7 @@ watch(() => [props.show, props.lat, props.lng], ([show]) => {
   border-radius: 12px;
   overflow: hidden;
   border: 0.5px solid rgba(255, 255, 255, 0.08);
-  background: #0e0c1a;
+  background: #e0e0e0;
 }
 
 .map-el {

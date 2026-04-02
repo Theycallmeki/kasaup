@@ -51,7 +51,7 @@ onMounted(() => {
     maxZoom: 18
   }).setView([12.8797, 121.774], 6)
 
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a>',
     noWrap: true
   }).addTo(map)
@@ -149,6 +149,6 @@ onMounted(() => {
   height: 100%;
   min-height: 240px;
   border-radius: 10px;
-  background: #0e0c1a;
+  background: #e0e0e0;
 }
 </style>
