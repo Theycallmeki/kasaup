@@ -24,7 +24,7 @@ export async function createAvailability(data: {
   start_time: string
   end_time: string
 }) {
-  const res = await api.post("/availability", {
+  const res = await api.post("/availability/", {
     ...data,
     start_time: formatTo12h(data.start_time),
     end_time: formatTo12h(data.end_time)

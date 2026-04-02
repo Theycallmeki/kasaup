@@ -1,7 +1,7 @@
 import api from "./api"
 
 export async function getServices() {
-  const res = await api.get("/services")
+  const res = await api.get("/services/")
   return res.data
 }
 
@@ -37,7 +37,7 @@ export async function createService(data: {
   price: number
   duration_minutes: number
 }) {
-  const res = await api.post("/services", data)
+  const res = await api.post("/services/", data)
   return res.data
 }
 

@@ -1,7 +1,7 @@
 import api from "./api"
 
 export async function getCategories(params?: { limit?: number; offset?: number }) {
-  const res = await api.get("/categories", { params })
+  const res = await api.get("/categories/", { params })
   return res.data
 }
 
@@ -16,7 +16,7 @@ export async function getCategoryServices(id: number) {
 }
 
 export async function createCategory(data: { name: string }) {
-  const res = await api.post("/categories", data)
+  const res = await api.post("/categories/", data)
   return res.data
 }
 
