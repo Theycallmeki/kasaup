@@ -1,3 +1,4 @@
+
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session, joinedload
 from app.models.service_image import ServiceImage
@@ -101,7 +102,7 @@ def upload_profile_image(
     db.commit()
     db.refresh(provider)
 
-    return {"profile_image": path}
+    return {"url": path}
 
 
 @router.get("/", response_model=list[ProviderListItem])

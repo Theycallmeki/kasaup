@@ -22,8 +22,10 @@ const fileInput = ref<HTMLInputElement | null>(null)
 
 const displayImage = computed(() => {
   if (imagePreview.value) return imagePreview.value
-  if (providerStore.myProvider?.profile_image) {
-    const path = providerStore.myProvider.profile_image.replace(/^\//, "")
+  const profileImage = providerStore.myProvider?.profile_image
+  if (profileImage) {
+    if (profileImage.startsWith("http")) return profileImage
+    const path = profileImage.replace(/^\//, "")
     return `${api.defaults.baseURL}/${path}`
   }
   return null

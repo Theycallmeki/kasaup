@@ -44,8 +44,11 @@ const calendarMonth = ref(new Date().getMonth())
 const availableDates = ref<Set<string>>(new Set())
 const loadingAvailable = ref(false)
 
-const imgUrl = (path: string) =>
-  path ? `${api.defaults.baseURL}${path.startsWith("/") ? path : "/" + path}` : ""
+const imgUrl = (path: string) => {
+  if (!path) return ""
+  if (path.startsWith("http")) return path
+  return `${api.defaults.baseURL}${path.startsWith("/") ? path : "/" + path}`
+}
 
 onMounted(async () => {
   try {

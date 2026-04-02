@@ -77,8 +77,11 @@ const accent = (id: number) => palette[(id ?? 0) % palette.length]
 const catName = (id: number) => catStore.categories?.find((c: any) => c.id === id)?.name ?? "Service"
 const shopName = (id: number) => providerMap.value[id]?.shop_name ?? "—"
 
-const imgUrl = (path: string) =>
-  path ? `${api.defaults.baseURL}${path.startsWith("/") ? path : "/" + path}` : ""
+const imgUrl = (path: string) => {
+  if (!path) return ""
+  if (path.startsWith("http")) return path
+  return `${api.defaults.baseURL}${path.startsWith("/") ? path : "/" + path}`
+}
 
 const firstImage = (svc: any): string | null => {
   if (Array.isArray(svc.images) && svc.images.length) return imgUrl(svc.images[0].image_url)

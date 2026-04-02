@@ -21,8 +21,11 @@ const form = ref({
   category_id: 1
 })
 
-const imgUrl = (path: string) =>
-  path ? `${api.defaults.baseURL}${path.startsWith("/") ? path : "/" + path}` : ""
+const imgUrl = (path: string) => {
+  if (!path) return ""
+  if (path.startsWith("http")) return path
+  return `${api.defaults.baseURL}${path.startsWith("/") ? path : "/" + path}`
+}
   
 onMounted(async () => {
   await resolveProvider()
