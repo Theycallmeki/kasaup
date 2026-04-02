@@ -126,10 +126,14 @@ watch(() => messageStore.activeMessages.length, () => {
 
 const formatTime = (iso: string) => {
   if (!iso) return '';
-  // Ensure the date string is treated as UTC if no timezone is provided
-  // Standardize ' ' to 'T' and add 'Z' suffix
-  const dateStr = (iso.endsWith('Z') || iso.includes('+')) ? iso : iso.replace(' ', 'T') + 'Z';
-  return new Date(dateStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  // The backend now sends PHT (Philippines Time) directly.
+  // We just need to ensure the format is valid for the Date constructor.
+  const dateStr = iso.includes('T') ? iso : iso.replace(' ', 'T');
+  return new Date(dateStr).toLocaleTimeString([], { 
+    hour: '2-digit', 
+    minute: '2-digit',
+    hour12: true 
+  });
 };
 
 const getDisplayName = (conv: any) => {
@@ -548,6 +552,7 @@ const activeConversation = computed(() => {
   display: flex;
   flex-direction: column;
   max-width: 80%;
+  align-self: flex-start;
 }
 
 .message-bubble {
