@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from "vue"
+import { useRouter } from "vue-router"
 import { useAppointmentStore } from "../../stores/appointmentStore"
 import CustomerLocationMapCard from "../../components/CustomerLocationMapCard.vue"
 
 const appointmentStore = useAppointmentStore()
+const router = useRouter()
 const activeTab = ref<"pending" | "upcoming" | "past">("pending")
 const selectedApp = ref<any>(null)
 
@@ -32,6 +34,16 @@ watch(activeTab, () => {
 const approve  = async (id: number) => { await appointmentStore.approve(id) }
 const cancel   = async (id: number) => { await appointmentStore.cancel(id) }
 const complete = async (id: number) => { await appointmentStore.complete(id) }
+
+function goToChat(app: any) {
+  router.push({
+    path: "/messages",
+    query: {
+      receiver_id: app.user_id,
+      customer_name: app.customer_name
+    }
+  })
+}
 
 const statusClass = (status: string) => {
   if (status === "pending")   return "badge-pending"
@@ -142,6 +154,12 @@ const formatDateTime = (iso: string) => {
                 <div class="cb-actions">
                   <button v-if="app.status === 'pending'" class="abtn abtn-green" @click="approve(app.id)">Approve</button>
                   <button v-if="app.status === 'approved' || app.status === 'confirmed'" class="abtn abtn-blue" @click="complete(app.id)">Complete</button>
+                  <button class="abtn abtn-purple" @click="goToChat(app)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:text-bottom">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    Message
+                  </button>
                   <button v-if="app.status === 'pending' || app.status === 'approved' || app.status === 'confirmed'" class="abtn abtn-red" @click="cancel(app.id)">Cancel</button>
                 </div>
                 
@@ -495,6 +513,15 @@ const formatDateTime = (iso: string) => {
 .abtn-red:hover {
   background: rgba(248, 113, 113, 0.1);
   color: #f87171;
+}
+.abtn-purple {
+  background: rgba(167, 139, 250, 0.15);
+  color: #c4b5fd;
+  border: 1px solid rgba(167, 139, 250, 0.2);
+}
+.abtn-purple:hover {
+  background: rgba(167, 139, 250, 0.25);
+  border-color: #a78bfa;
 }
 
 .map-toggle-btn {

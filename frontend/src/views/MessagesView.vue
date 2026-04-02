@@ -29,17 +29,30 @@ onMounted(async () => {
   const providerId = route.query.provider_id ? Number(route.query.provider_id) : null;
   const receiverId = route.query.receiver_id ? Number(route.query.receiver_id) : null;
   const shopName = route.query.shop_name as string;
+  const customerName = route.query.customer_name as string;
 
   if (providerId) {
     const existing = messageStore.conversations.find(c => c.provider_id === providerId);
     if (existing) {
       selectConversation(existing.id);
     } else if (receiverId) {
-      // New chat state
+      // New chat state for customer -> provider
       messageStore.activeConversationId = -1;
       messageStore.activeMessages = [];
       pendingReceiverId.value = receiverId;
       pendingShopName.value = shopName || `Provider #${providerId}`;
+    }
+  } else if (receiverId) {
+    // Provider -> Customer flow
+    const existing = messageStore.conversations.find(c => c.user_id === receiverId);
+    if (existing) {
+      selectConversation(existing.id);
+    } else {
+      // New chat state for provider -> customer
+      messageStore.activeConversationId = -1;
+      messageStore.activeMessages = [];
+      pendingReceiverId.value = receiverId;
+      pendingShopName.value = customerName || `User #${receiverId}`;
     }
   }
 });
