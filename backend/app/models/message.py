@@ -11,8 +11,8 @@ class Conversation(Base):
     id = Column(Integer, primary_key=True, index=True)
     
  
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    provider_id = Column(Integer, ForeignKey("providers.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    provider_id = Column(Integer, ForeignKey("providers.id", ondelete="CASCADE"), nullable=False)
     
   
     last_message = Column(Text, nullable=True)
@@ -29,8 +29,8 @@ class Message(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     
-    conversation_id = Column(Integer, ForeignKey("conversations.id"), nullable=False)
-    sender_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    conversation_id = Column(Integer, ForeignKey("conversations.id", ondelete="CASCADE"), nullable=False)
+    sender_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     
     content = Column(Text, nullable=False)
     is_read = Column(Boolean, default=False)
@@ -38,4 +38,4 @@ class Message(Base):
     
     # Relationships
     conversation = relationship("Conversation", back_populates="messages")
-    sender = relationship("User")
+    sender = relationship("User", back_populates="sent_messages")

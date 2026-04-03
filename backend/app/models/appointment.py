@@ -9,9 +9,9 @@ class Appointment(Base):
 
     id = Column(Integer, primary_key=True)
 
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    provider_id = Column(Integer, ForeignKey("providers.id"), nullable=False)
-    service_id = Column(Integer, ForeignKey("services.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    provider_id = Column(Integer, ForeignKey("providers.id", ondelete="CASCADE"), nullable=False)
+    service_id = Column(Integer, ForeignKey("services.id", ondelete="CASCADE"), nullable=False)
 
     appointment_time = Column(DateTime, nullable=False, index=True)
 

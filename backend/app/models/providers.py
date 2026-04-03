@@ -38,8 +38,10 @@ class Provider(Base):
 
     created_at = Column(DateTime, default=get_ph_time)
 
-    owner = relationship("User")
+    owner = relationship("User", back_populates="provided_shop")
 
-    services = relationship("Service", back_populates="provider")
+    services = relationship("Service", back_populates="provider", cascade="all, delete-orphan")
 
-    appointments = relationship("Appointment", back_populates="provider")
+    appointments = relationship("Appointment", back_populates="provider", cascade="all, delete-orphan")
+
+    availability = relationship("ProviderAvailability", back_populates="provider", cascade="all, delete-orphan")

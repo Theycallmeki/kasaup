@@ -32,7 +32,7 @@ function closeModal() {
 
 async function remove() {
   if (!selectedUser.value) return
-  await api.delete(`/users/${selectedUser.value.id}`)
+  await api.delete(`/users/${selectedUser.value.id}/`)
   await fetchUsers()
   closeModal()
 }

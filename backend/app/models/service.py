@@ -8,7 +8,7 @@ class Service(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    provider_id = Column(Integer, ForeignKey("providers.id"), nullable=False)
+    provider_id = Column(Integer, ForeignKey("providers.id", ondelete="CASCADE"), nullable=False)
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
 
     name = Column(String, nullable=False)
@@ -18,6 +18,7 @@ class Service(Base):
 
     provider = relationship("Provider", back_populates="services")
     category = relationship("Category", back_populates="services")
-    images = relationship("ServiceImage", back_populates="service", cascade="all, delete")
+    images = relationship("ServiceImage", back_populates="service", cascade="all, delete-orphan")
 
-    appointments = relationship("Appointment", back_populates="service")
+    # If service is deleted, its appointments should also be removed.
+    appointments = relationship("Appointment", back_populates="service", cascade="all, delete-orphan")

@@ -22,4 +22,15 @@ class User(Base):
 
     created_at = Column(DateTime, default=get_ph_time)
 
-    appointments = relationship("Appointment", back_populates="user")
+    # Cascade delete: if user is deleted, their associated data is removed.
+    appointments = relationship("Appointment", back_populates="user", cascade="all, delete-orphan")
+    
+    # Relationship to Shop (if provider)
+    provided_shop = relationship("Provider", back_populates="owner", cascade="all, delete-orphan", uselist=False)
+    
+    # Messages
+    sent_messages = relationship("Message", foreign_keys="Message.sender_id", back_populates="sender", cascade="all, delete-orphan")
+    received_messages = relationship("Message", foreign_keys="Message.receiver_id", back_populates="receiver", cascade="all, delete-orphan")
+
+    # Reviews
+    reviews = relationship("Review", back_populates="user", cascade="all, delete-orphan")

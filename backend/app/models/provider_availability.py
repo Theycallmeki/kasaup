@@ -8,7 +8,7 @@ class ProviderAvailability(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    provider_id = Column(Integer, ForeignKey("providers.id"), nullable=False)
+    provider_id = Column(Integer, ForeignKey("providers.id", ondelete="CASCADE"), nullable=False)
 
     day_of_week = Column(Integer, nullable=False)
 
