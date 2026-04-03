@@ -24,9 +24,10 @@ jobs:
             # 2. Pull the latest code
             git pull origin main || { echo "Git pull failed"; exit 1; }
             
-            # 3. Restart services with docker-compose (your server uses hyphen version)
+            # 3. Restart services with docker-compose
             docker-compose down
             docker-compose build --no-cache
+            export DATABASE_URL="${{ secrets.DATABASE_URL }}"
             docker-compose up -d
             
             # 4. Cleanup old images

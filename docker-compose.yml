@@ -29,7 +29,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-12345678}@db:5432/kasaup2
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:${POSTGRES_PASSWORD:-12345678}@db:5432/kasaup2}
       ALLOWED_ORIGINS: "http://167.172.66.181:3000,http://localhost:5173"
     ports:
       - "8000:8000"
