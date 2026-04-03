@@ -1,21 +1,28 @@
-import os
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import List
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
-class Settings:
+class Settings(BaseSettings):
+    DATABASE_URL: str
+    SECRET_KEY: str = "705273b57368097b876a4a1599814a0e98059045ef88998083bf2f389943fd89"
+    ALGORITHM: str = "HS256"
+    ALLOWED_ORIGINS: str = ""
 
-    def __init__(self):
-        self.DATABASE_URL = os.getenv("DATABASE_URL")
-        self.SECRET_KEY = os.getenv("SECRET_KEY", "705273b57368097b876a4a1599814a0e98059045ef88998083bf2f389943fd89")
-        self.ALGORITHM = os.getenv("ALGORITHM", "HS256")
+    AWS_ACCESS_KEY_ID: str = ""
+    AWS_SECRET_ACCESS_KEY: str = ""
+    AWS_REGION: str = ""
+    AWS_S3_BUCKET: str = ""
 
-        self.ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "")
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore"
+    )
 
-        self.AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
-        self.AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
-        self.AWS_REGION = os.getenv("AWS_REGION")
-        self.AWS_S3_BUCKET = os.getenv("AWS_S3_BUCKET")
-
-    def cors_origins(self):
+    def cors_origins(self) -> List[str]:
         return [origin.strip() for origin in self.ALLOWED_ORIGINS.split(",") if origin]
 
 

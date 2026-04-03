@@ -233,9 +233,12 @@ onMounted(() => {
     preferCanvas: true
   }).setView([12.8797, 121.774], 6)
 
-  L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
-    attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
-    noWrap: true
+  L.tileLayer("https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png", {
+    attribution: '© <a href="https://stadiamaps.com/">Stadia Maps</a> © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    noWrap: true,
+    keepBuffer: 8,
+    updateWhenZooming: false,
+    updateWhenIdle: true
   }).addTo(map)
 
   refreshProviderMarkers()
@@ -304,10 +307,9 @@ watch(
 .map {
   height: 100%;
   width: 100%;
-  background: #1a1a1a;
+  background: #0e0c1a;
   transform: translateZ(0);
   will-change: transform;
-  filter: saturate(0.8) brightness(1.1);
 }
 
 .cancel-directions-bar {
@@ -373,9 +375,8 @@ watch(
 
 <style>
 .leaflet-container {
-  background: #1a1a1a;
+  background: #0e0c1a;
   transform: translateZ(0);
-  filter: saturate(0.8) brightness(1.1);
 }
 
 .kasaup-provider-pin {
