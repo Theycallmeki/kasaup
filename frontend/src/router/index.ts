@@ -220,7 +220,7 @@ router.beforeEach(async (to) => {
 
       try {
 
-        const res = await api.get("/providers")
+        const res = await api.get("/providers/")
 
         const provider = res.data.find(
           (p: any) => p.owner_id === auth.user.id

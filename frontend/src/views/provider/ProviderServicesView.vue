@@ -33,7 +33,7 @@ onMounted(async () => {
 })
 
 async function resolveProvider() {
-  const res = await api.get("/providers")
+  const res = await api.get("/providers/")
   const provider = res.data.find((p: any) => p.owner_id === authStore.user.id)
   providerId.value = provider?.id || null
 }

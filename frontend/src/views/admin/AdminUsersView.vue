@@ -13,7 +13,7 @@ onMounted(fetchUsers)
 async function fetchUsers() {
   loading.value = true
   try {
-    const res = await api.get("/users")
+    const res = await api.get("/users/")
     users.value = res.data
   } finally {
     loading.value = false
