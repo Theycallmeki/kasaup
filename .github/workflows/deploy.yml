@@ -25,10 +25,7 @@ jobs:
             git pull origin main || { echo "Git pull failed"; exit 1; }
             
             # 3. Restart services with docker-compose
-            docker-compose down
-            docker-compose build --no-cache
-            export DATABASE_URL="${{ secrets.DATABASE_URL }}"
-            docker-compose up -d
+            DATABASE_URL="${{ secrets.DATABASE_URL }}" docker-compose up -d --build
             
             # 4. Cleanup old images
             docker system prune -f
