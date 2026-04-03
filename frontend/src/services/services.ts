@@ -6,17 +6,17 @@ export async function getServices() {
 }
 
 export async function getService(id: number) {
-  const res = await api.get(`/services/${id}`)
+  const res = await api.get(`/services/${id}/`)
   return res.data
 }
 
 export async function getProviderServices(providerId: number) {
-  const res = await api.get(`/services/provider/${providerId}`)
+  const res = await api.get(`/services/provider/${providerId}/`)
   return res.data
 }
 
 export async function getCategoryServices(categoryId: number) {
-  const res = await api.get(`/services/category/${categoryId}`)
+  const res = await api.get(`/services/category/${categoryId}/`)
   return res.data
 }
 
@@ -26,7 +26,7 @@ export async function searchServices(params: {
   min_price?: number
   max_price?: number
 }) {
-  const res = await api.get("/services/search", { params })
+  const res = await api.get("/services/search/", { params })
   return res.data
 }
 
@@ -48,12 +48,12 @@ export async function updateService(id: number, data: {
   price?: number
   duration_minutes?: number
 }) {
-  const res = await api.put(`/services/${id}`, data)
+  const res = await api.put(`/services/${id}/`, data)
   return res.data
 }
 
 export async function deleteService(id: number) {
-  const res = await api.delete(`/services/${id}`)
+  const res = await api.delete(`/services/${id}/`)
   return res.data
 }
 
@@ -65,7 +65,7 @@ export async function uploadServiceImages(serviceId: number, files: File[]) {
   })
 
   const res = await api.post(
-    `/services/${serviceId}/images`,
+    `/services/${serviceId}/images/`,
     formData,
     {
       headers: {
@@ -78,6 +78,6 @@ export async function uploadServiceImages(serviceId: number, files: File[]) {
 }
 
 export async function deleteServiceImage(serviceId: number, imageId: number) {
-  const res = await api.delete(`/services/${serviceId}/images/${imageId}`)
+  const res = await api.delete(`/services/${serviceId}/images/${imageId}/`)
   return res.data
 }

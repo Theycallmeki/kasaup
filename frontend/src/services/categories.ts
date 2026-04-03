@@ -6,12 +6,12 @@ export async function getCategories(params?: { limit?: number; offset?: number }
 }
 
 export async function getCategory(id: number) {
-  const res = await api.get(`/categories/${id}`)
+  const res = await api.get(`/categories/${id}/`)
   return res.data
 }
 
 export async function getCategoryServices(id: number) {
-  const res = await api.get(`/categories/${id}/services`)
+  const res = await api.get(`/categories/${id}/services/`)
   return res.data
 }
 
@@ -21,11 +21,11 @@ export async function createCategory(data: { name: string }) {
 }
 
 export async function updateCategory(id: number, data: { name: string }) {
-  const res = await api.put(`/categories/${id}`, data)
+  const res = await api.put(`/categories/${id}/`, data)
   return res.data
 }
 
 export async function deleteCategory(id: number) {
-  const res = await api.delete(`/categories/${id}`)
+  const res = await api.delete(`/categories/${id}/`)
   return res.data
 }

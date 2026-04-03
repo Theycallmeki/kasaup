@@ -50,7 +50,7 @@ def create_service(
     return new_service
 
 
-@router.post("/{service_id}/images")
+@router.post("/{service_id}/images/")
 def upload_service_images(
     service_id: int,
     files: List[UploadFile] = File(...),
@@ -88,7 +88,7 @@ def get_services(
     return db.query(Service).offset(offset).limit(limit).all()
 
 
-@router.get("/search", response_model=list[ServiceResponse])
+@router.get("/search/", response_model=list[ServiceResponse])
 def search(
     q: str | None = None,
     category_id: int | None = None,
@@ -105,7 +105,7 @@ def search(
     )
 
 
-@router.get("/provider/{provider_id}", response_model=list[ServiceResponse])
+@router.get("/provider/{provider_id}/", response_model=list[ServiceResponse])
 def get_services_by_provider(
     provider_id: int,
     limit: int = 20,
@@ -117,7 +117,7 @@ def get_services_by_provider(
     ).offset(offset).limit(limit).all()
 
 
-@router.get("/category/{category_id}", response_model=list[ServiceResponse])
+@router.get("/category/{category_id}/", response_model=list[ServiceResponse])
 def get_services_by_category(
     category_id: int,
     limit: int = 20,
@@ -129,7 +129,7 @@ def get_services_by_category(
     ).offset(offset).limit(limit).all()
 
 
-@router.get("/{service_id}", response_model=ServiceResponse)
+@router.get("/{service_id}/", response_model=ServiceResponse)
 def get_service(service_id: int, db: Session = Depends(get_db)):
     service = db.query(Service).filter(Service.id == service_id).first()
 
@@ -139,7 +139,7 @@ def get_service(service_id: int, db: Session = Depends(get_db)):
     return service
 
 
-@router.put("/{service_id}", response_model=ServiceResponse)
+@router.put("/{service_id}/", response_model=ServiceResponse)
 def update_service(
     service_id: int,
     service: ServiceUpdate,
@@ -169,7 +169,7 @@ def update_service(
     return db_service
 
 
-@router.delete("/{service_id}")
+@router.delete("/{service_id}/")
 def delete_service(
     service_id: int,
     db: Session = Depends(get_db),
@@ -193,7 +193,7 @@ def delete_service(
     return {"message": "Service deleted"}
 
 
-@router.delete("/{service_id}/images/{image_id}")
+@router.delete("/{service_id}/images/{image_id}/")
 def delete_service_image(
     service_id: int,
     image_id: int,

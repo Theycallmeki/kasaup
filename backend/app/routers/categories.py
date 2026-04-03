@@ -32,7 +32,7 @@ def get_categories(
     return db.query(Category).offset(offset).limit(limit).all()
 
 
-@router.get("/{category_id}", response_model=CategoryResponse)
+@router.get("/{category_id}/", response_model=CategoryResponse)
 def get_category(category_id: int, db: Session = Depends(get_db)):
     category = db.query(Category).filter(Category.id == category_id).first()
 
@@ -42,7 +42,7 @@ def get_category(category_id: int, db: Session = Depends(get_db)):
     return category
 
 
-@router.get("/{category_id}/services", response_model=list[ServiceResponse])
+@router.get("/{category_id}/services/", response_model=list[ServiceResponse])
 def get_category_services(
     category_id: int,
     limit: int = 20,
@@ -56,7 +56,7 @@ def get_category_services(
     return services
 
 
-@router.put("/{category_id}", response_model=CategoryResponse, dependencies=[Depends(require_admin)])
+@router.put("/{category_id}/", response_model=CategoryResponse, dependencies=[Depends(require_admin)])
 def update_category(
     category_id: int,
     category: CategoryUpdate,
@@ -74,7 +74,7 @@ def update_category(
     return db_category
 
 
-@router.delete("/{category_id}", dependencies=[Depends(require_admin)])
+@router.delete("/{category_id}/", dependencies=[Depends(require_admin)])
 def delete_category(
     category_id: int,
     db: Session = Depends(get_db)

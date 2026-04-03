@@ -86,7 +86,7 @@ def get_appointments(
     ]
 
 
-@router.put("/{appointment_id}/approve")
+@router.put("/{appointment_id}/approve/")
 def approve_appointment(
     appointment_id: int,
     db: Session = Depends(get_db),
@@ -112,7 +112,7 @@ def approve_appointment(
         raise HTTPException(400, str(e))
 
 
-@router.put("/{appointment_id}/cancel")
+@router.put("/{appointment_id}/cancel/")
 def cancel_appointment(
     appointment_id: int,
     db: Session = Depends(get_db),
@@ -144,7 +144,7 @@ def cancel_appointment(
         raise HTTPException(400, str(e))
 
 
-@router.put("/{appointment_id}/complete")
+@router.put("/{appointment_id}/complete/")
 def complete_appointment(
     appointment_id: int,
     db: Session = Depends(get_db),
@@ -170,7 +170,7 @@ def complete_appointment(
         raise HTTPException(400, str(e))
 
 
-@router.get("/providers/{provider_id}/available-slots")
+@router.get("/providers/{provider_id}/available-slots/")
 def get_available_slots(
     provider_id: int,
     db: Session = Depends(get_db)
@@ -227,7 +227,7 @@ def get_available_slots(
     return {"available_slots": slots}
 
 
-@router.get("/services/{service_id}/available-slots")
+@router.get("/services/{service_id}/available-slots/")
 def get_service_available_slots(
     service_id: int,
     date: str,
@@ -307,7 +307,7 @@ def get_service_available_slots(
     return {"available_slots": slots}
 
 
-@router.get("/{appointment_id}", response_model=AppointmentResponse, dependencies=[Depends(get_current_user)])
+@router.get("/{appointment_id}/", response_model=AppointmentResponse, dependencies=[Depends(get_current_user)])
 def get_appointment(
     appointment_id: int,
     db: Session = Depends(get_db),
@@ -338,7 +338,7 @@ def get_appointment(
             }
 
 
-@router.put("/{appointment_id}", response_model=AppointmentResponse, dependencies=[Depends(get_current_user)])
+@router.put("/{appointment_id}/", response_model=AppointmentResponse, dependencies=[Depends(get_current_user)])
 def update_appointment(
     appointment_id: int,
     appointment: AppointmentUpdate,
@@ -377,7 +377,7 @@ def update_appointment(
             }
 
 
-@router.delete("/{appointment_id}", dependencies=[Depends(get_current_user)])
+@router.delete("/{appointment_id}/", dependencies=[Depends(get_current_user)])
 def delete_appointment(
     appointment_id: int,
     db: Session = Depends(get_db),

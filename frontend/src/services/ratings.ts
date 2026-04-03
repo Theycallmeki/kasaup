@@ -10,11 +10,11 @@ export async function submitReview(data: {
 }
 
 export async function getProviderReviews(providerId: number) {
-    const res = await api.get(`/ratings/provider/${providerId}`)
+    const res = await api.get(`/ratings/provider/${providerId}/`)
     return res.data
 }
 
 export async function getMyReviews() {
-    const res = await api.get("/ratings/me")
+    const res = await api.get("/ratings/me/")
     return res.data
 }

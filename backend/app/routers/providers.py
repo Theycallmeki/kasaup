@@ -16,7 +16,7 @@ from app.services.upload_service import save_image
 router = APIRouter()
 
 
-@router.get("/me")
+@router.get("/me/")
 def get_my_provider(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -31,7 +31,7 @@ def get_my_provider(
     return provider
 
 
-@router.put("/me")
+@router.put("/me/")
 def update_my_provider(
     provider: ProviderUpdate,
     db: Session = Depends(get_db),
@@ -80,7 +80,7 @@ def create_provider(
     return new_provider
 
 
-@router.post("/{provider_id}/profile-image")
+@router.post("/{provider_id}/profile-image/")
 def upload_profile_image(
     provider_id: int,
     file: UploadFile = File(...),
@@ -148,7 +148,7 @@ def get_providers(
     return out
 
 
-@router.get("/nearby")
+@router.get("/nearby/")
 def get_nearby(
     lat: float,
     lng: float,
@@ -158,7 +158,7 @@ def get_nearby(
     return find_nearby_providers(db, lat, lng, radius)
 
 
-@router.get("/map")
+@router.get("/map/")
 def get_providers_in_map(
     min_lat: float,
     max_lat: float,
@@ -176,7 +176,7 @@ def get_providers_in_map(
     return providers
 
 
-@router.get("/{provider_id}", response_model=ProviderResponse)
+@router.get("/{provider_id}/", response_model=ProviderResponse)
 def get_provider(provider_id: int, db: Session = Depends(get_db)):
     provider = db.query(Provider).filter(Provider.id == provider_id).first()
 
@@ -186,7 +186,7 @@ def get_provider(provider_id: int, db: Session = Depends(get_db)):
     return provider
 
 
-@router.get("/{provider_id}/profile")
+@router.get("/{provider_id}/profile/")
 def get_provider_profile(provider_id: int, db: Session = Depends(get_db)):
     provider = db.query(Provider).filter(Provider.id == provider_id).first()
 
@@ -218,7 +218,7 @@ def get_provider_profile(provider_id: int, db: Session = Depends(get_db)):
     }
 
 
-@router.put("/{provider_id}", response_model=ProviderResponse, dependencies=[Depends(require_provider)])
+@router.put("/{provider_id}/", response_model=ProviderResponse, dependencies=[Depends(require_provider)])
 def update_provider(
     provider_id: int,
     provider: ProviderUpdate,
@@ -248,7 +248,7 @@ def update_provider(
     return db_provider
 
 
-@router.delete("/{provider_id}", dependencies=[Depends(require_provider)])
+@router.delete("/{provider_id}/", dependencies=[Depends(require_provider)])
 def delete_provider(
     provider_id: int,
     db: Session = Depends(get_db),

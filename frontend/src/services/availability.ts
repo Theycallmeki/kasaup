@@ -14,7 +14,7 @@ function formatTo12h(time: string) {
 }
 
 export async function getAvailability(providerId: number) {
-  const res = await api.get(`/availability/${providerId}`)
+  const res = await api.get(`/availability/${providerId}/`)
   return res.data
 }
 
@@ -37,7 +37,7 @@ export async function updateAvailability(id: number, data: {
   start_time?: string
   end_time?: string
 }) {
-  const res = await api.put(`/availability/${id}`, {
+  const res = await api.put(`/availability/${id}/`, {
     ...data,
     start_time: data.start_time ? formatTo12h(data.start_time) : undefined,
     end_time: data.end_time ? formatTo12h(data.end_time) : undefined
@@ -46,6 +46,6 @@ export async function updateAvailability(id: number, data: {
 }
 
 export async function deleteAvailability(id: number) {
-  const res = await api.delete(`/availability/${id}`)
+  const res = await api.delete(`/availability/${id}/`)
   return res.data
 }

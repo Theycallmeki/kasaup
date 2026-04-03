@@ -18,7 +18,7 @@ from app.core.dependencies import get_current_user
 router = APIRouter()
 
 
-@router.post("/login")
+@router.post("/login/")
 def login(data: LoginRequest, response: Response, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == data.email).first()
 
@@ -50,7 +50,7 @@ def login(data: LoginRequest, response: Response, db: Session = Depends(get_db))
     return {"message": "Login successful"}
 
 
-@router.post("/refresh")
+@router.post("/refresh/")
 def refresh_token(request: Request, response: Response, db: Session = Depends(get_db)):
     refresh_token = request.cookies.get("refresh_token")
 
@@ -89,7 +89,7 @@ def refresh_token(request: Request, response: Response, db: Session = Depends(ge
     return {"message": "Access token refreshed"}
 
 
-@router.post("/logout")
+@router.post("/logout/")
 def logout(response: Response):
     response.delete_cookie("access_token")
     response.delete_cookie("refresh_token")
@@ -97,6 +97,6 @@ def logout(response: Response):
     return {"message": "Logged out"}
 
 
-@router.get("/me", response_model=UserOut, dependencies=[Depends(get_current_user)])
+@router.get("/me/", response_model=UserOut, dependencies=[Depends(get_current_user)])
 def get_me(current_user: User = Depends(get_current_user)):
     return current_user

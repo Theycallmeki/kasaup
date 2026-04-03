@@ -59,17 +59,17 @@ def create_review(
     return db_review
 
 
-@router.get("/provider/{provider_id}", response_model=List[ReviewSchema])
+@router.get("/provider/{provider_id}/", response_model=List[ReviewSchema])
 def get_provider_reviews(provider_id: int, db: Session = Depends(get_db)):
     return db.query(Review).filter(Review.provider_id == provider_id).all()
 
 
-@router.get("/me", response_model=List[ReviewSchema])
+@router.get("/me/", response_model=List[ReviewSchema])
 def get_my_reviews(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return db.query(Review).filter(Review.user_id == current_user.id).all()
 
 
-@router.put("/{review_id}", response_model=ReviewSchema)
+@router.put("/{review_id}/", response_model=ReviewSchema)
 def update_review(
     review_id: int,
     review_in: ReviewUpdate,
@@ -96,7 +96,7 @@ def update_review(
     return db_review
 
 
-@router.delete("/{review_id}")
+@router.delete("/{review_id}/")
 def delete_review(
     review_id: int,
     db: Session = Depends(get_db),

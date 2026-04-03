@@ -19,7 +19,7 @@ from app.core.security import SECRET_KEY, ALGORITHM
 router = APIRouter()
 
 
-@router.get("/test-cors")
+@router.get("/test-cors/")
 def test_cors():
     return {"status": "CORS works for messages router"}
 
@@ -56,7 +56,7 @@ async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)
         manager.disconnect(user.id)
 
 
-@router.get("/conversations", response_model=List[ConversationSchema])
+@router.get("/conversations/", response_model=List[ConversationSchema])
 def get_conversations(
     db: Session = Depends(get_db), 
     current_user: User = Depends(get_current_user)
@@ -83,7 +83,7 @@ def get_conversations(
     return conversations
 
 
-@router.get("/conversations/{conversation_id}/messages", response_model=List[MessageSchema])
+@router.get("/conversations/{conversation_id}/messages/", response_model=List[MessageSchema])
 def get_messages(
     conversation_id: int,
     db: Session = Depends(get_db),
@@ -104,7 +104,7 @@ def get_messages(
     return messages
 
 
-@router.post("/send", response_model=MessageSchema)
+@router.post("/send/", response_model=MessageSchema)
 async def send_message(
     msg_in: MessageCreate,
     db: Session = Depends(get_db),
@@ -183,7 +183,7 @@ async def send_message(
     return db_msg
 
 
-@router.delete("/conversations/{conversation_id}")
+@router.delete("/conversations/{conversation_id}/")
 def delete_conversation(
     conversation_id: int,
     db: Session = Depends(get_db),

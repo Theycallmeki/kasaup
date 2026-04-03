@@ -41,7 +41,7 @@ def create_availability(
     return new_availability
 
 
-@router.get("/{provider_id}", response_model=list[ProviderAvailabilityResponse])
+@router.get("/{provider_id}/", response_model=list[ProviderAvailabilityResponse])
 def get_availability(
     provider_id: int,
     db: Session = Depends(get_db)
@@ -53,7 +53,7 @@ def get_availability(
     return availability
 
 
-@router.put("/{availability_id}", response_model=ProviderAvailabilityResponse, dependencies=[Depends(require_provider)])
+@router.put("/{availability_id}/", response_model=ProviderAvailabilityResponse, dependencies=[Depends(require_provider)])
 def update_availability(
     availability_id: int,
     availability: ProviderAvailabilityUpdate,
@@ -89,7 +89,7 @@ def update_availability(
     return db_availability
 
 
-@router.delete("/{availability_id}", dependencies=[Depends(require_provider)])
+@router.delete("/{availability_id}/", dependencies=[Depends(require_provider)])
 def delete_availability(
     availability_id: int,
     db: Session = Depends(get_db),
