@@ -45,3 +45,9 @@ class Provider(Base):
     appointments = relationship("Appointment", back_populates="provider", cascade="all, delete-orphan")
 
     availability = relationship("ProviderAvailability", back_populates="provider", cascade="all, delete-orphan")
+    
+    # Conversations linked to this shop
+    conversations = relationship("Conversation", foreign_keys="Conversation.provider_id", back_populates="provider", cascade="all, delete-orphan")
+
+    # Reviews for this provider
+    reviews = relationship("Review", back_populates="provider", cascade="all, delete-orphan")

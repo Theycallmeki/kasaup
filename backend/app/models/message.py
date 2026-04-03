@@ -20,8 +20,8 @@ class Conversation(Base):
     
  
     messages = relationship("Message", back_populates="conversation", cascade="all, delete-orphan")
-    user = relationship("User")
-    provider = relationship("Provider")
+    user = relationship("User", back_populates="conversations")
+    provider = relationship("Provider", back_populates="conversations")
 
 
 class Message(Base):

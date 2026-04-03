@@ -29,8 +29,12 @@ class User(Base):
     provided_shop = relationship("Provider", back_populates="owner", cascade="all, delete-orphan", uselist=False)
     
     # Messages
-    sent_messages = relationship("Message", foreign_keys="Message.sender_id", back_populates="sender", cascade="all, delete-orphan")
-    received_messages = relationship("Message", foreign_keys="Message.receiver_id", back_populates="receiver", cascade="all, delete-orphan")
+    sent_messages = relationship("Message", back_populates="sender", cascade="all, delete-orphan")
+    
+    # Conversations a user belongs to
+    conversations = relationship("Conversation", foreign_keys="Conversation.user_id", back_populates="user", cascade="all, delete-orphan")
+
+    # Note: received_messages is handled via the Conversation model (user_id/provider_id)
 
     # Reviews
     reviews = relationship("Review", back_populates="user", cascade="all, delete-orphan")
