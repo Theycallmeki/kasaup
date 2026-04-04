@@ -5,9 +5,9 @@ import { useProviderStore } from "../../stores/providerStore"
 import { useCategoryStore } from "../../stores/categoryStore"
 import { searchServices } from "../../services/services"
 import { useRouter } from "vue-router"
-import ServiceFilters from "../../components/ServiceFilters.vue"
 import api from "../../services/api"
 
+const showFilters = ref(false)
 const router = useRouter()
 const svcStore = useServiceStore()
 const provStore = useProviderStore()
@@ -16,6 +16,25 @@ const catStore = useCategoryStore()
 const query = ref("")
 const activeCat = ref<number | "all">("all")
 const sort = ref("price_asc")
+
+const tempActiveCat = ref<number | "all">("all")
+const tempSort = ref("price_asc")
+
+function openFilters() {
+  tempActiveCat.value = activeCat.value
+  tempSort.value = sort.value
+  showFilters.value = true
+}
+
+function cancelFilters() {
+  showFilters.value = false
+}
+
+function applyFilters() {
+  activeCat.value = tempActiveCat.value
+  sort.value = tempSort.value
+  showFilters.value = false
+}
 const selected = ref<any | null>(null)
 const searching = ref(false)
 const viewingImage = ref<string | null>(null)
@@ -124,30 +143,57 @@ const firstImage = (svc: any): string | null => {
       <main class="content-area">
 
         <div class="top-bar">
-          <div class="srch">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8" />
-              <path d="M21 21l-4.35-4.35" />
-            </svg>
-            <input placeholder="Search services, providers…" :value="query"
-              @input="onQuery(($event.target as HTMLInputElement).value)" />
-            <span v-if="searching" class="spin" />
+          <div class="srch-row">
+            <div class="srch">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+              </svg>
+              <input placeholder="Search services, providers…" :value="query"
+                @input="onQuery(($event.target as HTMLInputElement).value)" />
+              <span v-if="searching" class="spin" />
+            </div>
+
+            <div class="filter-wrapper">
+              <button class="filter-btn" :class="{active: showFilters}" @click="showFilters ? cancelFilters() : openFilters()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                </svg>
+                Filters
+              </button>
+            </div>
           </div>
 
-          <div class="sort-tabs">
-            <span class="sort-label">Sort by:</span>
-            <button class="st" :class="{ active: sort === 'price_asc' }" @click="sort = 'price_asc'">Price: Low to
-              High</button>
-            <button class="st" :class="{ active: sort === 'price_desc' }" @click="sort = 'price_desc'">Price: High to
-              Low</button>
-            <button class="st" :class="{ active: sort === 'duration' }" @click="sort = 'duration'">Duration</button>
+          <!-- Horizontal filter panel below the search bar -->
+          <div v-show="showFilters" class="filter-panel">
+            <div class="fp-sections">
+              <div class="filter-group">
+                <h4>Category</h4>
+                <div class="filter-pills">
+                  <button class="fp" :class="{active: tempActiveCat === 'all'}" @click="tempActiveCat = 'all'">All Categories</button>
+                  <button class="fp" v-for="cat in catStore.categories" :key="cat.id" 
+                          :class="{active: tempActiveCat === cat.id}" @click="tempActiveCat = cat.id">
+                    {{ cat.name }}
+                  </button>
+                </div>
+              </div>
+              
+              <div class="filter-group">
+                <h4>Sort By</h4>
+                <div class="filter-pills">
+                  <button class="fp" :class="{active: tempSort === 'price_asc'}" @click="tempSort = 'price_asc'">Price: Low to High</button>
+                  <button class="fp" :class="{active: tempSort === 'price_desc'}" @click="tempSort = 'price_desc'">Price: High to Low</button>
+                  <button class="fp" :class="{active: tempSort === 'duration'}" @click="tempSort = 'duration'">Duration</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="fp-actions">
+               <button class="f-btn f-cancel" @click="cancelFilters">Cancel</button>
+               <button class="f-btn f-apply" @click="applyFilters">Apply Filters</button>
+            </div>
           </div>
         </div>
-
-        <aside class="sidebar">
-          <ServiceFilters :categories="catStore.categories ?? []" :activeCat="activeCat"
-            @update:activeCat="activeCat = $event" />
-        </aside>
 
         <div v-if="svcStore.loading" class="state">
           <span class="spin-lg" />
