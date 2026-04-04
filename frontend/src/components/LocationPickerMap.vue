@@ -10,6 +10,13 @@ const lng = ref<number | null>(null)
 let map: any = null
 let marker: any = null
 
+const customPin = L.divIcon({
+  className: "",
+  html: `<div style="width:16px;height:16px;border-radius:50%;background:#38bdf8;box-shadow:0 0 0 4px rgba(56, 189, 248, 0.3);"></div>`,
+  iconSize: [16, 16],
+  iconAnchor: [8, 8]
+})
+
 function useMyLocation() {
   if (!navigator.geolocation) return
 
@@ -32,7 +39,7 @@ function useMyLocation() {
         if (marker) {
           marker.setLatLng([newLat, newLng])
         } else {
-          marker = L.marker([newLat, newLng]).addTo(map)
+          marker = L.marker([newLat, newLng], { icon: customPin }).addTo(map)
         }
       }
     },
@@ -56,6 +63,13 @@ onMounted(() => {
     noWrap: true
   }).addTo(map)
 
+  const customPin = L.divIcon({
+    className: "",
+    html: `<div style="width:16px;height:16px;border-radius:50%;background:#38bdf8;box-shadow:0 0 0 4px rgba(56, 189, 248, 0.3);"></div>`,
+    iconSize: [16, 16],
+    iconAnchor: [8, 8]
+  })
+
   map.on("click", (e: any) => {
     lat.value = e.latlng.lat
     lng.value = e.latlng.lng
@@ -68,7 +82,7 @@ onMounted(() => {
     if (marker) {
       marker.setLatLng(e.latlng)
     } else {
-      marker = L.marker(e.latlng).addTo(map)
+      marker = L.marker(e.latlng, { icon: customPin }).addTo(map)
     }
   })
 

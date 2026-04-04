@@ -22,6 +22,7 @@ const form = ref({
 
 const editingId = ref<number | null>(null)
 const selectedDate = ref("")
+const showDropdown = ref(false)
 
 onMounted(async () => {
   const res = await api.get("/providers/")
@@ -115,9 +116,24 @@ const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", 
         <form class="schedule-form" @submit.prevent="submit">
           <div class="field-group">
             <label class="field-label">Day of Week</label>
-            <select v-model.number="form.day_of_week" class="field select-field">
-              <option v-for="(day,i) in days" :key="i" :value="i">{{ day }}</option>
-            </select>
+            <div class="custom-select-wrapper" tabindex="0" @blur="showDropdown = false">
+              <div class="field custom-select" @click="showDropdown = !showDropdown">
+                <span>{{ days[form.day_of_week] }}</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" :class="{ rotated: showDropdown }">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+              <Transition name="dropdown">
+                <div v-show="showDropdown" class="custom-select-options">
+                  <div v-for="(day,i) in days" :key="i" 
+                       @click="form.day_of_week = i; showDropdown = false" 
+                       class="custom-select-option" 
+                       :class="{ active: form.day_of_week === i }">
+                    {{ day }}
+                  </div>
+                </div>
+              </Transition>
+            </div>
           </div>
 
           <div class="field-row">
@@ -333,6 +349,68 @@ const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", 
 
 .field:focus {
   border-color: rgba(167, 139, 250, 0.5);
+}
+
+.custom-select-wrapper {
+  position: relative;
+  outline: none;
+}
+
+.custom-select {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.custom-select svg {
+  transition: transform 0.2s ease;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.custom-select svg.rotated {
+  transform: rotate(180deg);
+}
+
+.custom-select-options {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #13111f;
+  border: 0.5px solid rgba(167, 139, 250, 0.3);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+.custom-select-option {
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.custom-select-option:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.custom-select-option.active {
+  background: rgba(124, 58, 237, 0.25);
+  color: #c4b5fd;
+  font-weight: 500;
+}
+
+.dropdown-enter-active, .dropdown-leave-active {
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.dropdown-enter-from, .dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
 }
 
 .action-btn {
