@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
+import { ref, onMounted, computed } from "vue"
 import { useAuthStore } from "../../stores/authStore"
 import LocationPickerMap from "../../components/LocationPickerMap.vue"
 import api from "../../services/api"
@@ -16,6 +16,10 @@ const form = ref({
   longitude: null as number | null
 })
 
+const profileImageUrl = ref<string | null>(null)
+const uploadingImage = ref(false)
+const fileInput = ref<HTMLInputElement | null>(null)
+
 onMounted(async () => {
   if (!auth.user) await auth.fetchUser()
   if (auth.user) {
@@ -24,6 +28,7 @@ onMounted(async () => {
     form.value.phone = auth.user.phone || ""
     form.value.latitude = auth.user.latitude || null
     form.value.longitude = auth.user.longitude || null
+    profileImageUrl.value = auth.user.profile_image || null
   }
 })
 
@@ -48,6 +53,43 @@ const saveProfile = async () => {
     loading.value = false
   }
 }
+
+const triggerUpload = () => {
+  fileInput.value?.click()
+}
+
+const handleImageUpload = async (e: Event) => {
+  const target = e.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (!file) return
+
+  uploadingImage.value = true
+  const formData = new FormData()
+  formData.append("file", file)
+
+  try {
+    const res = await api.post("/users/me/profile-image/", formData, {
+      headers: { "Content-Type": "multipart/form-data" }
+    })
+    profileImageUrl.value = res.data.url
+    if (auth.user) {
+      auth.user.profile_image = res.data.url
+    }
+    message.value = { text: "Profile picture updated!", type: "success" }
+  } catch (err: any) {
+    message.value = {
+      text: err.response?.data?.detail || "Failed to upload image.",
+      type: "error"
+    }
+  } finally {
+    uploadingImage.value = false
+  }
+}
+
+const initials = computed(() => {
+  const name = form.value.full_name || auth.user?.email || "?"
+  return name.charAt(0).toUpperCase()
+})
 </script>
 
 <template>
@@ -58,8 +100,31 @@ const saveProfile = async () => {
     </div>
 
     <div class="profile-grid">
-      <!-- Left: Form -->
+      <!-- Left: Avatar + Form -->
       <div class="profile-card info-section">
+        <!-- Avatar Upload -->
+        <div class="avatar-section">
+          <div class="avatar-wrapper" @click="triggerUpload">
+            <img v-if="profileImageUrl" :src="profileImageUrl" alt="Photo" class="avatar-img" />
+            <div v-else class="avatar-placeholder">{{ initials }}</div>
+            <div class="avatar-overlay" :class="{ uploading: uploadingImage }">
+              <svg v-if="!uploadingImage" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+              <span v-else class="spin" />
+            </div>
+          </div>
+          <input 
+            ref="fileInput" 
+            type="file" 
+            accept="image/*" 
+            class="hidden-input" 
+            @change="handleImageUpload"
+          />
+          <p class="avatar-hint">Click to change photo</p>
+        </div>
+
         <h2 class="section-title">Personal Settings</h2>
         
         <form @submit.prevent="saveProfile" class="form-stack">

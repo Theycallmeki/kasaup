@@ -1,5 +1,6 @@
 import { defineStore } from "pinia"
 import { getConversations, getConversationMessages, sendMessage, deleteConversation } from "../services/messages"
+import api from "../services/api"
 
 export const useMessageStore = defineStore("messages", {
 
@@ -10,6 +11,12 @@ export const useMessageStore = defineStore("messages", {
     loading: false,
     socket: null as WebSocket | null,
   }),
+
+  getters: {
+    totalUnreadCount: (state) => {
+      return state.conversations.reduce((sum, c) => sum + (c.unread_count || 0), 0)
+    }
+  },
 
   actions: {
 
@@ -69,6 +76,18 @@ export const useMessageStore = defineStore("messages", {
       }
     },
 
+    async markAsRead(conversationId: number) {
+      try {
+        await api.put(`/messages/conversations/${conversationId}/read/`)
+        const index = this.conversations.findIndex(c => c.id === conversationId)
+        if (index !== -1) {
+          this.conversations[index].unread_count = 0
+        }
+      } catch (err) {
+        console.error("Failed to mark as read", err)
+      }
+    },
+
     connectWS(userId: number) {
       if (this.socket) return
 
@@ -113,6 +132,15 @@ export const useMessageStore = defineStore("messages", {
         this.conversations[index].updated_at = message.created_at
         // Move to top
         const conv = this.conversations.splice(index, 1)[0]
+        
+        // Only increment unread if not the active conversation
+        if (this.activeConversationId !== message.conversation_id) {
+           conv.unread_count = (conv.unread_count || 0) + 1
+        } else {
+           // If it is the active one, mark as read on server immediately
+           this.markAsRead(message.conversation_id)
+        }
+        
         this.conversations.unshift(conv)
       } else {
         this.fetchConversations()

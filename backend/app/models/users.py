@@ -22,6 +22,7 @@ class User(Base):
     
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
+    profile_image = Column(String, nullable=True)
     
     created_at = Column(DateTime, default=get_ph_time)
 

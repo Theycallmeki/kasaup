@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
 
 from app.db import get_db
@@ -6,6 +6,7 @@ from app.models.users import User
 from app.schemas.users import UserCreate, UserUpdate, UserResponse, UserOut
 from app.core.security import hash_password
 from app.core.dependencies import require_admin, get_current_user
+from app.services.upload_service import save_image
 
 router = APIRouter()
 
@@ -57,6 +58,19 @@ def update_profile(
 @router.get("/me", response_model=UserResponse)
 def get_profile(current_user: User = Depends(get_current_user)):
     return current_user
+
+
+@router.post("/me/profile-image/")
+def upload_user_profile_image(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    path = save_image(file)
+    current_user.profile_image = path
+    db.commit()
+    db.refresh(current_user)
+    return {"url": path}
 
 
 @router.get("/", response_model=list[UserResponse], dependencies=[Depends(require_admin)])

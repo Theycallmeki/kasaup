@@ -28,7 +28,7 @@ import AdminProvidersView from "../views/admin/AdminProvidersView.vue"
 
 import { useAuthStore } from "../stores/authStore"
 import api from "../services/api"
-import MessagesView from "../views/MessagesView.vue"
+import MessagesView from "../views/shared/MessagesView.vue"
 
 const routes = [
   {

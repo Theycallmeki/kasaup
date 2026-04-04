@@ -79,8 +79,43 @@ def get_conversations(
         convo.user_name = convo.user.full_name
         convo.shop_name = convo.provider.shop_name
         convo.provider_profile_image = convo.provider.profile_image
+        convo.user_profile_image = convo.user.profile_image
+        
+        # Calculate unread messages (where sender is NOT current_user)
+        convo.unread_count = db.query(Message).filter(
+            Message.conversation_id == convo.id,
+            Message.is_read == False,
+            Message.sender_id != current_user.id
+        ).count()
 
     return conversations
+
+
+@router.put("/conversations/{conversation_id}/read/")
+def mark_as_read(
+    conversation_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    conversation = db.query(Conversation).filter(Conversation.id == conversation_id).first()
+    if not conversation:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    
+    # Verify access
+    is_customer = conversation.user_id == current_user.id
+    is_provider_owner = conversation.provider.owner_id == current_user.id
+    if not is_customer and not is_provider_owner:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    # Mark as read
+    db.query(Message).filter(
+        Message.conversation_id == conversation_id,
+        Message.sender_id != current_user.id,
+        Message.is_read == False
+    ).update({"is_read": True})
+    
+    db.commit()
+    return {"status": "success"}
 
 
 @router.get("/conversations/{conversation_id}/messages/", response_model=List[MessageSchema])

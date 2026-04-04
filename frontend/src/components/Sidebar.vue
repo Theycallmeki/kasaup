@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, computed } from "vue"
 import { useAuthStore } from "../stores/authStore"
+import { useMessageStore } from "../stores/messageStore"
 import { useRouter } from "vue-router"
 
 const auth = useAuthStore()
+const messageStore = useMessageStore()
 const router = useRouter()
 
 const collapsed = ref(false)
@@ -112,10 +114,17 @@ const icons: Record<string, string> = {
         class="link"
         active-class="active"
       >
-        <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path :d="icons[item.icon]" />
-        </svg>
-        <span v-if="!collapsed" class="link-label">{{ item.label }}</span>
+        <div class="link-content">
+          <div class="icon-wrapper">
+             <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+               <path :d="icons[item.icon]" />
+             </svg>
+             <div v-if="item.label === 'Messages' && messageStore.totalUnreadCount > 0 && collapsed" class="unread-dot mini"></div>
+          </div>
+          <span v-if="!collapsed" class="link-label">{{ item.label }}</span>
+          
+          <div v-if="item.label === 'Messages' && messageStore.totalUnreadCount > 0 && !collapsed" class="unread-dot pill"></div>
+        </div>
       </router-link>
 
       <button class="link logout" @click="logout">
@@ -138,9 +147,12 @@ const icons: Record<string, string> = {
       class="mob-link"
       active-class="mob-active"
     >
-      <svg class="mob-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path :d="icons[item.icon]" />
-      </svg>
+      <div class="mob-icon-container">
+        <svg class="mob-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path :d="icons[item.icon]" />
+        </svg>
+        <div v-if="item.label === 'Messages' && messageStore.totalUnreadCount > 0" class="unread-dot mob"></div>
+      </div>
       <span class="mob-label">{{ item.label }}</span>
     </router-link>
 
@@ -297,6 +309,67 @@ const icons: Record<string, string> = {
 .logout:hover {
   background: rgba(248, 113, 113, 0.08) !important;
   color: #f87171 !important;
+}
+
+.link-content {
+  display: flex;
+  align-items: center;
+  gap: inherit;
+  flex: 1;
+  position: relative;
+}
+
+.unread-dot {
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+  animation: pulse-green 2s infinite;
+}
+
+.unread-dot.pill {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.unread-dot.mini {
+  width: 5px;
+  height: 5px;
+  position: absolute;
+  top: -2px;
+  right: -2px;
+}
+
+.icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.unread-dot.mob {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+}
+
+.mob-icon-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes pulse-green {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
 }
 
 @media (max-width: 768px) {

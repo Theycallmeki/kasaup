@@ -29,6 +29,7 @@ class AppointmentResponse(BaseModel):
     service_name: str
     customer_name: str
     provider_name: str
+    customer_profile_image: str | None = None
 
     class Config:
         from_attributes = True

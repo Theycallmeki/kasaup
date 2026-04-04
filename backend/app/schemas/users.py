@@ -27,6 +27,7 @@ class UserResponse(BaseModel):
     role: str
     latitude: float | None
     longitude: float | None
+    profile_image: str | None = None
     created_at: datetime
 
     class Config:
@@ -41,6 +42,7 @@ class UserOut(BaseModel):
     role: str
     latitude: float | None
     longitude: float | None
+    profile_image: str | None = None
     created_at: datetime
 
     class Config:

@@ -35,6 +35,8 @@ class Conversation(ConversationBase):
     user_name: str
     shop_name: str
     provider_profile_image: Optional[str] = None
+    user_profile_image: Optional[str] = None
+    unread_count: int = 0
     
 
     model_config = ConfigDict(from_attributes=True)

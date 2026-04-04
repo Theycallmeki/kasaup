@@ -51,7 +51,8 @@ def create_appointment(
             "service_name": booking.service.name,
             "customer_name": booking.user.full_name,
             "provider_name": booking.provider.shop_name,
-            "user_rating": booking.review.rating if booking.review else None
+            "user_rating": booking.review.rating if booking.review else None,
+            "customer_profile_image": booking.user.profile_image
         }
 
     except ValueError as e:
@@ -84,7 +85,8 @@ def get_appointments(
             "service_name": a.service.name,
             "customer_name": a.user.full_name,
             "provider_name": a.provider.shop_name,
-            "user_rating": a.review.rating if getattr(a, "review", None) else None
+            "user_rating": a.review.rating if getattr(a, "review", None) else None,
+            "customer_profile_image": a.user.profile_image
         }
         for a in appointments
     ]

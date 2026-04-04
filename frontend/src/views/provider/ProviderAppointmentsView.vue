@@ -145,7 +145,10 @@ const formatDateTime = (iso: string) => {
               </div>
 
               <div class="cust-info">
-                 <div class="ci-avatar">{{ app.customer_name.charAt(0).toUpperCase() }}</div>
+                 <div class="ci-avatar">
+                   <img v-if="app.customer_profile_image" :src="app.customer_profile_image" alt="" class="ci-avatar-img" />
+                   <span v-else>{{ app.customer_name.charAt(0).toUpperCase() }}</span>
+                 </div>
                  <div class="ci-name">{{ app.customer_name }}</div>
               </div>
 
@@ -461,6 +464,14 @@ const formatDateTime = (iso: string) => {
   font-weight: 700;
   font-size: 1rem;
   color: #fff;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.ci-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .ci-name {
