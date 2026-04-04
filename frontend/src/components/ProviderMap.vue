@@ -154,14 +154,13 @@ function refreshProviderMarkers() {
         ? `<p class="kasaup-popup-sub">${provider.distance_km.toFixed(1)} km away</p>`
         : ""
 
-    const profileImg = typeof provider.profile_image === "string" ? provider.profile_image : null
-    const imgFullUrl = profileImg 
-      ? (profileImg.startsWith("http") ? profileImg : `${api.defaults.baseURL}/${profileImg.replace(/^\//, "")}`)
+    // Avatar: photo or initials fallback
+    const rawImage = typeof provider.profile_image === "string" && provider.profile_image
+      ? provider.profile_image.replace(/^\//, "")
       : null
-    
     const initials = name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase()
-    const avatarHTML = imgFullUrl
-      ? `<img src="${imgFullUrl}" class="kasaup-popup-avatar kasaup-popup-avatar--img" alt="${escapeHtml(name)}" />`
+    const avatarHTML = rawImage
+      ? `<img src="${api.defaults.baseURL}/${rawImage}" class="kasaup-popup-avatar kasaup-popup-avatar--img" alt="${escapeHtml(name)}" />`
       : `<div class="kasaup-popup-avatar kasaup-popup-avatar--initials">${escapeHtml(initials)}</div>`
 
     const providerIcon = L.divIcon({
@@ -233,9 +232,8 @@ onMounted(() => {
     preferCanvas: true
   }).setView([12.8797, 121.774], 6)
 
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
-    subdomains: 'abcd',
+  L.tileLayer("https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png", {
+    attribution: '© <a href="https://stadiamaps.com/">Stadia Maps</a> © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     noWrap: true,
     keepBuffer: 8,
     updateWhenZooming: false,
