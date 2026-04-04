@@ -38,19 +38,7 @@ services:
     networks:
       - kasaup-network
 
-  frontend:
-    build:
-      context: ./frontend
-      args:
-        VITE_API_URL: /api
-    container_name: kasaup-frontend
-    restart: always
-    ports:
-      - "3000:80"
-    networks:
-      - kasaup-network
-    depends_on:
-      - backend
+
 
 networks:
   kasaup-network:
