@@ -73,8 +73,15 @@ export const useMessageStore = defineStore("messages", {
       if (this.socket) return
 
       const protocol = window.location.protocol === "https:" ? "wss:" : "ws:"
-      const host = window.location.hostname === "localhost" ? "localhost:8000" : `${window.location.hostname}:8000`
-      this.socket = new WebSocket(`${protocol}//${host}/messages/ws`)
+      let wsUrl = ""
+      if (import.meta.env.PROD) {
+        // When deployed on Vercel, proxy the WS through the same API route in vercel.json
+        wsUrl = `${protocol}//${window.location.host}/api/messages/ws`
+      } else {
+        const host = window.location.hostname === "localhost" ? "localhost:8000" : `${window.location.hostname}:8000`
+        wsUrl = `${protocol}//${host}/messages/ws`
+      }
+      this.socket = new WebSocket(wsUrl)
 
       this.socket.onmessage = (event) => {
         const data = JSON.parse(event.data)
