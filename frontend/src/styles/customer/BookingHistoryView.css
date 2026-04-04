@@ -198,6 +198,25 @@
   transform: translateY(0);
 }
 
+.rated-stars {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.rated-label {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 500;
+}
+
+.stars-display {
+  display: flex;
+  gap: 4px;
+}
+
 .pagination {
   display: flex;
   flex-wrap: wrap;

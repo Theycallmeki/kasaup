@@ -49,7 +49,9 @@ def create_appointment(
         return {
             **booking.__dict__,
             "service_name": booking.service.name,
-            "customer_name": booking.user.full_name
+            "customer_name": booking.user.full_name,
+            "provider_name": booking.provider.shop_name,
+            "user_rating": booking.review.rating if booking.review else None
         }
 
     except ValueError as e:
@@ -80,7 +82,9 @@ def get_appointments(
         {
             **a.__dict__,
             "service_name": a.service.name,
-            "customer_name": a.user.full_name
+            "customer_name": a.user.full_name,
+            "provider_name": a.provider.shop_name,
+            "user_rating": a.review.rating if getattr(a, "review", None) else None
         }
         for a in appointments
     ]
@@ -332,10 +336,12 @@ def get_appointment(
             raise HTTPException(status_code=403, detail="Not authorized")
 
     return {
-                **appointment.__dict__,
-                "service_name": appointment.service.name,
-                "customer_name": appointment.user.full_name
-            }
+        **appointment.__dict__,
+        "service_name": appointment.service.name,
+        "customer_name": appointment.user.full_name,
+        "provider_name": appointment.provider.shop_name,
+        "user_rating": appointment.review.rating if getattr(appointment, "review", None) else None
+    }
 
 
 @router.put("/{appointment_id}/", response_model=AppointmentResponse, dependencies=[Depends(get_current_user)])
@@ -371,10 +377,12 @@ def update_appointment(
     db.refresh(db_appointment)
 
     return {
-                **db_appointment.__dict__,
-                "service_name": db_appointment.service.name,
-                "customer_name": db_appointment.user.full_name
-            }
+        **db_appointment.__dict__,
+        "service_name": db_appointment.service.name,
+        "customer_name": db_appointment.user.full_name,
+        "provider_name": db_appointment.provider.shop_name,
+        "user_rating": db_appointment.review.rating if getattr(db_appointment, "review", None) else None
+    }
 
 
 @router.delete("/{appointment_id}/", dependencies=[Depends(get_current_user)])

@@ -34,6 +34,12 @@ const customerLat = ref<number | null>(null)
 const customerLng = ref<number | null>(null)
 const lightboxImg = ref<string | null>(null)
 
+const imageIndices = ref<Record<number, number>>({})
+function getImgIndex(serviceId: number) { return imageIndices.value[serviceId] || 0 }
+function nextImg(serviceId: number, max: number) { imageIndices.value[serviceId] = (getImgIndex(serviceId) + 1) % max }
+function prevImg(serviceId: number, max: number) { imageIndices.value[serviceId] = (getImgIndex(serviceId) - 1 + max) % max }
+function setImg(serviceId: number, idx: number) { imageIndices.value[serviceId] = idx }
+
 const loadingSlots = ref(false)
 const bookingLoading = ref(false)
 const errorMsg = ref("")
@@ -320,9 +326,19 @@ const isPrevDisabled = computed(() => {
             <div v-for="service in providerStore.providerProfile.services" :key="service.id" class="service-card"
               :class="{ 'service-active': activeServiceId === service.id }">
 
-              <div v-if="service.images?.length" class="service-images">
-                <img v-for="img in service.images" :key="img.id" :src="imgUrl(img.image_url)" class="service-img"
-                  style="cursor:zoom-in;" @click="lightboxImg = imgUrl(img.image_url)" />
+              <div v-if="service.images?.length" class="modal-carousel">
+                <button v-if="service.images.length > 1" @click.stop="prevImg(service.id, service.images.length)" class="carousel-btn prev">‹</button>
+                <div class="modal-carousel-track">
+                  <img :src="imgUrl(service.images[getImgIndex(service.id)].image_url)" 
+                       class="modal-carousel-img" 
+                       @click="lightboxImg = imgUrl(service.images[getImgIndex(service.id)].image_url)" />
+                </div>
+                <button v-if="service.images.length > 1" @click.stop="nextImg(service.id, service.images.length)" class="carousel-btn next">›</button>
+                <div v-if="service.images.length > 1" class="carousel-dots">
+                   <span v-for="(_, i) in service.images" :key="i" class="carousel-dot" 
+                         :class="{active: Number(i) === getImgIndex(service.id)}" 
+                         @click.stop="setImg(service.id, Number(i))"></span>
+                </div>
               </div>
 
               <div class="service-top">

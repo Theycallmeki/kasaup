@@ -28,3 +28,4 @@ class Appointment(Base):
     user = relationship("User", back_populates="appointments")
     provider = relationship("Provider", back_populates="appointments")
     service = relationship("Service", back_populates="appointments")
+    review = relationship("Review", back_populates="appointment", uselist=False)

@@ -81,10 +81,10 @@ const canCancel = (status: string) =>
         <div class="card-top">
           <div>
             <div class="service-name">
-              Service #{{ appointment.service_id }}
+              {{ appointment.service_name }}
             </div>
             <div class="provider-label">
-              Provider · #{{ appointment.provider_id }}
+              Provider • {{ appointment.provider_name }}
             </div>
           </div>
 

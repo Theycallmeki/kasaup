@@ -19,6 +19,7 @@ const sort = ref("price_asc")
 const selected = ref<any | null>(null)
 const searching = ref(false)
 const viewingImage = ref<string | null>(null)
+const currentImageIndex = ref(0)
 
 onMounted(async () => {
   await Promise.all([
@@ -70,6 +71,21 @@ function onQuery(v: string) {
 function goBook(svc: any) {
   const p = providerMap.value[svc.provider_id]
   if (p) router.push(`/providers/${p.id}`)
+}
+
+function selectService(svc: any) {
+  selected.value = svc
+  currentImageIndex.value = 0
+}
+
+function nextImage() {
+  if (!selected.value?.images) return
+  currentImageIndex.value = (currentImageIndex.value + 1) % selected.value.images.length
+}
+
+function prevImage() {
+  if (!selected.value?.images) return
+  currentImageIndex.value = (currentImageIndex.value - 1 + selected.value.images.length) % selected.value.images.length
 }
 
 const palette = ["#38bdf8", "#a78bfa", "#fbbf24", "#86efac", "#f9a8d4", "#6ee7b7", "#fb923c", "#818cf8"]
@@ -150,7 +166,7 @@ const firstImage = (svc: any): string | null => {
 
         <div v-else class="grid">
           <div v-for="svc in filtered" :key="svc.id" class="card" :style="{ '--a': accent(svc.category_id) }"
-            @click="selected = svc">
+            @click="selectService(svc)">
             <!-- Image top half -->
             <div class="thumb" :class="{ 'no-img': !firstImage(svc) }">
               <img v-if="firstImage(svc)" :src="firstImage(svc)!" :alt="svc.name" />
@@ -191,9 +207,16 @@ const firstImage = (svc: any): string | null => {
         <div class="modal" v-if="selected" :style="{ '--a': accent(selected.category_id) }">
           <button class="mc" @click="selected = null">✕</button>
 
-          <div v-if="selected.images?.length" class="modal-gallery">
-            <img v-for="(img, i) in selected.images" :key="i" :src="imgUrl(img.image_url)" :alt="selected.name"
-              class="modal-thumb" @click="viewingImage = imgUrl(img.image_url)" style="cursor: zoom-in;" />
+          <div v-if="selected.images?.length" class="modal-carousel">
+            <button v-if="selected.images.length > 1" @click.stop="prevImage" class="carousel-btn prev">‹</button>
+            <div class="modal-carousel-track">
+              <img :src="imgUrl(selected.images[currentImageIndex].image_url)" :alt="selected.name"
+                   class="modal-carousel-img" @click="viewingImage = imgUrl(selected.images[currentImageIndex].image_url)" />
+            </div>
+            <button v-if="selected.images.length > 1" @click.stop="nextImage" class="carousel-btn next">›</button>
+            <div v-if="selected.images.length > 1" class="carousel-dots">
+               <span v-for="(_, i) in selected.images" :key="i" class="carousel-dot" :class="{active: Number(i) === currentImageIndex}" @click.stop="currentImageIndex = Number(i)"></span>
+            </div>
           </div>
 
           <span class="badge lg">{{ catName(selected.category_id) }}</span>

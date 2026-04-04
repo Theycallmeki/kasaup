@@ -22,4 +22,4 @@ class Review(Base):
    
     user = relationship("User", back_populates="reviews")
     provider = relationship("Provider", back_populates="reviews")
-    appointment = relationship("Appointment")
+    appointment = relationship("Appointment", back_populates="review")

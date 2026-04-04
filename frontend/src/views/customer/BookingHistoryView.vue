@@ -140,8 +140,8 @@ watch(totalPages, (tp) => {
           :class="{ 'card-cancelled': appointment.status === 'cancelled' }">
           <div class="card-top">
             <div>
-              <div class="service-name">Service #{{ appointment.service_id }}</div>
-              <div class="provider-label">Provider · #{{ appointment.provider_id }}</div>
+              <div class="service-name">{{ appointment.service_name }}</div>
+              <div class="provider-label">Provider • {{ appointment.provider_name }}</div>
             </div>
             <span class="badge" :class="statusClass(appointment.status)">
               {{ appointment.status }}
@@ -167,7 +167,18 @@ watch(totalPages, (tp) => {
 
           <div v-if="appointment.status === 'completed'">
             <div class="card-divider" />
-            <button class="rate-btn" @click="openRatingModal(appointment.id)">
+            <div v-if="appointment.user_rating" class="rated-stars">
+              <span class="rated-label">Your Rating:</span>
+              <div class="stars-display">
+                <svg v-for="i in 5" :key="i" width="14" height="14" viewBox="0 0 24 24" 
+                     :fill="i <= appointment.user_rating ? '#fbbf24' : 'none'" 
+                     :stroke="i <= appointment.user_rating ? '#fbbf24' : 'currentColor'" 
+                     stroke-width="2">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              </div>
+            </div>
+            <button v-else class="rate-btn" @click="openRatingModal(appointment.id)">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-right:6px">
                 <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
               </svg>
