@@ -28,6 +28,12 @@ def login(data: LoginRequest, response: Response, db: Session = Depends(get_db))
             detail="Invalid email or password"
         )
 
+    if user.role == "provider" and not user.is_approved:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Your provider account is pending admin approval."
+        )
+
     access_token = create_access_token({"user_id": user.id})
     refresh_token = create_refresh_token({"user_id": user.id})
 

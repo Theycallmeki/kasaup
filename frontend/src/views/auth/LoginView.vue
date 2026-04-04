@@ -11,6 +11,7 @@ const password = ref("")
 const error = ref("")
 const loading = ref(false)
 const showPassword = ref(false)
+const isPending = ref(false)
 
 const login = async () => {
   error.value = ""
@@ -22,8 +23,14 @@ const login = async () => {
     if (auth.user?.role === "customer") router.push("/providers")
     if (auth.user?.role === "provider") router.push("/provider/dashboard")
     if (auth.user?.role === "admin") router.push("/admin/dashboard")
-  } catch (err) {
-    error.value = "Invalid email or password"
+  } catch (err: any) {
+    if (err.response?.status === 403) {
+      error.value = err.response.data.detail || "Your provider account is pending admin approval."
+      isPending.value = true
+    } else {
+      error.value = "Invalid email or password"
+      isPending.value = false
+    }
   } finally {
     loading.value = false
   }
@@ -69,7 +76,8 @@ const login = async () => {
           </button>
         </div>
 
-        <p v-if="error" class="error">{{ error }}</p>
+        <p v-if="error && isPending" class="pending-warning">{{ error }}</p>
+        <p v-else-if="error" class="error">{{ error }}</p>
 
         <button class="btn" :disabled="loading">
           <svg v-if="!loading" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -314,5 +322,16 @@ form {
 @keyframes rise {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+.pending-warning {
+  font-size: 13px;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.08);
+  border: 0.5px solid rgba(245, 158, 11, 0.25);
+  border-radius: 10px;
+  padding: 12px 14px;
+  text-align: left;
+  line-height: 1.5;
 }
 </style>

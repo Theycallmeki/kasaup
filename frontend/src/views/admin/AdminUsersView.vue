@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue"
+import { onMounted, ref, computed } from "vue"
 import api from "../../services/api"
 
 const users = ref<any[]>([])
@@ -7,6 +7,12 @@ const loading = ref(false)
 
 const selectedUser = ref<any | null>(null)
 const showModal = ref(false)
+
+const activeTab = ref<"all" | "pending">("all")
+
+const showRejectConfirm = ref(false)
+const rejectingUser = ref<any | null>(null)
+const actionLoading = ref<number | null>(null)
 
 onMounted(fetchUsers)
 
@@ -19,6 +25,17 @@ async function fetchUsers() {
     loading.value = false
   }
 }
+
+const filteredUsers = computed(() => {
+  if (activeTab.value === "pending") {
+    return users.value.filter(u => u.role === "provider" && !u.is_approved)
+  }
+  return users.value
+})
+
+const pendingCount = computed(() => {
+  return users.value.filter(u => u.role === "provider" && !u.is_approved).length
+})
 
 function openUser(user: any) {
   selectedUser.value = user
@@ -36,6 +53,38 @@ async function remove() {
   await fetchUsers()
   closeModal()
 }
+
+async function approveUser(user: any) {
+  actionLoading.value = user.id
+  try {
+    await api.put(`/users/${user.id}/approve/`)
+    await fetchUsers()
+  } catch (err) {
+    alert("Failed to approve user")
+  } finally {
+    actionLoading.value = null
+  }
+}
+
+function confirmReject(user: any) {
+  rejectingUser.value = user
+  showRejectConfirm.value = true
+}
+
+async function handleReject() {
+  if (!rejectingUser.value) return
+  actionLoading.value = rejectingUser.value.id
+  try {
+    await api.put(`/users/${rejectingUser.value.id}/reject/`)
+    await fetchUsers()
+    showRejectConfirm.value = false
+    rejectingUser.value = null
+  } catch (err) {
+    alert("Failed to reject user")
+  } finally {
+    actionLoading.value = null
+  }
+}
 </script>
 
 <template>
@@ -49,6 +98,25 @@ async function remove() {
       </div>
     </div>
 
+    <!-- Tabs -->
+    <div class="tabs">
+      <button 
+        class="tab" 
+        :class="{ active: activeTab === 'all' }" 
+        @click="activeTab = 'all'"
+      >
+        All Users
+      </button>
+      <button 
+        class="tab" 
+        :class="{ active: activeTab === 'pending' }" 
+        @click="activeTab = 'pending'"
+      >
+        Pending Approval
+        <span v-if="pendingCount > 0" class="tab-badge">{{ pendingCount }}</span>
+      </button>
+    </div>
+
     <!-- Loading -->
     <div v-if="loading" class="state-msg">
       <span class="spinner"></span>
@@ -56,34 +124,50 @@ async function remove() {
     </div>
 
     <!-- Empty -->
-    <div v-else-if="!users.length" class="state-msg empty">
+    <div v-else-if="!filteredUsers.length" class="state-msg empty">
       <div class="empty-icon">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <svg v-if="activeTab === 'pending'" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <svg v-else width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
           <circle cx="9" cy="7" r="4"/>
           <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
           <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
         </svg>
       </div>
-      <h3 class="empty-text">No users found</h3>
-      <p class="empty-sub">Registered users will appear here.</p>
+      <h3 class="empty-text">{{ activeTab === 'pending' ? 'No pending approvals' : 'No users found' }}</h3>
+      <p class="empty-sub">{{ activeTab === 'pending' ? 'All provider applications have been reviewed.' : 'Registered users will appear here.' }}</p>
     </div>
 
     <!-- Grid -->
     <div v-else class="user-grid">
       <div
-        v-for="user in users"
+        v-for="user in filteredUsers"
         :key="user.id"
         class="user-card"
+        :class="{ 'pending-card': user.role === 'provider' && !user.is_approved }"
         @click="openUser(user)"
       >
         <div class="card-top">
           <div class="avatar">{{ (user.full_name || user.email || '?').charAt(0).toUpperCase() }}</div>
-          <span class="role-badge" :class="user.role">{{ user.role }}</span>
+          <div class="badge-row">
+            <span 
+              v-if="user.role === 'provider' && !user.is_approved" 
+              class="status-badge pending"
+            >
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              Pending
+            </span>
+            <span class="role-badge" :class="user.role">{{ user.role }}</span>
+          </div>
         </div>
 
         <h3 class="email">{{ user.email }}</h3>
-
         <p class="name">{{ user.full_name || 'No name' }}</p>
 
         <div class="meta">
@@ -92,20 +176,49 @@ async function remove() {
           </svg>
           {{ user.phone || 'No phone' }}
         </div>
+
+        <!-- Approval Actions (inline, only for pending) -->
+        <div v-if="user.role === 'provider' && !user.is_approved" class="approval-actions" @click.stop>
+          <button 
+            class="action-inline action-approve" 
+            :disabled="actionLoading === user.id"
+            @click="approveUser(user)"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            {{ actionLoading === user.id ? 'Processing...' : 'Approve' }}
+          </button>
+          <button 
+            class="action-inline action-reject"
+            :disabled="actionLoading === user.id"
+            @click="confirmReject(user)"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+            Reject
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Modal -->
+    <!-- User Detail Modal -->
     <Teleport to="body">
       <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
         <div class="modal">
-
           <div class="modal-header">
             <div class="modal-avatar">
               {{ (selectedUser?.full_name || selectedUser?.email || '?').charAt(0).toUpperCase() }}
             </div>
             <div class="modal-header-text">
-              <span class="role-badge" :class="selectedUser?.role">{{ selectedUser?.role }}</span>
+              <div class="badge-row">
+                <span 
+                  v-if="selectedUser?.role === 'provider' && !selectedUser?.is_approved" 
+                  class="status-badge pending"
+                >Pending</span>
+                <span class="role-badge" :class="selectedUser?.role">{{ selectedUser?.role }}</span>
+              </div>
               <h3 class="modal-email">{{ selectedUser?.email }}</h3>
               <p class="modal-name">{{ selectedUser?.full_name || 'No name' }}</p>
             </div>
@@ -123,6 +236,16 @@ async function remove() {
           </div>
 
           <div class="modal-actions">
+            <button 
+              v-if="selectedUser?.role === 'provider' && !selectedUser?.is_approved"
+              class="btn btn-approve" 
+              @click="approveUser(selectedUser); closeModal()"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              Approve
+            </button>
             <button class="btn btn-danger" @click="remove">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="3 6 5 6 21 6"/>
@@ -136,7 +259,39 @@ async function remove() {
               Close
             </button>
           </div>
+        </div>
+      </div>
+    </Teleport>
 
+    <!-- Reject Confirmation Modal -->
+    <Teleport to="body">
+      <div v-if="showRejectConfirm" class="modal-overlay" @click.self="showRejectConfirm = false">
+        <div class="modal">
+          <div class="modal-header" style="margin-bottom: 12px;">
+            <div class="modal-avatar reject-avatar">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="15" y1="9" x2="9" y2="15"/>
+                <line x1="9" y1="9" x2="15" y2="15"/>
+              </svg>
+            </div>
+            <div class="modal-header-text">
+              <h3 class="modal-email">Reject Provider?</h3>
+              <p class="modal-name">{{ rejectingUser?.full_name || rejectingUser?.email }}</p>
+            </div>
+          </div>
+          <p style="color: rgba(255,255,255,0.5); font-size: 13px; line-height: 1.6; margin: 0 0 20px;">
+            This will <strong style="color: #f87171;">permanently delete</strong> their account and send a rejection email to 
+            <strong style="color: #fff;">{{ rejectingUser?.email }}</strong>.
+          </p>
+          <div class="modal-actions">
+            <button class="btn btn-danger" @click="handleReject">
+              Reject & Delete
+            </button>
+            <button class="btn btn-ghost" @click="showRejectConfirm = false">
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
     </Teleport>
@@ -155,9 +310,7 @@ async function remove() {
   color: #fff;
 }
 
-.page-header {
-  margin-bottom: 32px;
-}
+.page-header { margin-bottom: 24px; }
 
 .header-label {
   font-size: 11px;
@@ -181,6 +334,58 @@ async function remove() {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.3);
   margin: 0;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 0.5px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 4px;
+  width: fit-content;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: 9px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.4);
+  transition: all 0.15s;
+}
+
+.tab.active {
+  background: rgba(167, 139, 250, 0.15);
+  color: #c4b5fd;
+  border: 0.5px solid rgba(167, 139, 250, 0.25);
+}
+
+.tab:hover:not(.active) {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  font-size: 10px;
+  font-weight: 700;
+  background: #f59e0b;
+  color: #000;
+  border-radius: 100px;
+  padding: 0 5px;
 }
 
 /* States */
@@ -222,7 +427,7 @@ async function remove() {
 /* Grid */
 .user-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 14px;
 }
 
@@ -243,11 +448,24 @@ async function remove() {
   background: rgba(255, 255, 255, 0.04);
 }
 
+.user-card.pending-card {
+  border-color: rgba(245, 158, 11, 0.2);
+}
+.user-card.pending-card:hover {
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
 .card-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 6px;
+}
+
+.badge-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .avatar {
@@ -283,10 +501,28 @@ async function remove() {
   color: #38bdf8;
   border: 0.5px solid rgba(56, 189, 248, 0.3);
 }
-.role-badge.user {
+.role-badge.customer {
   background: rgba(167, 139, 250, 0.15);
   color: #a78bfa;
   border: 0.5px solid rgba(167, 139, 250, 0.3);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 100px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.status-badge.pending {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  border: 0.5px solid rgba(245, 158, 11, 0.3);
 }
 
 .email {
@@ -312,6 +548,56 @@ async function remove() {
   margin-top: 2px;
 }
 
+/* Inline Approval Actions */
+.approval-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 0.5px solid rgba(255, 255, 255, 0.06);
+}
+
+.action-inline {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 0.5px solid transparent;
+  transition: all 0.15s;
+}
+
+.action-approve {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.25);
+  color: #10b981;
+}
+.action-approve:hover:not(:disabled) {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.action-reject {
+  background: rgba(248, 113, 113, 0.08);
+  border-color: rgba(248, 113, 113, 0.2);
+  color: #f87171;
+}
+.action-reject:hover:not(:disabled) {
+  background: rgba(248, 113, 113, 0.15);
+  border-color: rgba(248, 113, 113, 0.35);
+}
+
+.action-inline:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 /* Modal */
 @keyframes pop {
   from { transform: scale(0.94) translateY(8px); opacity: 0; }
@@ -330,7 +616,7 @@ async function remove() {
 }
 
 .modal {
-  width: 340px;
+  width: 380px;
   background: linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
   border: 0.5px solid rgba(255, 255, 255, 0.12);
   border-radius: 20px;
@@ -363,6 +649,12 @@ async function remove() {
   color: #fff;
   flex-shrink: 0;
   border: 0.5px solid rgba(130, 90, 255, 0.4);
+}
+
+.reject-avatar {
+  background: linear-gradient(135deg, rgba(248, 113, 113, 0.3), rgba(248, 113, 113, 0.15));
+  border-color: rgba(248, 113, 113, 0.3);
+  color: #f87171;
 }
 
 .modal-header-text {
@@ -429,6 +721,16 @@ async function remove() {
   transition: background 0.15s, border-color 0.15s;
 }
 
+.btn-approve {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.25);
+  color: #10b981;
+}
+.btn-approve:hover {
+  background: rgba(16, 185, 129, 0.22);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
 .btn-danger {
   background: rgba(248, 113, 113, 0.12);
   border-color: rgba(248, 113, 113, 0.25);
@@ -452,5 +754,7 @@ async function remove() {
 @media (max-width: 640px) {
   .page { padding: 24px 16px; }
   .user-grid { grid-template-columns: 1fr; }
+  .tabs { width: 100%; }
+  .tab { flex: 1; justify-content: center; }
 }
 </style>

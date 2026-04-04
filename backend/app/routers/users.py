@@ -7,6 +7,7 @@ from app.schemas.users import UserCreate, UserUpdate, UserResponse, UserOut
 from app.core.security import hash_password
 from app.core.dependencies import require_admin, get_current_user
 from app.services.upload_service import save_image
+from app.services.email_service import send_approval_email, send_rejection_email
 
 router = APIRouter()
 
@@ -20,6 +21,10 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 
     user_data = user.dict()
     user_data["password"] = hash_password(user.password)
+
+    # New providers require admin approval
+    if user_data.get("role") == "provider":
+        user_data["is_approved"] = False
 
     new_user = User(**user_data)
 
@@ -120,3 +125,44 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
     db.commit()
 
     return {"message": "User deleted"}
+
+
+@router.put("/{user_id}/approve/", response_model=UserResponse, dependencies=[Depends(require_admin)])
+def approve_user(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user.is_approved = True
+    db.commit()
+    db.refresh(user)
+
+    # Send approval email
+    try:
+        send_approval_email(user.email, user.full_name)
+    except Exception as e:
+        print(f"Failed to send approval email: {e}")
+
+    return user
+
+
+@router.put("/{user_id}/reject/", dependencies=[Depends(require_admin)])
+def reject_user(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    email = user.email
+    name = user.full_name
+
+    # Delete the user
+    db.delete(user)
+    db.commit()
+
+    # Send rejection email
+    try:
+        send_rejection_email(email, name)
+    except Exception as e:
+        print(f"Failed to send rejection email: {e}")
+
+    return {"message": "User rejected and deleted"}

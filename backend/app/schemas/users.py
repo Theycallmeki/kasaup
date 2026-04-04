@@ -28,6 +28,7 @@ class UserResponse(BaseModel):
     latitude: float | None
     longitude: float | None
     profile_image: str | None = None
+    is_approved: bool = True
     created_at: datetime
 
     class Config:
@@ -43,6 +44,7 @@ class UserOut(BaseModel):
     latitude: float | None
     longitude: float | None
     profile_image: str | None = None
+    is_approved: bool = True
     created_at: datetime
 
     class Config:

@@ -1,13 +1,21 @@
 <script setup lang="ts">
 import { onMounted } from "vue"
 import { useAuthStore } from "./stores/authStore"
+import { useMessageStore } from "./stores/messageStore"
 
 import Sidebar from "./components/Sidebar.vue"
 
 const auth = useAuthStore()
+const messageStore = useMessageStore()
 
-onMounted(() => {
-  auth.fetchUser()
+onMounted(async () => {
+  await auth.fetchUser()
+  // Once the user is authenticated, connect WS and fetch conversations globally
+  // so the sidebar unread badge works in real-time from any page
+  if (auth.user) {
+    await messageStore.fetchConversations()
+    messageStore.connectWS(auth.user.id)
+  }
 })
 </script>
 

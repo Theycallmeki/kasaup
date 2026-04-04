@@ -17,6 +17,8 @@ const showPassword = ref(false)
 
 const role = computed(() => (route.query.role as string) || "customer")
 
+const showPendingMessage = ref(false)
+
 const register = async () => {
   error.value = ""
   loading.value = true
@@ -30,7 +32,11 @@ const register = async () => {
       role: role.value
     })
 
-    router.push("/login")
+    if (role.value === "provider") {
+      showPendingMessage.value = true
+    } else {
+      router.push("/login")
+    }
   } catch (err: any) {
     error.value = "Registration failed. Email may already exist."
   } finally {
@@ -47,7 +53,25 @@ const register = async () => {
     <div class="register-card">
       <span class="eyebrow">Create account</span>
       <h1 class="title">Kasa<span class="accent">up</span></h1>
-      <p class="subtitle">Registering as a <span class="role-label">{{ role }}</span></p>
+
+      <!-- Pending Approval State -->
+      <template v-if="showPendingMessage">
+        <div class="pending-box">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          <h2 class="pending-title">Application Submitted!</h2>
+          <p class="pending-desc">
+            Your provider account is pending admin approval. You'll receive an email at <strong>{{ email }}</strong> once your account is approved.
+          </p>
+          <router-link to="/login" class="btn" style="text-decoration:none;">Go to Login</router-link>
+        </div>
+      </template>
+
+      <!-- Registration Form -->
+      <template v-else>
+        <p class="subtitle">Registering as a <span class="role-label">{{ role }}</span></p>
 
       <form @submit.prevent="register">
         <input
@@ -105,6 +129,7 @@ const register = async () => {
         Already have an account?
         <router-link to="/login">Login</router-link>
       </p>
+      </template>
     </div>
   </div>
 </template>
@@ -355,5 +380,34 @@ form {
 @keyframes rise {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+.pending-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 0;
+  color: #a78bfa;
+  animation: rise 0.4s ease both;
+}
+
+.pending-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.3rem;
+  color: #fff;
+  margin: 0;
+}
+
+.pending-desc {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.7;
+  text-align: center;
+  margin: 0 0 8px;
+}
+
+.pending-desc strong {
+  color: #a78bfa;
 }
 </style>

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Float
+from sqlalchemy import Column, Integer, String, DateTime, Float, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.db import Base
@@ -23,6 +23,7 @@ class User(Base):
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
     profile_image = Column(String, nullable=True)
+    is_approved = Column(Boolean, default=True, nullable=False)
     
     created_at = Column(DateTime, default=get_ph_time)
 

@@ -27,17 +27,25 @@ jobs:
             # 3. Export secrets
             export DATABASE_URL="${{ secrets.DATABASE_URL }}"
             
-            # 4. Clean restart services
-            # This ensures we don't have conflicting abandoned containers
+            # 4. Ensure SMTP credentials are in backend .env
+            grep -q "SMTP_USER" /app/backend/.env 2>/dev/null || cat >> /app/backend/.env << 'SMTP_EOF'
+
+# Email (Gmail SMTP)
+SMTP_USER=${{ secrets.SMTP_USER }}
+SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
+SMTP_FROM_EMAIL=${{ secrets.SMTP_FROM_EMAIL }}
+SMTP_EOF
+            
+            # 5. Clean restart services
             docker-compose down
             docker-compose up -d --build
             
-            # 5. Verify status (visible in GitHub Action logs)
+            # 6. Verify status
             echo "--- Container Status ---"
             docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
             
             echo "--- Backend Logs (Last 10 lines) ---"
             docker logs kasaup-backend --tail 10
             
-            # 6. Cleanup old images
+            # 7. Cleanup old images
             docker system prune -f
