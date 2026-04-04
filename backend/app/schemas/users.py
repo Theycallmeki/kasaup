@@ -13,6 +13,10 @@ class UserCreate(BaseModel):
 class UserUpdate(BaseModel):
     full_name: str | None = None
     phone: str | None = None
+    email: str | None = None
+    password: str | None = None
+    latitude: float | None = None
+    longitude: float | None = None
 
 
 class UserResponse(BaseModel):
@@ -21,6 +25,8 @@ class UserResponse(BaseModel):
     full_name: str | None
     phone: str | None
     role: str
+    latitude: float | None
+    longitude: float | None
     created_at: datetime
 
     class Config:
@@ -33,6 +39,8 @@ class UserOut(BaseModel):
     full_name: str | None
     phone: str | None
     role: str
+    latitude: float | None
+    longitude: float | None
     created_at: datetime
 
     class Config:

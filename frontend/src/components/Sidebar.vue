@@ -35,7 +35,8 @@ const menus = {
     { label: "Providers",        path: "/providers",            icon: "map"      },
     { label: "Appointments",         path: "/appointments",         icon: "calendar" },
     { label: "History",          path: "/appointments/history", icon: "clock"    },
-    { label: "Messages",         path: "/messages",             icon: "message"  }
+    { label: "Messages",         path: "/messages",             icon: "message"  },
+    { label: "Profile",          path: "/profile",              icon: "user"     }
   ],
   provider: [
     { label: "Dashboard",    path: "/provider/dashboard",    icon: "grid"     },
@@ -70,6 +71,7 @@ const icons: Record<string, string> = {
   message:  "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",
   logout:   "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9",
   menu:     "M3 12h18M3 6h18M3 18h18",
+  user:     "M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
   close:    "M18 6L6 18M6 6l12 12"
 }
 </script>

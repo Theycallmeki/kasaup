@@ -10,6 +10,7 @@ import ProviderProfileView from "../views/customer/ProviderProfileView.vue"
 import MyAppointmentsView from "../views/customer/MyAppointmentsView.vue"
 import BookingHistoryView from "../views/customer/BookingHistoryView.vue"
 import ServicesView from '../views/customer/ServicesView.vue'
+import CustomerProfileView from "../views/customer/CustomerProfileView.vue"
 
 
 import ProviderDashboardView from "../views/provider/ProviderDashboardView.vue"
@@ -93,6 +94,13 @@ const routes = [
     path: "/appointments/history",
     name: "bookingHistory",
     component: BookingHistoryView,
+    meta: { requiresAuth: true, roles: ["customer"] }
+  },
+
+  {
+    path: "/profile",
+    name: "customerProfile",
+    component: CustomerProfileView,
     meta: { requiresAuth: true, roles: ["customer"] }
   },
 
@@ -211,7 +219,8 @@ router.beforeEach(async (to) => {
       }
 
       if (auth.user.role === "customer") {
-        return { path: "/providers" }
+        if (to.path === "/") return { path: "/" }
+        return { path: "/services" }
       }
 
     }
