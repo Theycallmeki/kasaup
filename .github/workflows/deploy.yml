@@ -28,13 +28,12 @@ jobs:
             export DATABASE_URL="${{ secrets.DATABASE_URL }}"
             
             # 4. Ensure SMTP credentials are in backend .env
-            grep -q "SMTP_USER" /app/backend/.env 2>/dev/null || cat >> /app/backend/.env << 'SMTP_EOF'
-
-# Email (Gmail SMTP)
-SMTP_USER=${{ secrets.SMTP_USER }}
-SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
-SMTP_FROM_EMAIL=${{ secrets.SMTP_FROM_EMAIL }}
-SMTP_EOF
+            if ! grep -q "SMTP_USER" /app/backend/.env 2>/dev/null; then
+                printf "\nSMTP_USER=\"%s\"\nSMTP_PASSWORD=\"%s\"\nSMTP_FROM_EMAIL=\"%s\"\n" \
+                "${{ secrets.SMTP_USER }}" \
+                "${{ secrets.SMTP_PASSWORD }}" \
+                "${{ secrets.SMTP_FROM_EMAIL }}" >> /app/backend/.env
+            fi
             
             # 5. Clean restart services
             docker-compose down
