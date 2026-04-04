@@ -154,13 +154,14 @@ function refreshProviderMarkers() {
         ? `<p class="kasaup-popup-sub">${provider.distance_km.toFixed(1)} km away</p>`
         : ""
 
-    // Avatar: photo or initials fallback
-    const rawImage = typeof provider.profile_image === "string" && provider.profile_image
-      ? provider.profile_image.replace(/^\//, "")
+    const rawImage = typeof provider.profile_image === "string" ? provider.profile_image : null
+    const imgFullUrl = rawImage
+      ? (rawImage.startsWith("http") ? rawImage : `${api.defaults.baseURL}/${rawImage.replace(/^\//, "")}`)
       : null
+      
     const initials = name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase()
-    const avatarHTML = rawImage
-      ? `<img src="${api.defaults.baseURL}/${rawImage}" class="kasaup-popup-avatar kasaup-popup-avatar--img" alt="${escapeHtml(name)}" />`
+    const avatarHTML = imgFullUrl
+      ? `<img src="${imgFullUrl}" class="kasaup-popup-avatar kasaup-popup-avatar--img" alt="${escapeHtml(name)}" />`
       : `<div class="kasaup-popup-avatar kasaup-popup-avatar--initials">${escapeHtml(initials)}</div>`
 
     const providerIcon = L.divIcon({
