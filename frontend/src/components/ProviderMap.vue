@@ -221,6 +221,7 @@ onMounted(() => {
   const philippinesBounds = L.latLngBounds([4.5, 116.0], [21.5, 127.0])
 
   map = L.map(mapContainer.value, {
+    attributionControl: false,
     maxBounds: philippinesBounds,
     maxBoundsViscosity: 1.0,
     minZoom: 6,
