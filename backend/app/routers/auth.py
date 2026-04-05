@@ -79,17 +79,17 @@ async def google_callback(code: str, state: str = "customer", db: Session = Depe
     response.set_cookie(
         key="access_token",
         value=access_token,
-        httponly=True,
-        samesite="lax",
-        secure=False
+        httponly=False,
+        samesite="none",
+        secure=True
     )
 
     response.set_cookie(
         key="refresh_token",
         value=refresh_token,
         httponly=True,
-        samesite="lax",
-        secure=False
+        samesite="none",
+        secure=True
     )
 
     return response
@@ -152,17 +152,17 @@ async def github_callback(code: str, state: str = "customer", db: Session = Depe
     response.set_cookie(
         key="access_token",
         value=access_token,
-        httponly=True,
-        samesite="lax",
-        secure=False
+        httponly=False,
+        samesite="none",
+        secure=True
     )
 
     response.set_cookie(
         key="refresh_token",
         value=refresh_token,
         httponly=True,
-        samesite="lax",
-        secure=False
+        samesite="none",
+        secure=True
     )
 
     return response
@@ -190,17 +190,17 @@ def login(data: LoginRequest, response: Response, db: Session = Depends(get_db))
     response.set_cookie(
         key="access_token",
         value=access_token,
-        httponly=True,
-        samesite="lax",
-        secure=False
+        httponly=False,
+        samesite="none",
+        secure=True
     )
 
     response.set_cookie(
         key="refresh_token",
         value=refresh_token,
         httponly=True,
-        samesite="lax",
-        secure=False
+        samesite="none",
+        secure=True
     )
 
     return {"message": "Login successful"}
@@ -237,9 +237,9 @@ def refresh_token(request: Request, response: Response, db: Session = Depends(ge
     response.set_cookie(
         key="access_token",
         value=new_access_token,
-        httponly=True,
-        samesite="lax",
-        secure=False
+        httponly=False,
+        samesite="none",
+        secure=True
     )
 
     return {"message": "Access token refreshed"}
