@@ -28,9 +28,11 @@ jobs:
             export DATABASE_URL="${{ secrets.DATABASE_URL }}"
             
             # 4. Recreate the backend .env file from GitHub Secrets (Source of Truth)
-            printf "DATABASE_URL=%s\nSECRET_KEY=%s\nALGORITHM=HS256\nSMTP_USER=%s\nSMTP_PASSWORD=%s\nSMTP_FROM_EMAIL=%s\nGOOGLE_CLIENT_ID=%s\nGOOGLE_CLIENT_SECRET=%s\nGOOGLE_REDIRECT_URI=%s\nGH_CLIENT_ID=%s\nGH_CLIENT_SECRET=%s\nGH_REDIRECT_URI=%s\nFRONTEND_URL=%s\nAWS_ACCESS_KEY_ID=%s\nAWS_SECRET_ACCESS_KEY=%s\nAWS_REGION=%s\nAWS_S3_BUCKET=%s\n" \
+            printf "DATABASE_URL=%s\nSECRET_KEY=%s\nALGORITHM=HS256\nSMTP_HOST=%s\nSMTP_PORT=%s\nSMTP_USER=%s\nSMTP_PASSWORD=%s\nSMTP_FROM_EMAIL=%s\nGOOGLE_CLIENT_ID=%s\nGOOGLE_CLIENT_SECRET=%s\nGOOGLE_REDIRECT_URI=%s\nGH_CLIENT_ID=%s\nGH_CLIENT_SECRET=%s\nGH_REDIRECT_URI=%s\nFRONTEND_URL=%s\nALLOWED_ORIGINS=%s\nAWS_ACCESS_KEY_ID=%s\nAWS_SECRET_ACCESS_KEY=%s\nAWS_REGION=%s\nAWS_S3_BUCKET=%s\n" \
             "${{ secrets.DATABASE_URL }}" \
             "${{ secrets.SECRET_KEY }}" \
+            "${{ secrets.SMTP_HOST || 'smtp.gmail.com' }}" \
+            "${{ secrets.SMTP_PORT || '587' }}" \
             "${{ secrets.SMTP_USER }}" \
             "${{ secrets.SMTP_PASSWORD }}" \
             "${{ secrets.SMTP_FROM_EMAIL }}" \
@@ -41,6 +43,7 @@ jobs:
             "${{ secrets.GH_CLIENT_SECRET }}" \
             "${{ secrets.GH_REDIRECT_URI }}" \
             "${{ secrets.FRONTEND_URL }}" \
+            "${{ secrets.FRONTEND_URL }},https://kasaup.vercel.app" \
             "${{ secrets.AWS_ACCESS_KEY_ID }}" \
             "${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
             "${{ secrets.AWS_REGION }}" \
