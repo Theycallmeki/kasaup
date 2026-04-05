@@ -9,6 +9,7 @@ from app.core.config import settings
 
 def _send_email(to_email: str, subject: str, html_body: str):
     """Send an email via HTTP API (Universal Bypassing) or SMTP."""
+    print(f"[CRITICAL DEBUG] EMAIL FUNCTION START to: {to_email}")
     print(f"[EMAIL DEBUG] Triggered send to: {to_email}")
     
     # NEW: HTTP API Bypassing (DigitalOcean Proof)
