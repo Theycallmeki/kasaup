@@ -4,12 +4,14 @@ from fastapi import UploadFile
 from typing import List
 from app.core.config import settings
 
-s3 = boto3.client(
-    "s3",
-    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-    region_name=settings.AWS_REGION,
-)
+def get_s3_client():
+    """Lazily initialize S3 client to prevent startup crashes."""
+    return boto3.client(
+        "s3",
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        region_name=settings.AWS_REGION,
+    )
 
 BUCKET = settings.AWS_S3_BUCKET
 
@@ -25,7 +27,8 @@ def save_image(file: UploadFile) -> str:
 
     file.file.seek(0)
 
-    s3.upload_fileobj(
+    s3_client = get_s3_client()
+    s3_client.upload_fileobj(
         file.file,
         BUCKET,
         filename,
