@@ -226,25 +226,12 @@ router.beforeEach(async (to) => {
     }
 
     if (auth.user.role === "provider") {
-
-      try {
-
-        const res = await api.get("/providers/")
-
-        const provider = res.data.find(
-          (p: any) => p.owner_id === auth.user.id
-        )
-
-        if (!provider && to.path !== "/provider/create-profile") {
-          return { path: "/provider/create-profile" }
-        }
-
-        if (provider && to.path === "/provider/create-profile") {
-          return { path: "/provider/dashboard" }
-        }
-
-      } catch { }
-
+      if (!auth.user.has_profile && to.name !== "createProviderProfile") {
+        return { name: "createProviderProfile" }
+      }
+      if (auth.user.has_profile && to.name === "createProviderProfile") {
+        return { name: "providerDashboard" }
+      }
     }
 
   }

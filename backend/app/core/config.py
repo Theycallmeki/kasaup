@@ -25,6 +25,11 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_ID: str = ""
     GOOGLE_CLIENT_SECRET: str = ""
     GOOGLE_REDIRECT_URI: str = "http://localhost:8000/auth/google/callback"
+    
+    GH_CLIENT_ID: str = ""
+    GH_CLIENT_SECRET: str = ""
+    GH_REDIRECT_URI: str = "http://localhost:8000/auth/github/callback"
+    
     FRONTEND_URL: str = "http://localhost:5173"
 
     model_config = SettingsConfigDict(

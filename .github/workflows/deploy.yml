@@ -36,11 +36,13 @@ jobs:
             fi
 
             if ! grep -q "GOOGLE_CLIENT_ID" /app/backend/.env 2>/dev/null; then
-                printf "\nGOOGLE_CLIENT_ID=\"%s\"\nGOOGLE_CLIENT_SECRET=\"%s\"\nGOOGLE_REDIRECT_URI=\"%s\"\nFRONTEND_URL=\"%s\"\n" \
-                "${{ secrets.GOOGLE_CLIENT_ID }}" \
-                "${{ secrets.GOOGLE_CLIENT_SECRET }}" \
-                "${{ secrets.GOOGLE_REDIRECT_URI }}" \
-                "https://kasaup.vercel.app" >> /app/backend/.env
+                echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> backend/.env
+                echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> backend/.env
+                echo "GOOGLE_REDIRECT_URI=${{ secrets.GOOGLE_REDIRECT_URI }}" >> backend/.env
+                echo "GH_CLIENT_ID=${{ secrets.GH_CLIENT_ID }}" >> backend/.env
+                echo "GH_CLIENT_SECRET=${{ secrets.GH_CLIENT_SECRET }}" >> backend/.env
+                echo "GH_REDIRECT_URI=${{ secrets.GH_REDIRECT_URI }}" >> backend/.env
+                echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> backend/.env
             fi
             
             # 5. Clean restart services
