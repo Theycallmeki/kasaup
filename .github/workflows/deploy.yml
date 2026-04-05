@@ -27,27 +27,29 @@ jobs:
             # 3. Export secrets
             export DATABASE_URL="${{ secrets.DATABASE_URL }}"
             
-            # 4. Recreate the backend .env file from GitHub Secrets
-            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > /app/backend/.env
-            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> /app/backend/.env
-            echo "ALGORITHM=HS256" >> /app/backend/.env
-            echo "SMTP_HOST=${{ secrets.SMTP_HOST || 'smtp.gmail.com' }}" >> /app/backend/.env
-            echo "SMTP_PORT=${{ secrets.SMTP_PORT || '587' }}" >> /app/backend/.env
-            echo "SMTP_USER=${{ secrets.SMTP_USER }}" >> /app/backend/.env
-            echo "SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> /app/backend/.env
-            echo "SMTP_FROM_EMAIL=${{ secrets.SMTP_FROM_EMAIL }}" >> /app/backend/.env
-            echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> /app/backend/.env
-            echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> /app/backend/.env
-            echo "GOOGLE_REDIRECT_URI=${{ secrets.GOOGLE_REDIRECT_URI }}" >> /app/backend/.env
-            echo "GH_CLIENT_ID=${{ secrets.GH_CLIENT_ID }}" >> /app/backend/.env
-            echo "GH_CLIENT_SECRET=${{ secrets.GH_CLIENT_SECRET }}" >> /app/backend/.env
-            echo "GH_REDIRECT_URI=${{ secrets.GH_REDIRECT_URI }}" >> /app/backend/.env
-            echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> /app/backend/.env
-            echo "ALLOWED_ORIGINS=${{ secrets.FRONTEND_URL }},https://kasaup.vercel.app" >> /app/backend/.env
-            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> /app/backend/.env
-            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> /app/backend/.env
-            echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> /app/backend/.env
-            echo "AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}" >> /app/backend/.env
+            # 4. Recreate the backend .env file from GitHub Secrets (Safest Method)
+            cat <<'EOF' > /app/backend/.env
+DATABASE_URL=${{ secrets.DATABASE_URL }}
+SECRET_KEY=${{ secrets.SECRET_KEY }}
+ALGORITHM=HS256
+SMTP_HOST=${{ secrets.SMTP_HOST || 'smtp.gmail.com' }}
+SMTP_PORT=${{ secrets.SMTP_PORT || '587' }}
+SMTP_USER=${{ secrets.SMTP_USER }}
+SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
+SMTP_FROM_EMAIL=${{ secrets.SMTP_FROM_EMAIL }}
+GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+GOOGLE_REDIRECT_URI=${{ secrets.GOOGLE_REDIRECT_URI }}
+GH_CLIENT_ID=${{ secrets.GH_CLIENT_ID }}
+GH_CLIENT_SECRET=${{ secrets.GH_CLIENT_SECRET }}
+GH_REDIRECT_URI=${{ secrets.GH_REDIRECT_URI }}
+FRONTEND_URL=${{ secrets.FRONTEND_URL }}
+ALLOWED_ORIGINS=${{ secrets.FRONTEND_URL }},https://kasaup.vercel.app
+AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+AWS_REGION=${{ secrets.AWS_REGION }}
+AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}
+EOF
             
             # 5. Clean restart services
             docker-compose down
