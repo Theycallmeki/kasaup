@@ -27,27 +27,20 @@ jobs:
             # 3. Export secrets
             export DATABASE_URL="${{ secrets.DATABASE_URL }}"
             
-            # 4. Ensure SECRET_KEY, SMTP, and Google credentials are in backend .env
-            if ! grep -q "SECRET_KEY" /app/backend/.env 2>/dev/null; then
-                printf "\nSECRET_KEY=\"%s\"\n" "${{ secrets.SECRET_KEY }}" >> /app/backend/.env
-            fi
-            
-            if ! grep -q "SMTP_USER" /app/backend/.env 2>/dev/null; then
-                printf "\nSMTP_USER=\"%s\"\nSMTP_PASSWORD=\"%s\"\nSMTP_FROM_EMAIL=\"%s\"\n" \
-                "${{ secrets.SMTP_USER }}" \
-                "${{ secrets.SMTP_PASSWORD }}" \
-                "${{ secrets.SMTP_FROM_EMAIL }}" >> /app/backend/.env
-            fi
-
-            if ! grep -q "GOOGLE_CLIENT_ID" /app/backend/.env 2>/dev/null; then
-                echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> backend/.env
-                echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> backend/.env
-                echo "GOOGLE_REDIRECT_URI=${{ secrets.GOOGLE_REDIRECT_URI }}" >> backend/.env
-                echo "GH_CLIENT_ID=${{ secrets.GH_CLIENT_ID }}" >> backend/.env
-                echo "GH_CLIENT_SECRET=${{ secrets.GH_CLIENT_SECRET }}" >> backend/.env
-                echo "GH_REDIRECT_URI=${{ secrets.GH_REDIRECT_URI }}" >> backend/.env
-                echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> backend/.env
-            fi
+            # 4. Recreate the backend .env file from GitHub Secrets (Source of Truth)
+            printf "DATABASE_URL=%s\nSECRET_KEY=%s\nALGORITHM=HS256\nSMTP_USER=%s\nSMTP_PASSWORD=%s\nSMTP_FROM_EMAIL=%s\nGOOGLE_CLIENT_ID=%s\nGOOGLE_CLIENT_SECRET=%s\nGOOGLE_REDIRECT_URI=%s\nGH_CLIENT_ID=%s\nGH_CLIENT_SECRET=%s\nGH_REDIRECT_URI=%s\nFRONTEND_URL=%s\n" \
+            "${{ secrets.DATABASE_URL }}" \
+            "${{ secrets.SECRET_KEY }}" \
+            "${{ secrets.SMTP_USER }}" \
+            "${{ secrets.SMTP_PASSWORD }}" \
+            "${{ secrets.SMTP_FROM_EMAIL }}" \
+            "${{ secrets.GOOGLE_CLIENT_ID }}" \
+            "${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+            "${{ secrets.GOOGLE_REDIRECT_URI }}" \
+            "${{ secrets.GH_CLIENT_ID }}" \
+            "${{ secrets.GH_CLIENT_SECRET }}" \
+            "${{ secrets.GH_REDIRECT_URI }}" \
+            "${{ secrets.FRONTEND_URL }}" > /app/backend/.env
             
             # 5. Clean restart services
             docker-compose down
