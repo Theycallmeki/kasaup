@@ -1,0 +1,17 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "http://167.172.66.181:8000/$1"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/frontend/dist/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/frontend/dist/index.html"
+    }
+  ]
+}
