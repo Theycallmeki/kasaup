@@ -3,7 +3,6 @@ import { useRouter } from "vue-router"
 
 const router = useRouter()
 
-const goLogin = () => router.push("/login")
 const goCustomer = () => router.push("/register?role=customer")
 const goProvider = () => router.push("/register?role=provider")
 </script>
@@ -18,30 +17,24 @@ const goProvider = () => router.push("/register?role=provider")
       <h1 class="title">Kasa<span class="accent">up</span></h1>
       <p class="subtitle">Find trusted local services near you</p>
 
-      <button class="btn btn-primary" @click="goLogin">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-          <polyline points="10 17 15 12 10 7" />
-          <line x1="15" y1="12" x2="3" y2="12" />
-        </svg>
-        Login
-      </button>
-
-      <div class="divider">or create an account</div>
-
       <button class="btn btn-outline" @click="goCustomer">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
         </svg>
         Create Customer Account
       </button>
-
+ 
       <button class="btn btn-outline" @click="goProvider">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
         </svg>
         Become a Service Provider
       </button>
+
+      <p class="footer">
+        Already have an account?
+        <router-link to="/login">Login here</router-link>
+      </p>
     </div>
   </div>
 </template>
@@ -197,11 +190,42 @@ const goProvider = () => router.push("/register?role=provider")
   color: rgba(255, 255, 255, 0.8);
 }
 
-.divider {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.2);
-  margin: 6px 0 16px;
-  letter-spacing: 0.08em;
+.btn-google {
+  background: rgba(255, 255, 255, 0.05);
+  border: 0.5px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.btn-google:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-google-alt {
+  background: rgba(255, 255, 255, 0.03);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+  gap: 10px;
+  font-size: 0.9rem;
+  margin-top: -4px;
+}
+.btn-google-alt:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.footer {
+  margin-top: 24px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.3);
+}
+.footer a {
+  color: rgba(167, 139, 250, 0.8);
+  text-decoration: none;
+  margin-left: 4px;
+}
+.footer a:hover {
+  color: #a78bfa;
 }
 
 @keyframes rise {

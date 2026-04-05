@@ -22,16 +22,17 @@ router = APIRouter()
 
 
 @router.get("/google")
-def google_login():
-    return RedirectResponse(get_google_auth_url())
+def google_login(role: str = "customer"):
+    return RedirectResponse(get_google_auth_url(role))
 
 
 @router.get("/google/callback")
-async def google_callback(code: str, db: Session = Depends(get_db)):
+async def google_callback(code: str, state: str = "customer", db: Session = Depends(get_db)):
     try:
         user_data = await get_google_user(code)
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Google Auth failed: {str(e)}")
+        # Redirect to login with error
+        return RedirectResponse(url=f"{settings.FRONTEND_URL}/login?error=google_auth_failed")
 
     email = user_data["email"]
     full_name = user_data.get("name")
@@ -40,22 +41,39 @@ async def google_callback(code: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == email).first()
 
     if not user:
+        # Create new user with role from state
         user = User(
             email=email,
             full_name=full_name,
             profile_image=profile_image,
-            role="customer",
-            is_approved=True
+            role=state,
+            is_approved=True if state == "customer" else False
         )
         db.add(user)
         db.commit()
         db.refresh(user)
 
+    # Determine target redirect based on role and profile status
+    target_path = "/"
+    if user.role == "customer":
+        target_path = "/providers"
+    elif user.role == "provider":
+        if not user.provided_shop:
+            target_path = "/provider/create-profile"
+        else:
+            target_path = "/provider/dashboard"
+    elif user.role == "admin":
+        target_path = "/admin/dashboard"
+
+    # Check approval for providers
+    if user.role == "provider" and not user.is_approved:
+        return RedirectResponse(url=f"{settings.FRONTEND_URL}/login?error=pending_approval")
+
     access_token = create_access_token({"user_id": user.id})
     refresh_token = create_refresh_token({"user_id": user.id})
 
     # Redirect to frontend
-    response = RedirectResponse(url=f"{settings.FRONTEND_URL}/")
+    response = RedirectResponse(url=f"{settings.FRONTEND_URL}{target_path}")
 
     response.set_cookie(
         key="access_token",
@@ -163,4 +181,6 @@ def logout(response: Response):
 
 @router.get("/me/", response_model=UserOut, dependencies=[Depends(get_current_user)])
 def get_me(current_user: User = Depends(get_current_user)):
+    # Attach has_profile info for response
+    current_user.has_profile = True if current_user.provided_shop else False
     return current_user

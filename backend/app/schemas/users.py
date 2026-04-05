@@ -29,6 +29,7 @@ class UserResponse(BaseModel):
     longitude: float | None
     profile_image: str | None = None
     is_approved: bool = True
+    has_profile: bool = False
     created_at: datetime
 
     class Config:
@@ -45,6 +46,7 @@ class UserOut(BaseModel):
     longitude: float | None
     profile_image: str | None = None
     is_approved: bool = True
+    has_profile: bool = False
     created_at: datetime
 
     class Config:
