@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "http://167.172.66.181:8000/$1"
+      "destination": "https://167.172.66.181.nip.io/$1"
     },
     {
       "source": "/(.*)",
