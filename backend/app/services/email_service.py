@@ -20,9 +20,19 @@ def _send_email(to_email: str, subject: str, html_body: str):
 
     try:
         print(f"[EMAIL DEBUG] Connecting to {settings.SMTP_HOST}:{settings.SMTP_PORT} (timeout=20s)...")
-        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT, timeout=20) as server:
-            print("[EMAIL DEBUG] Connection successful. Starting TLS...")
-            server.starttls()
+        # Use SMTP_SSL for port 465, otherwise standard SMTP + TLS
+        if settings.SMTP_PORT == 465:
+            print("[EMAIL DEBUG] Using SMTP_SSL (Port 465)...")
+            server_class = smtplib.SMTP_SSL
+        else:
+            print(f"[EMAIL DEBUG] Using Standard SMTP (Port {settings.SMTP_PORT})...")
+            server_class = smtplib.SMTP
+
+        with server_class(settings.SMTP_HOST, settings.SMTP_PORT, timeout=20) as server:
+            if settings.SMTP_PORT != 465:
+                print("[EMAIL DEBUG] Starting TLS...")
+                server.starttls()
+            
             print(f"[EMAIL DEBUG] Logging in as {settings.SMTP_USER}...")
             server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
             print("[EMAIL DEBUG] Login successful. Sending mail...")
