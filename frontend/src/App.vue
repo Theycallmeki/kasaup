@@ -15,11 +15,14 @@ onMounted(async () => {
   const refreshToken = urlParams.get("refresh_token")
 
   if (accessToken && refreshToken) {
-    // Save tokens as cookies on the frontend domain
-    // We set Secure and SameSite=Lax for production compatibility
+    // Save tokens as cookies AND to localStorage for cross-domain stability
     const secure = window.location.protocol === "https:" ? "Secure;" : ""
     document.cookie = `access_token=${accessToken}; path=/; max-age=900; ${secure} SameSite=Lax`
     document.cookie = `refresh_token=${refreshToken}; path=/; max-age=604800; ${secure} SameSite=Lax`
+    
+    // THE BULLETPROOF FIX: Save to localStorage for Authorization headers
+    localStorage.setItem("access_token", accessToken)
+    localStorage.setItem("refresh_token", refreshToken)
 
     // Clean the URL
     const cleanUrl = window.location.pathname + window.location.hash

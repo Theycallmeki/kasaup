@@ -1,13 +1,42 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import requests  # We use requests for the HTTP fallback
 from app.core.config import settings
 
 
 def _send_email(to_email: str, subject: str, html_body: str):
-    """Send an email via SMTP (Gmail compatible) with verbose logging."""
-    print(f"[EMAIL DEBUG] Triggered send to: {to_email} | Subject: {subject}")
+    """Send an email via HTTP API (Universal Bypassing) or SMTP."""
+    print(f"[EMAIL DEBUG] Triggered send to: {to_email}")
     
+    # NEW: HTTP API Bypassing (DigitalOcean Proof)
+    if settings.RESEND_API_KEY:
+        print("[EMAIL DEBUG] Using HTTP API Bypassing (Resend)...")
+        try:
+            r = requests.post(
+                "https://api.resend.com/emails",
+                headers={
+                    "Authorization": f"Bearer {settings.RESEND_API_KEY}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "from": settings.SMTP_FROM_EMAIL or "onboarding@resend.dev",
+                    "to": to_email,
+                    "subject": subject,
+                    "html": html_body,
+                },
+                timeout=10
+            )
+            if r.status_code == 201 or r.status_code == 200:
+                print(f"[EMAIL SENT] SUCCESS via HTTP API: {to_email}")
+                return
+            else:
+                print(f"[EMAIL ERROR] HTTP API Failed ({r.status_code}): {r.text}")
+        except Exception as e:
+            print(f"[EMAIL ERROR] HTTP API Exception: {e}")
+
+    # Fallback to SMTP (Already implemented)
+    print(f"[EMAIL DEBUG] Falling back to SMTP connection to {settings.SMTP_HOST}...")
     if not settings.SMTP_USER or not settings.SMTP_PASSWORD:
         print(f"[EMAIL SKIPPED] Missing credentials: USER='{settings.SMTP_USER}', PASS_LENGTH={len(settings.SMTP_PASSWORD)}")
         return

@@ -20,28 +20,25 @@ export const useAuthStore = defineStore("auth", {
   actions: {
 
     async login(email: string, password: string) {
-
       this.loading = true
-
       try {
-
-        await loginRequest(email, password)
-
+        const response = await loginRequest(email, password)
+        // Manual login also sets cookies on the backend, 
+        // but it doesn't return tokens in JSON unless we changed the backend.
+        // If the backend doesn't return them, Axios withCredentials will handle it.
+        // However, for the "Handshake" we should also have them if possible.
         this.user = await getCurrentUser()
-
       } finally {
-
         this.loading = false
-
       }
-
     },
 
     async logout() {
-
       await logoutRequest()
       this.user = null
-
+      // Clear localStorage tokens
+      localStorage.removeItem("access_token")
+      localStorage.removeItem("refresh_token")
     },
 
     async fetchUser() {

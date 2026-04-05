@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     SMTP_USER: str = ""
     SMTP_PASSWORD: str = ""
     SMTP_FROM_EMAIL: str = ""
+    
+    # HTTP Email Bypassing (DigitalOcean Proof)
+    RESEND_API_KEY: str = ""
 
     GOOGLE_CLIENT_ID: str = ""
     GOOGLE_CLIENT_SECRET: str = ""

@@ -11,8 +11,13 @@ def get_current_user(
     request: Request,
     db: Session = Depends(get_db)
 ):
-
+    # Support both Cookies (local) and Headers (cross-domain production)
     token = request.cookies.get("access_token")
+    
+    # Check Authorization header if cookie is missing
+    auth_header = request.headers.get("Authorization")
+    if not token and auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(" ")[1]
 
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")

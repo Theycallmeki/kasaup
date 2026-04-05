@@ -49,6 +49,7 @@ jobs:
             AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
             AWS_REGION=${{ secrets.AWS_REGION }}
             AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}
+            RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
             EOF
             
             # 5. Clean restart services
