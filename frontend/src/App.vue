@@ -9,6 +9,23 @@ const auth = useAuthStore()
 const messageStore = useMessageStore()
 
 onMounted(async () => {
+  // Check for tokens in URL (Auth Handshake for Universal Login)
+  const urlParams = new URLSearchParams(window.location.search)
+  const accessToken = urlParams.get("access_token")
+  const refreshToken = urlParams.get("refresh_token")
+
+  if (accessToken && refreshToken) {
+    // Save tokens as cookies on the frontend domain
+    // We set Secure and SameSite=Lax for production compatibility
+    const secure = window.location.protocol === "https:" ? "Secure;" : ""
+    document.cookie = `access_token=${accessToken}; path=/; max-age=900; ${secure} SameSite=Lax`
+    document.cookie = `refresh_token=${refreshToken}; path=/; max-age=604800; ${secure} SameSite=Lax`
+
+    // Clean the URL
+    const cleanUrl = window.location.pathname + window.location.hash
+    window.history.replaceState({}, document.title, cleanUrl)
+  }
+
   await auth.fetchUser()
   // Once the user is authenticated, connect WS and fetch conversations globally
   // so the sidebar unread badge works in real-time from any page

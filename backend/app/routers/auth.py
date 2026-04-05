@@ -74,7 +74,7 @@ async def google_callback(code: str, state: str = "customer", db: Session = Depe
     refresh_token = create_refresh_token({"user_id": user.id})
 
     # Redirect to frontend
-    response = RedirectResponse(url=f"{settings.FRONTEND_URL}{target_path}")
+    response = RedirectResponse(url=f"{settings.FRONTEND_URL}{target_path}?access_token={access_token}&refresh_token={refresh_token}")
 
     response.set_cookie(
         key="access_token",
@@ -147,7 +147,7 @@ async def github_callback(code: str, state: str = "customer", db: Session = Depe
     refresh_token = create_refresh_token({"user_id": user.id})
 
     # Redirect to frontend
-    response = RedirectResponse(url=f"{settings.FRONTEND_URL}{target_path}")
+    response = RedirectResponse(url=f"{settings.FRONTEND_URL}{target_path}?access_token={access_token}&refresh_token={refresh_token}")
 
     response.set_cookie(
         key="access_token",
