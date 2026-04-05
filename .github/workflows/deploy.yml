@@ -27,12 +27,20 @@ jobs:
             # 3. Export secrets
             export DATABASE_URL="${{ secrets.DATABASE_URL }}"
             
-            # 4. Ensure SMTP credentials are in backend .env
+            # 4. Ensure SMTP and Google credentials are in backend .env
             if ! grep -q "SMTP_USER" /app/backend/.env 2>/dev/null; then
                 printf "\nSMTP_USER=\"%s\"\nSMTP_PASSWORD=\"%s\"\nSMTP_FROM_EMAIL=\"%s\"\n" \
                 "${{ secrets.SMTP_USER }}" \
                 "${{ secrets.SMTP_PASSWORD }}" \
                 "${{ secrets.SMTP_FROM_EMAIL }}" >> /app/backend/.env
+            fi
+
+            if ! grep -q "GOOGLE_CLIENT_ID" /app/backend/.env 2>/dev/null; then
+                printf "\nGOOGLE_CLIENT_ID=\"%s\"\nGOOGLE_CLIENT_SECRET=\"%s\"\nGOOGLE_REDIRECT_URI=\"%s\"\nFRONTEND_URL=\"%s\"\n" \
+                "${{ secrets.GOOGLE_CLIENT_ID }}" \
+                "${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+                "${{ secrets.GOOGLE_REDIRECT_URI }}" \
+                "https://kasaup.vercel.app" >> /app/backend/.env
             fi
             
             # 5. Clean restart services

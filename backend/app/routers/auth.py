@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Response, Request, status
+from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 
@@ -14,8 +15,65 @@ from app.core.security import (
     ALGORITHM
 )
 from app.core.dependencies import get_current_user
+from app.services.google_oauth import get_google_auth_url, get_google_user
+from app.core.config import settings
 
 router = APIRouter()
+
+
+@router.get("/google")
+def google_login():
+    return RedirectResponse(get_google_auth_url())
+
+
+@router.get("/google/callback")
+async def google_callback(code: str, db: Session = Depends(get_db)):
+    try:
+        user_data = await get_google_user(code)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Google Auth failed: {str(e)}")
+
+    email = user_data["email"]
+    full_name = user_data.get("name")
+    profile_image = user_data.get("picture")
+
+    user = db.query(User).filter(User.email == email).first()
+
+    if not user:
+        user = User(
+            email=email,
+            full_name=full_name,
+            profile_image=profile_image,
+            role="customer",
+            is_approved=True
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+    access_token = create_access_token({"user_id": user.id})
+    refresh_token = create_refresh_token({"user_id": user.id})
+
+    # Redirect to frontend
+    response = RedirectResponse(url=f"{settings.FRONTEND_URL}/")
+
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        samesite="lax",
+        secure=False
+    )
+
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        samesite="lax",
+        secure=False
+    )
+
+    return response
 
 
 @router.post("/login/")
