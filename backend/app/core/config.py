@@ -7,7 +7,7 @@ load_dotenv()
 
 class Settings(BaseSettings):
     DATABASE_URL: str
-    SECRET_KEY: str = "705273b57368097b876a4a1599814a0e98059045ef88998083bf2f389943fd89"
+    SECRET_KEY: str = ""
     ALGORITHM: str = "HS256"
     ALLOWED_ORIGINS: str = ""
 
