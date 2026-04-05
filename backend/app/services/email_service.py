@@ -5,9 +5,11 @@ from app.core.config import settings
 
 
 def _send_email(to_email: str, subject: str, html_body: str):
-    """Send an email via SMTP (Gmail compatible)."""
+    """Send an email via SMTP (Gmail compatible) with verbose logging."""
+    print(f"[EMAIL DEBUG] Triggered send to: {to_email} | Subject: {subject}")
+    
     if not settings.SMTP_USER or not settings.SMTP_PASSWORD:
-        print(f"[EMAIL SKIPPED] No SMTP credentials configured. Would send to {to_email}: {subject}")
+        print(f"[EMAIL SKIPPED] Missing credentials: USER='{settings.SMTP_USER}', PASS_LENGTH={len(settings.SMTP_PASSWORD)}")
         return
 
     msg = MIMEMultipart("alternative")
@@ -17,13 +19,20 @@ def _send_email(to_email: str, subject: str, html_body: str):
     msg.attach(MIMEText(html_body, "html"))
 
     try:
-        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:
+        print(f"[EMAIL DEBUG] Connecting to {settings.SMTP_HOST}:{settings.SMTP_PORT} (timeout=20s)...")
+        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT, timeout=20) as server:
+            print("[EMAIL DEBUG] Connection successful. Starting TLS...")
             server.starttls()
+            print(f"[EMAIL DEBUG] Logging in as {settings.SMTP_USER}...")
             server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
+            print("[EMAIL DEBUG] Login successful. Sending mail...")
             server.sendmail(msg["From"], to_email, msg.as_string())
-        print(f"[EMAIL SENT] {subject} → {to_email}")
+        print(f"[EMAIL SENT] SUCCESS: {subject} → {to_email}")
+    except smtplib.SMTPAuthenticationError as e:
+        print(f"[EMAIL ERROR] AUTHENTICATION FAILED: {e}")
+        print("[EMAIL TIP] Most likely you need a 'Gmail App Password', not your normal password.")
     except Exception as e:
-        print(f"[EMAIL ERROR] Failed to send to {to_email}: {e}")
+        print(f"[EMAIL ERROR] SYSTEM ERROR of type {type(e).__name__}: {e}")
 
 
 def send_approval_email(to_email: str, full_name: str | None):
