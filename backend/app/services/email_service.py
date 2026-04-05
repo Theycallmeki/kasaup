@@ -1,7 +1,9 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import requests  # We use requests for the HTTP fallback
+import json
+import urllib.request
+import urllib.error
 from app.core.config import settings
 
 
@@ -12,26 +14,29 @@ def _send_email(to_email: str, subject: str, html_body: str):
     # NEW: HTTP API Bypassing (DigitalOcean Proof)
     if settings.RESEND_API_KEY:
         print("[EMAIL DEBUG] Using HTTP API Bypassing (Resend)...")
+        url = "https://api.resend.com/emails"
+        data = {
+            "from": settings.SMTP_FROM_EMAIL or "onboarding@resend.dev",
+            "to": to_email,
+            "subject": subject,
+            "html": html_body
+        }
+        headers = {
+            "Authorization": f"Bearer {settings.RESEND_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        
         try:
-            r = requests.post(
-                "https://api.resend.com/emails",
-                headers={
-                    "Authorization": f"Bearer {settings.RESEND_API_KEY}",
-                    "Content-Type": "application/json",
-                },
-                json={
-                    "from": settings.SMTP_FROM_EMAIL or "onboarding@resend.dev",
-                    "to": to_email,
-                    "subject": subject,
-                    "html": html_body,
-                },
-                timeout=10
-            )
-            if r.status_code == 201 or r.status_code == 200:
-                print(f"[EMAIL SENT] SUCCESS via HTTP API: {to_email}")
-                return
-            else:
-                print(f"[EMAIL ERROR] HTTP API Failed ({r.status_code}): {r.text}")
+            req = urllib.request.Request(url, data=json.dumps(data).encode(), headers=headers, method="POST")
+            with urllib.request.urlopen(req, timeout=10) as response:
+                status = response.getcode()
+                if status in [200, 201]:
+                    print(f"[EMAIL SENT] SUCCESS via HTTP API: {to_email}")
+                    return
+                else:
+                    print(f"[EMAIL ERROR] HTTP API Failed (Status {status})")
+        except urllib.error.HTTPError as e:
+            print(f"[EMAIL ERROR] HTTP API Error ({e.code}): {e.read().decode()}")
         except Exception as e:
             print(f"[EMAIL ERROR] HTTP API Exception: {e}")
 
