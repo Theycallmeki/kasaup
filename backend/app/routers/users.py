@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, BackgroundTasks
 from sqlalchemy.orm import Session
 
 from app.db import get_db
@@ -128,7 +128,7 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/{user_id}/approve/", response_model=UserResponse, dependencies=[Depends(require_admin)])
-def approve_user(user_id: int, db: Session = Depends(get_db)):
+def approve_user(user_id: int, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -137,17 +137,14 @@ def approve_user(user_id: int, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user)
 
-    # Send approval email
-    try:
-        send_approval_email(user.email, user.full_name)
-    except Exception as e:
-        print(f"Failed to send approval email: {e}")
+    # Send approval email in background
+    background_tasks.add_task(send_approval_email, user.email, user.full_name)
 
     return user
 
 
 @router.put("/{user_id}/reject/", dependencies=[Depends(require_admin)])
-def reject_user(user_id: int, db: Session = Depends(get_db)):
+def reject_user(user_id: int, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -159,10 +156,7 @@ def reject_user(user_id: int, db: Session = Depends(get_db)):
     db.delete(user)
     db.commit()
 
-    # Send rejection email
-    try:
-        send_rejection_email(email, name)
-    except Exception as e:
-        print(f"Failed to send rejection email: {e}")
+    # Send rejection email in background
+    background_tasks.add_task(send_rejection_email, email, name)
 
     return {"message": "User rejected and deleted"}
