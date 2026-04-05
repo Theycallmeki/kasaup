@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const baseURL = import.meta.env.PROD ? "/api" : (import.meta.env.VITE_API_URL || "/api")
+const baseURL = import.meta.env.VITE_API_URL || "/api"
 
 const api = axios.create({
   baseURL,
@@ -9,7 +9,7 @@ const api = axios.create({
 
 // Auto-attach Authorization header from localStorage (Universal Auth)
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("access_token")
+  const token = localStorage.getItem("token")
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
