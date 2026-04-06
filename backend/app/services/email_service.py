@@ -17,8 +17,8 @@ def _send_email(to_email: str, subject: str, html_body: str):
         print("[EMAIL DEBUG] Using HTTP API Bypassing (Resend)...")
         url = "https://api.resend.com/emails"
         data = {
-            "from": settings.SMTP_FROM_EMAIL or "onboarding@resend.dev",
-            "to": to_email,
+            "from": "onboarding@resend.dev",
+            "to": [to_email],
             "subject": subject,
             "html": html_body
         }
@@ -39,7 +39,8 @@ def _send_email(to_email: str, subject: str, html_body: str):
         except urllib.error.HTTPError as e:
             print(f"[EMAIL ERROR] HTTP API Error ({e.code}): {e.read().decode()}")
         except Exception as e:
-            print(f"[EMAIL ERROR] HTTP API Exception: {e}")
+            print(f"[RESEND ERROR] Failed to send via HTTP API: {str(e)}")
+            print("[EMAIL DEBUG] Falling back to SMTP...")
 
     # Fallback to SMTP (Already implemented)
     print(f"[EMAIL DEBUG] Falling back to SMTP connection to {settings.SMTP_HOST}...")
