@@ -9,15 +9,19 @@ from app.core.config import settings
 
 def _send_email(to_email: str, subject: str, html_body: str):
     """Send an email via HTTP API (Universal Bypassing) or SMTP."""
-    print(f"[CRITICAL DEBUG] EMAIL FUNCTION START to: {to_email}")
     print(f"[EMAIL DEBUG] Triggered send to: {to_email}")
     
-    # NEW: HTTP API Bypassing (DigitalOcean Proof)
+    # 1. NEW: HTTP API Bypassing (DigitalOcean Proof)
     if settings.RESEND_API_KEY:
         print("[EMAIL DEBUG] Using HTTP API Bypassing (Resend)...")
         url = "https://api.resend.com/emails"
+        
+        # IMPORTANT: If they have a custom From address, use it. Otherwise use onboarding.
+        # Note: onboarding@resend.dev ONLY works for sending to the account owner.
+        from_email = settings.SMTP_FROM_EMAIL or "onboarding@resend.dev"
+        
         data = {
-            "from": "onboarding@resend.dev",
+            "from": from_email,
             "to": [to_email],
             "subject": subject,
             "html": html_body
@@ -28,6 +32,7 @@ def _send_email(to_email: str, subject: str, html_body: str):
         }
         
         try:
+            print(f"[EMAIL DEBUG] Resend API Call: From='{from_email}' To='{to_email}'")
             req = urllib.request.Request(url, data=json.dumps(data).encode(), headers=headers, method="POST")
             with urllib.request.urlopen(req, timeout=10) as response:
                 status = response.getcode()
@@ -37,10 +42,14 @@ def _send_email(to_email: str, subject: str, html_body: str):
                 else:
                     print(f"[EMAIL ERROR] HTTP API Failed (Status {status})")
         except urllib.error.HTTPError as e:
-            print(f"[EMAIL ERROR] HTTP API Error ({e.code}): {e.read().decode()}")
+            error_body = e.read().decode()
+            print(f"[EMAIL ERROR] HTTP API Error ({e.code}): {error_body}")
+            if e.code == 403:
+                print("[EMAIL TIP] Resend 403 usually means you must verify your domain or you are trying to send to someone else using 'onboarding@resend.dev'.")
         except Exception as e:
-            print(f"[RESEND ERROR] Failed to send via HTTP API: {str(e)}")
+            print(f"[RESEND ERROR] System error: {str(e)}")
             print("[EMAIL DEBUG] Falling back to SMTP...")
+
 
     # Fallback to SMTP (Already implemented)
     print(f"[EMAIL DEBUG] Falling back to SMTP connection to {settings.SMTP_HOST}...")
