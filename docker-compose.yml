@@ -14,7 +14,7 @@ services:
     networks:
       - kasaup-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -29,7 +29,6 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:12345678@db:5432/kasaup2}
       ALLOWED_ORIGINS: "http://167.172.66.181:3000,http://localhost:5173,https://kasaup.vercel.app,https://167.172.66.181.nip.io"
     expose:
       - "8000"
