@@ -24,6 +24,8 @@ class Settings(BaseSettings):
     
     # HTTP Email Bypassing (DigitalOcean Proof)
     RESEND_API_KEY: str = ""
+    VERCEL_EMAIL_URL: str = ""
+    EMAIL_API_KEY: str = ""
 
     GOOGLE_CLIENT_ID: str = ""
     GOOGLE_CLIENT_SECRET: str = ""

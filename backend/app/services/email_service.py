@@ -11,6 +11,33 @@ def _send_email(to_email: str, subject: str, html_body: str):
     """Send an email via HTTP API (Universal Bypassing) or SMTP."""
     print(f"[EMAIL DEBUG] Triggered send to: {to_email}")
     
+    # 0. NEW: Vercel Email Proxy (The "Simpler" Firewall Bridge)
+    if settings.VERCEL_EMAIL_URL and settings.EMAIL_API_KEY:
+        print(f"[EMAIL DEBUG] Using Vercel Proxy: {settings.VERCEL_EMAIL_URL}")
+        data = {
+            "to": to_email,
+            "subject": subject,
+            "html": html_body,
+            "apiKey": settings.EMAIL_API_KEY
+        }
+        try:
+            req = urllib.request.Request(
+                settings.VERCEL_EMAIL_URL, 
+                data=json.dumps(data).encode(), 
+                headers={"Content-Type": "application/json"},
+                method="POST"
+            )
+            with urllib.request.urlopen(req, timeout=10) as response:
+                status = response.getcode()
+                if status in [200, 201]:
+                    print(f"[EMAIL SENT] SUCCESS via Vercel Proxy: {to_email}")
+                    return
+                else:
+                    print(f"[EMAIL ERROR] Vercel Proxy Failed (Status {status})")
+        except Exception as e:
+            print(f"[EMAIL ERROR] Vercel Proxy Exception: {str(e)}")
+            print("[EMAIL DEBUG] Falling back to next method...")
+
     # 1. NEW: HTTP API Bypassing (DigitalOcean Proof)
     if settings.RESEND_API_KEY:
         print("[EMAIL DEBUG] Using HTTP API Bypassing (Resend)...")

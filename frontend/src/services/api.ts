@@ -7,7 +7,6 @@ const api = axios.create({
   withCredentials: true
 })
 
-// Auto-attach Authorization header from localStorage (Universal Auth)
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token")
   if (token) {
