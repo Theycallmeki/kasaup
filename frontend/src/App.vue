@@ -5,6 +5,7 @@ import { useAuthStore } from "./stores/authStore"
 import { useMessageStore } from "./stores/messageStore"
 
 import Sidebar from "./components/Sidebar.vue"
+import GlobalLoader from "./components/GlobalLoader.vue"
 import Toast from 'primevue/toast'
 import ConfirmDialog from 'primevue/confirmdialog'
 
@@ -46,6 +47,7 @@ onMounted(async () => {
 <template>
   <Toast />
   <ConfirmDialog />
+  <GlobalLoader />
   <div class="layout">
     <Sidebar v-if="showSidebar" />
 
@@ -59,7 +61,9 @@ onMounted(async () => {
   </div>
 </template>
 
-<style scoped>
+<style>
+@import "./styles/shared/notifications.css";
+
 .layout{
   display:flex;
   height:100vh;
