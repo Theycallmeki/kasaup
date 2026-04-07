@@ -64,34 +64,22 @@ onMounted(async () => {
 <style>
 @import "./styles/shared/notifications.css";
 
-.layout{
-  display:flex;
-  height:100vh;
-  width:100vw;
-  overflow:hidden;
+.layout {
+  display: flex;
+  min-height: 100vh; /* Changed from height: 100vh */
+  width: 100vw;
+  /* Allow scrolling to handle long forms and profile creation */
+  overflow-y: auto;
 }
 
-.content{
-  flex:1;
-  height:100%;
-  margin:0;
-  padding:0;
-  background:#0e0c1a;
-  overflow-y:auto;
-}
-
-.content::-webkit-scrollbar {
-  width: 8px;
-}
-.content::-webkit-scrollbar-track {
-  background: transparent;
-}
-.content::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-}
-.content::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+.content {
+  flex: 1;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background: #0e0c1a;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 768px){

@@ -95,12 +95,21 @@ onMounted(() => {
     }
   })
 
+  // Resize handling
+  const resizeObserver = new ResizeObserver(() => {
+    map?.invalidateSize()
+  })
+  
+  const mapEl = document.getElementById("picker-map")
+  if (mapEl) {
+    resizeObserver.observe(mapEl)
+  }
+
   window.setTimeout(() => {
     map?.invalidateSize()
   }, 100)
   window.setTimeout(() => {
     map?.invalidateSize()
-    
     useMyLocation()
   }, 400)
 })
