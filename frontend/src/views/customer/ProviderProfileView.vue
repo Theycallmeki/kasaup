@@ -20,7 +20,6 @@ const id = Number(route.params.id)
 
 const messageProvider = async () => {
     const provider = providerStore.providerProfile.provider;
-    // Redirect to messages with provider_id and receiver_id to auto-start chat
     router.push({ 
         path: '/messages', 
         query: { 

@@ -19,7 +19,6 @@ api.interceptors.response.use(
   (response: any) => response,
   (error: any) => {
     if (error.response?.status === 401) {
-      // Handle unauthorized if needed
     }
     return Promise.reject(error)
   }

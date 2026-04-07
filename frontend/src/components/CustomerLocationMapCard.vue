@@ -253,7 +253,6 @@ watch(() => [props.show, props.lat, props.lng], ([show]) => {
   margin-top: 4px;
 }
 
-/* Transition */
 .slide-in-enter-active,
 .slide-in-leave-active {
   transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);

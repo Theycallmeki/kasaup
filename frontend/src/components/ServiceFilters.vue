@@ -26,7 +26,6 @@ const activeCatName = computed(() => {
 
 const handleSelect = (val: number | "all") => {
   emit('update:activeCat', val)
-  // Auto-collapse on mobile after selection
   if (window.innerWidth <= 800) {
     isExpanded.value = false
   }

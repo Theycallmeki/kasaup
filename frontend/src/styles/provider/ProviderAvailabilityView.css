@@ -41,7 +41,7 @@
   color: #fff;
 }
 
-/* Glass Card Global Styles */
+
 .card {
   background: rgba(255, 255, 255, 0.035);
   border: 0.5px solid rgba(255, 255, 255, 0.08);
@@ -55,7 +55,7 @@
   margin: 24px 0;
 }
 
-/* Schedule Column */
+
 .schedule-card {
   flex: 1;
   max-width: 400px;
@@ -133,7 +133,7 @@
   transform: scale(0.98);
 }
 
-/* Slots List */
+
 .slots-list {
   display: flex;
   flex-direction: column;
@@ -211,10 +211,15 @@
   color: #fff;
 }
 
-.edit-btn:hover { color: #34d399; }
-.delete-btn:hover { color: #ef4444; }
+.edit-btn:hover {
+  color: #34d399;
+}
 
-/* Calendar Column */
+.delete-btn:hover {
+  color: #ef4444;
+}
+
+
 .calendar-panel {
   flex: 2;
   display: flex;
@@ -284,7 +289,7 @@
   z-index: 2;
 }
 
-/* Selected Day Panel */
+
 .selected-date-panel {
   margin-top: 24px;
   background: rgba(124, 58, 237, 0.08);
@@ -324,12 +329,14 @@
   color: #e5e7eb;
 }
 
-/* Responsive */
+
 @media (max-width: 900px) {
   .layout-grid {
     flex-direction: column;
   }
-  .schedule-card, .calendar-panel {
+
+  .schedule-card,
+  .calendar-panel {
     max-width: 100%;
     width: 100%;
   }

@@ -25,7 +25,6 @@ onMounted(async () => {
     messageStore.connectWS(authStore.user.id);
   }
 
-  // Handle auto-selecting or starting a chat with a specific provider
   const providerId = route.query.provider_id ? Number(route.query.provider_id) : null;
   const receiverId = route.query.receiver_id ? Number(route.query.receiver_id) : null;
   const shopName = route.query.shop_name as string;
@@ -36,19 +35,17 @@ onMounted(async () => {
     if (existing) {
       selectConversation(existing.id);
     } else if (receiverId) {
-      // New chat state for customer -> provider
       messageStore.activeConversationId = -1;
       messageStore.activeMessages = [];
       pendingReceiverId.value = receiverId;
       pendingShopName.value = shopName || `Provider #${providerId}`;
     }
   } else if (receiverId) {
-    // Provider -> Customer flow
     const existing = messageStore.conversations.find(c => c.user_id === receiverId);
     if (existing) {
       selectConversation(existing.id);
     } else {
-      // New chat state for provider -> customer
+  
       messageStore.activeConversationId = -1;
       messageStore.activeMessages = [];
       pendingReceiverId.value = receiverId;
@@ -75,8 +72,7 @@ const sendMessage = async () => {
   } else if (messageStore.activeConversationId) {
     const conv = messageStore.conversations.find(c => c.id === messageStore.activeConversationId);
     if (conv) {
-      // If current user is the customer (user_id), send to provider owner.
-      // If current user is the provider owner, send to the customer (user_id).
+      
       targetReceiverId = authStore.user.id === conv.user_id 
         ? conv.provider_owner_id 
         : conv.user_id;
@@ -96,7 +92,6 @@ const sendMessage = async () => {
     const msg = await messageStore.send(targetReceiverId, newMessage.value);
     newMessage.value = '';
     
-    // If it was a new conversation, update the active state
     if (messageStore.activeConversationId === -1) {
        messageStore.activeConversationId = msg.conversation_id;
        pendingReceiverId.value = null;
@@ -140,8 +135,7 @@ watch(() => messageStore.activeMessages.length, () => {
 
 const formatTime = (iso: string) => {
   if (!iso) return '';
-  // The backend now sends PHT (Philippines Time) directly.
-  // We just need to ensure the format is valid for the Date constructor.
+  
   const dateStr = iso.includes('T') ? iso : iso.replace(' ', 'T');
   return new Date(dateStr).toLocaleTimeString([], { 
     hour: '2-digit', 
@@ -151,8 +145,7 @@ const formatTime = (iso: string) => {
 };
 
 const getDisplayName = (conv: any) => {
-    // If I am the user (customer), show the shop name.
-    // If I am the provider owner, show the user (customer) name.
+  
     if (!authStore.user) return '';
     if (authStore.user.id === conv.user_id) {
         return conv.shop_name;

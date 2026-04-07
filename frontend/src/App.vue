@@ -12,36 +12,30 @@ const auth = useAuthStore()
 const messageStore = useMessageStore()
 const route = useRoute()
 
-// Routes where the sidebar should be hidden
 const hideSidebarRoutes = ["/provider/create-profile", "/auth/login", "/auth/register"]
 const showSidebar = computed(() => {
   return auth.user && !hideSidebarRoutes.includes(route.path)
 })
 
 onMounted(async () => {
-  // Check for tokens in URL (Auth Handshake for Universal Login)
   const urlParams = new URLSearchParams(window.location.search)
   const accessToken = urlParams.get("access_token")
   const refreshToken = urlParams.get("refresh_token")
 
   if (accessToken && refreshToken) {
-    // Save tokens as cookies AND to localStorage for cross-domain stability
     const secure = window.location.protocol === "https:" ? "Secure;" : ""
     document.cookie = `access_token=${accessToken}; path=/; max-age=900; ${secure} SameSite=Lax`
     document.cookie = `refresh_token=${refreshToken}; path=/; max-age=604800; ${secure} SameSite=Lax`
     
-    // THE BULLETPROOF FIX: Save to localStorage for Authorization headers
     localStorage.setItem("access_token", accessToken)
     localStorage.setItem("refresh_token", refreshToken)
 
-    // Clean the URL
     const cleanUrl = window.location.pathname + window.location.hash
     window.history.replaceState({}, document.title, cleanUrl)
   }
 
   await auth.fetchUser()
-  // Once the user is authenticated, connect WS and fetch conversations globally
-  // so the sidebar unread badge works in real-time from any page
+
   if (auth.user) {
     await messageStore.fetchConversations()
     messageStore.connectWS(auth.user.id)
@@ -97,7 +91,6 @@ onMounted(async () => {
 }
 
 @media (max-width: 768px){
-  /* sidebar is hidden via Sidebar.vue, layout stays row */
   .layout{
     flex-direction: row;
   }
@@ -105,7 +98,6 @@ onMounted(async () => {
   .content{
     height: 100%;
     padding: 0;
-    /* prevent content from hiding under the fixed bottom nav */
     padding-bottom: 64px;
   }
 }

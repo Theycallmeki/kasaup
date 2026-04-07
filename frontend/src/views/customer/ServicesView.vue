@@ -124,7 +124,7 @@ const providerMap = computed(() => {
 })
 
 const haversine = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-  const R = 6371 // km
+  const R = 6371 
   const dLat = (lat2 - lat1) * Math.PI / 180
   const dLon = (lon2 - lon1) * Math.PI / 180
   const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
@@ -137,12 +137,10 @@ const haversine = (lat1: number, lon1: number, lat2: number, lon2: number) => {
 const filtered = computed(() => {
   let list = svcStore.services
 
-  // Category
   if (activeCat.value !== "all") {
     list = list.filter(s => s.category_id === activeCat.value)
   }
 
-  // Search Query
   if (query.value.trim()) {
     const q = query.value.toLowerCase()
     list = list.filter(s =>
@@ -152,7 +150,6 @@ const filtered = computed(() => {
     )
   }
 
-  // Price
   if (minPrice.value !== null) {
     list = list.filter(s => s.price >= (minPrice.value || 0))
   }
@@ -160,7 +157,6 @@ const filtered = computed(() => {
     list = list.filter(s => s.price <= (maxPrice.value || Infinity))
   }
 
-  // Rating
   if (minRating.value > 0) {
     list = list.filter(s => {
       const p = providerMap.value[s.provider_id]
@@ -168,7 +164,6 @@ const filtered = computed(() => {
     })
   }
 
-  // Distance
   if (useLocation.value && maxDistance.value !== null && currentLat.value && currentLng.value) {
     list = list.filter(s => {
       const p = providerMap.value[s.provider_id]

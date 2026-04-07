@@ -17,7 +17,7 @@ onMounted(async () => {
       router.push("/provider/dashboard")
     }
   } catch (err) {
-    // No existing provider, stay on this page
+  
   }
 })
 
@@ -79,7 +79,6 @@ const create = async () => {
       await uploadProviderImage(provider.id, profileImageFile.value)
     }
 
-    // Refresh the user so the router knows we have a profile!
     await auth.fetchUser()
 
     notifySuccess("Success", "Provider profile created successfully!")

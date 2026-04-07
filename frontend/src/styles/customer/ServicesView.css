@@ -72,7 +72,7 @@
   color: #c4b5fd;
 }
 
-/* Layout - swapped to normal because we moved the sidebar to the right in the DOM */
+
 .marketplace-layout {
   display: block;
 }
@@ -178,7 +178,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 0 20px;
-  height: 56px; /* Match input height */
+  height: 56px;
   color: #fff;
   font-family: 'DM Sans', sans-serif;
   font-size: 1.05rem;
@@ -193,7 +193,8 @@
   color: #a78bfa;
 }
 
-.filter-btn:hover, .filter-btn.active {
+.filter-btn:hover,
+.filter-btn.active {
   background: rgba(167, 139, 250, 0.1);
   border-color: rgba(167, 139, 250, 0.3);
 }
@@ -262,8 +263,15 @@
 }
 
 @keyframes pulse-switch {
-  from { opacity: 0.4; transform: scale(0.8); }
-  to { opacity: 1; transform: scale(1.1); }
+  from {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.1);
+  }
 }
 
 .switch-ball {
@@ -334,7 +342,7 @@
   margin-left: 2px;
 }
 
-/* Hide arrows from number input */
+
 .cd-input::-webkit-outer-spin-button,
 .cd-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -518,7 +526,7 @@
   background: rgba(99, 60, 220, .4);
 }
 
-/* Grid & Cards - Shopee Style */
+
 .grid {
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 24px;
@@ -531,7 +539,7 @@
   border-radius: 18px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform .25s cubic-bezier(.16,1,.3,1), border-color .25s, box-shadow .25s;
+  transition: transform .25s cubic-bezier(.16, 1, .3, 1), border-color .25s, box-shadow .25s;
   display: flex;
   flex-direction: column;
 }
@@ -686,7 +694,7 @@
   box-shadow: 0 6px 20px rgba(130, 90, 255, 0.4);
 }
 
-/* Modal */
+
 .ov {
   position: fixed;
   inset: 0;
@@ -711,7 +719,7 @@
   background: #1a1730;
   border: 0.5px solid rgba(130, 90, 255, .25);
   border-radius: 20px;
-  padding: 32px;
+  padding: 44px 32px 32px 32px;
   max-width: 440px;
   width: 100%;
   position: relative;
@@ -727,19 +735,22 @@
 
 .mc {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  background: rgba(255, 255, 255, .07);
-  border: 0.5px solid rgba(255, 255, 255, .1);
-  border-radius: 8px;
-  width: 30px;
-  height: 30px;
-  color: rgba(255, 255, 255, .5);
+  top: 10px;
+  right: 10px;
+  background: rgba(30, 27, 46, 0.95);
+  border: 1px solid rgba(167, 139, 250, 0.4);
+  border-radius: 12px;
+  width: 36px;
+  height: 36px;
+  color: #fff;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color .15s;
+  transition: all .2s;
+  z-index: 9999;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
 
 .mc:hover {
@@ -922,7 +933,7 @@
   box-shadow: 0 6px 24px rgba(99, 60, 220, .45);
 }
 
-/* Image Viewer Lightbox */
+
 .img-viewer-ov {
   position: fixed;
   inset: 0;
@@ -935,14 +946,23 @@
   cursor: zoom-out;
   animation: fadeIn 0.15s ease-out;
 }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
 
 .img-viewer-ov img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
   border-radius: 8px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
 
 .close-viewer {
@@ -963,6 +983,7 @@
   transition: background 0.2s;
   backdrop-filter: blur(4px);
 }
+
 .close-viewer:hover {
   background: rgba(255, 255, 255, 0.25);
 }
@@ -992,7 +1013,7 @@
   }
 
   .hd-r {
-    display: none; /* Remove Total and Providers on mobile */
+    display: none;
   }
 
   .grid {
@@ -1020,9 +1041,9 @@
   .filter-btn {
     padding: 0 14px;
   }
-  
+
   .filter-btn span {
-    display: none; /* Icon only */
+    display: none;
   }
 
   .mst {

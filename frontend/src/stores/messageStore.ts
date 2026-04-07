@@ -36,13 +36,11 @@ export const useMessageStore = defineStore("messages", {
 
     async send(receiverId: number, content: string) {
       const msg = await sendMessage(receiverId, content)
-      
-      // If this was a new conversation (pending ID -1), sync the ID now
+
       if (this.activeConversationId === -1) {
-          this.activeConversationId = msg.conversation_id
+        this.activeConversationId = msg.conversation_id
       }
 
-      // Check if we already have this conversation in the list
       const index = this.conversations.findIndex(c => c.id === msg.conversation_id)
       if (index !== -1) {
         this.conversations[index].last_message = content
@@ -50,15 +48,14 @@ export const useMessageStore = defineStore("messages", {
       } else {
         await this.fetchConversations()
       }
-      
-      // Push the message if it belongs to the active conversation
+
       if (this.activeConversationId === msg.conversation_id) {
-          const exists = this.activeMessages.some(m => m.id === msg.id)
-          if (!exists) {
-              this.activeMessages.push(msg)
-          }
+        const exists = this.activeMessages.some(m => m.id === msg.id)
+        if (!exists) {
+          this.activeMessages.push(msg)
+        }
       }
-      
+
       return msg
     },
 
@@ -92,11 +89,10 @@ export const useMessageStore = defineStore("messages", {
       if (this.socket) return
 
       const baseUrl = import.meta.env.VITE_API_URL || `${window.location.protocol}//${window.location.host}`
-      
-      // Get the access_token from cookies for WebSocket auth
+
       const token = document.cookie.split('; ').find(row => row.startsWith('access_token='))?.split('=')[1]
       const wsUrl = `${baseUrl.replace("http", "ws")}/messages/ws${token ? `?token=${token}` : ''}`
-      
+
       this.socket = new WebSocket(wsUrl)
 
       this.socket.onmessage = (event) => {
@@ -108,36 +104,30 @@ export const useMessageStore = defineStore("messages", {
 
       this.socket.onclose = () => {
         this.socket = null
-        // Optional: auto-reconnect
         setTimeout(() => this.connectWS(userId), 5000)
       }
     },
 
     handleIncomingMessage(message: any) {
-      // If we are looking at this conversation, push it (if not already there)
       if (this.activeConversationId === message.conversation_id) {
         const exists = this.activeMessages.some(m => m.id === message.id)
         if (!exists) {
-            this.activeMessages.push(message)
+          this.activeMessages.push(message)
         }
       }
 
-      // Update the conversation list preview
       const index = this.conversations.findIndex(c => c.id === message.conversation_id)
       if (index !== -1) {
         this.conversations[index].last_message = message.content
         this.conversations[index].updated_at = message.created_at
-        // Move to top
         const conv = this.conversations.splice(index, 1)[0]
-        
-        // Only increment unread if not the active conversation
+
         if (this.activeConversationId !== message.conversation_id) {
-           conv.unread_count = (conv.unread_count || 0) + 1
+          conv.unread_count = (conv.unread_count || 0) + 1
         } else {
-           // If it is the active one, mark as read on server immediately
-           this.markAsRead(message.conversation_id)
+          this.markAsRead(message.conversation_id)
         }
-        
+
         this.conversations.unshift(conv)
       } else {
         this.fetchConversations()

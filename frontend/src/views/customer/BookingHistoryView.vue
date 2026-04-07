@@ -14,7 +14,6 @@ const openRatingModal = (id: number) => {
 }
 
 const onRatingSuccess = () => {
-  // Optionally refresh appointments to reflect rating status
   appointmentStore.fetchAppointments()
 }
 

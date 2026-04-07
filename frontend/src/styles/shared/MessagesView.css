@@ -51,20 +51,23 @@
   flex: 1;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: #a78bfa rgba(255,255,255,0.05);
+  scrollbar-color: #a78bfa rgba(255, 255, 255, 0.05);
   padding-right: 2px;
 }
 
 .conversation-list::-webkit-scrollbar {
   width: 5px;
 }
+
 .conversation-list::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .conversation-list::-webkit-scrollbar-thumb {
   background: rgba(167, 139, 250, 0.15);
   border-radius: 100px;
 }
+
 .conversation-list::-webkit-scrollbar-thumb:hover {
   background: rgba(167, 139, 250, 0.3);
 }
@@ -231,20 +234,23 @@
   flex-direction: column;
   gap: 16px;
   scrollbar-width: thin;
-  scrollbar-color: #a78bfa rgba(255,255,255,0.02);
+  scrollbar-color: #a78bfa rgba(255, 255, 255, 0.02);
 }
 
 .messages-area::-webkit-scrollbar {
   width: 6px;
 }
+
 .messages-area::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .messages-area::-webkit-scrollbar-thumb {
   background: rgba(167, 139, 250, 0.1);
   border-radius: 100px;
   border: 1px solid transparent;
 }
+
 .messages-area::-webkit-scrollbar-thumb:hover {
   background: rgba(167, 139, 250, 0.25);
 }
@@ -398,7 +404,7 @@
   margin: 0;
 }
 
-/* Confirmation Modal Styles */
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -477,11 +483,23 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

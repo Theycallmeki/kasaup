@@ -1,8 +1,6 @@
 import { useToast } from 'primevue/usetoast';
 
-/**
- * Composable for showing consistent notifications (Toasts) across the app.
- */
+
 export function useNotification() {
   const toast = useToast();
 

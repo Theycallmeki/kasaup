@@ -101,7 +101,6 @@ onMounted(() => {
   window.setTimeout(() => {
     map?.invalidateSize()
     
-    // Auto-fetch location if possible
     useMyLocation()
   }, 400)
 })

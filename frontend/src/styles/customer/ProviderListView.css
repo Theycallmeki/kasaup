@@ -9,7 +9,6 @@
   overflow: hidden;
 }
 
-/* ========== SEARCH BAR WRAPPER ========== */
 .search-bar-wrapper {
   position: absolute;
   top: 20px;
@@ -26,7 +25,6 @@
   align-items: flex-end;
 }
 
-/* ========== SEARCH INPUT SECTION ========== */
 .search-input-section {
   position: relative;
   flex: 1;
@@ -69,7 +67,6 @@
   color: rgba(255, 255, 255, 0.25);
 }
 
-/* ========== SUGGESTION DROPDOWN ========== */
 .suggest-dropdown {
   position: absolute;
   left: 0;
@@ -119,7 +116,6 @@
   color: rgba(167, 139, 250, 0.85);
 }
 
-/* ========== FILTER SECTION ========== */
 .filter-section {
   display: flex;
   align-items: flex-end;
@@ -217,7 +213,6 @@
   font-weight: 700;
 }
 
-/* ========== ACTION BUTTONS ========== */
 .action-buttons {
   display: flex;
   gap: 8px;
@@ -266,7 +261,6 @@
   display: inline;
 }
 
-/* ========== MOBILE FILTER PANEL ========== */
 .mobile-filter-panel {
   position: absolute;
   top: calc(100% + 8px);
@@ -287,6 +281,7 @@
     opacity: 0;
     transform: translateY(-8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -371,7 +366,6 @@
   border-color: rgba(248, 113, 113, 0.45);
 }
 
-/* ========== ERROR STATES ========== */
 .search-empty {
   position: absolute;
   top: 88px;
@@ -421,7 +415,6 @@
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* ========== DESKTOP (≥ 900px) ========== */
 @media (min-width: 900px) {
   .search-bar-wrapper {
     width: min(900px, calc(100% - 40px));
@@ -440,7 +433,6 @@
   }
 }
 
-/* ========== TABLET (600px - 899px) ========== */
 @media (max-width: 899px) {
   .search-bar {
     gap: 8px;
@@ -486,7 +478,7 @@
     width: max(260px, calc(100vw - 20px));
   }
 }
-/* ========== MOBILE (< 600px) ========== */
+
 @media (max-width: 600px) {
   .search-bar-wrapper {
     top: 12px;
@@ -554,25 +546,26 @@
   .suggest-dropdown {
     max-height: 30vh;
   }
+
   @media (max-width: 600px) {
-  .search-with-filter {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    .search-with-filter {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .search-with-filter .search-input-wrap {
+      flex: 1;
+    }
   }
 
-  .search-with-filter .search-input-wrap {
-    flex: 1;
+  @media (max-width: 600px) {
+    .location-btn {
+      flex: none;
+      width: 10px;
+      height: 40px;
+      padding: 0;
+      justify-content: center;
+    }
   }
-}
-
-@media (max-width: 600px) {
-  .location-btn {
-    flex: none;
-    width: 10px;
-    height: 40px;
-    padding: 0;
-    justify-content: center;
-  }
-}
 }
