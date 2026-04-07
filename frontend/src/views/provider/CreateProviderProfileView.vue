@@ -1,10 +1,25 @@
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, onMounted } from "vue"
 import { useRouter } from "vue-router"
-import { createProvider, uploadProviderImage } from "../../services/providers"
+import { createProvider, uploadProviderImage, getMyProvider } from "../../services/providers"
 import LocationPickerMap from "../../components/LocationPickerMap.vue"
+import { useNotification } from "../../hooks/useNotification"
+import { useAuthStore } from "../../stores/authStore"
 
 const router = useRouter()
+const auth = useAuthStore()
+const { notifySuccess, notifyError } = useNotification()
+
+onMounted(async () => {
+  try {
+    const existingProvider = await getMyProvider()
+    if (existingProvider) {
+      router.push("/provider/dashboard")
+    }
+  } catch (err) {
+    // No existing provider, stay on this page
+  }
+})
 
 const shop_name = ref("")
 const description = ref("")
@@ -64,9 +79,15 @@ const create = async () => {
       await uploadProviderImage(provider.id, profileImageFile.value)
     }
 
+    // Refresh the user so the router knows we have a profile!
+    await auth.fetchUser()
+
+    notifySuccess("Success", "Provider profile created successfully!")
     router.push("/provider/dashboard")
   } catch (err: any) {
-    error.value = err.response?.data?.detail || "Failed to create provider"
+    const msg = err.response?.data?.detail || "Failed to create provider"
+    notifyError("Error", msg)
+    error.value = msg
   } finally {
     loading.value = false
   }

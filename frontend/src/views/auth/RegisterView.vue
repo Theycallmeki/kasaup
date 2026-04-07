@@ -2,10 +2,12 @@
 import { ref, computed } from "vue"
 import { useRouter, useRoute } from "vue-router"
 import { useAuthStore } from "../../stores/authStore"
+import { useNotification } from "../../hooks/useNotification"
 
 const router = useRouter()
 const route = useRoute()
 const auth = useAuthStore()
+const { notifySuccess, notifyError } = useNotification()
 
 const email = ref("")
 const password = ref("")
@@ -32,13 +34,17 @@ const register = async () => {
       role: role.value
     })
 
+    notifySuccess("Success", "Account created successfully!")
+
     if (role.value === "provider") {
       showPendingMessage.value = true
     } else {
       router.push("/login")
     }
   } catch (err: any) {
-    error.value = "Registration failed. Email may already exist."
+    const msg = err.response?.data?.detail || "Registration failed."
+    notifyError("Error", msg)
+    error.value = msg
   } finally {
     loading.value = false
   }

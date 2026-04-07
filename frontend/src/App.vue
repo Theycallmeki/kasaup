@@ -1,12 +1,21 @@
 <script setup lang="ts">
-import { onMounted } from "vue"
+import { onMounted, computed } from "vue"
+import { useRoute } from "vue-router"
 import { useAuthStore } from "./stores/authStore"
 import { useMessageStore } from "./stores/messageStore"
 
 import Sidebar from "./components/Sidebar.vue"
+import Toast from 'primevue/toast'
 
 const auth = useAuthStore()
 const messageStore = useMessageStore()
+const route = useRoute()
+
+// Routes where the sidebar should be hidden
+const hideSidebarRoutes = ["/provider/create-profile", "/auth/login", "/auth/register"]
+const showSidebar = computed(() => {
+  return auth.user && !hideSidebarRoutes.includes(route.path)
+})
 
 onMounted(async () => {
   // Check for tokens in URL (Auth Handshake for Universal Login)
@@ -40,8 +49,9 @@ onMounted(async () => {
 </script>
 
 <template>
+  <Toast />
   <div class="layout">
-    <Sidebar v-if="auth.user" />
+    <Sidebar v-if="showSidebar" />
 
     <main class="content">
       <RouterView v-slot="{ Component }">
