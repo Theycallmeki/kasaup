@@ -3,16 +3,23 @@ import { ref, computed, onMounted, watch } from "vue"
 import { useRouter } from "vue-router"
 import { useAppointmentStore } from "../../stores/appointmentStore"
 import { useAuthStore } from "../../stores/authStore"
+import { useLoading } from "../../hooks/useLoading"
 import CustomerLocationMapCard from "../../components/CustomerLocationMapCard.vue"
 
 const appointmentStore = useAppointmentStore()
 const authStore = useAuthStore()
 const router = useRouter()
+const { startLoading, stopLoading } = useLoading()
 const activeTab = ref<"pending" | "upcoming" | "past">("pending")
 const selectedApp = ref<any>(null)
 
 onMounted(async () => {
-  await appointmentStore.fetchAppointments()
+  startLoading("Loading your schedule...")
+  try {
+    await appointmentStore.fetchAppointments()
+  } finally {
+    stopLoading()
+  }
 })
 
 const filteredItems = computed(() => {
@@ -32,9 +39,32 @@ watch(activeTab, () => {
   selectedApp.value = null
 })
 
-const approve  = async (id: number) => { await appointmentStore.approve(id) }
-const cancel   = async (id: number) => { await appointmentStore.cancel(id) }
-const complete = async (id: number) => { await appointmentStore.complete(id) }
+const approve = async (id: number) => {
+  startLoading("Approving appointment...")
+  try {
+    await appointmentStore.approve(id)
+  } finally {
+    stopLoading()
+  }
+}
+
+const cancel = async (id: number) => {
+  startLoading("Canceling appointment...")
+  try {
+    await appointmentStore.cancel(id)
+  } finally {
+    stopLoading()
+  }
+}
+
+const complete = async (id: number) => {
+  startLoading("Completing appointment...")
+  try {
+    await appointmentStore.complete(id)
+  } finally {
+    stopLoading()
+  }
+}
 
 function goToChat(app: any) {
   router.push({

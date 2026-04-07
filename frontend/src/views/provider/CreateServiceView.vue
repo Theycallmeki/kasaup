@@ -3,9 +3,11 @@ import { onMounted, ref } from "vue"
 import { useRouter } from "vue-router"
 import { useServiceStore } from "../../stores/serviceStore"
 import { getCategories } from "../../services/categories"
+import { useLoading } from "../../hooks/useLoading"
 
 const router = useRouter()
 const serviceStore = useServiceStore()
+const { startLoading, stopLoading } = useLoading()
 
 const categories = ref<{ id: number; name: string }[]>([])
 const categoriesLoading = ref(true)
@@ -20,6 +22,7 @@ const imageFiles = ref<File[]>([])
 const imagePreviews = ref<string[]>([])
 
 onMounted(async () => {
+  startLoading("Loading categories...")
   categoriesLoading.value = true
   try {
     const data = await getCategories({ limit: 500, offset: 0 })
@@ -34,6 +37,7 @@ onMounted(async () => {
     categories.value = []
   } finally {
     categoriesLoading.value = false
+    stopLoading()
   }
 })
 
@@ -53,6 +57,7 @@ function removeImage(index: number) {
 
 const createService = async () => {
   if (category_id.value == null) return
+  startLoading("Creating your service...")
   try {
     const service = await serviceStore.addService({
       category_id: category_id.value,
@@ -69,6 +74,8 @@ const createService = async () => {
     router.push("/provider/services")
   } catch (err: any) {
     console.log(err.response?.data)
+  } finally {
+    stopLoading()
   }
 }
 </script>

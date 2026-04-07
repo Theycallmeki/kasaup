@@ -8,8 +8,10 @@ import {
   updateAvailability,
   deleteAvailability
 } from "../../services/availability"
+import { useLoading } from "../../hooks/useLoading"
 
 const authStore = useAuthStore()
+const { startLoading, stopLoading } = useLoading()
 
 const availability = ref<any[]>([])
 const providerId = ref<number | null>(null)
@@ -25,27 +27,37 @@ const selectedDate = ref("")
 const showDropdown = ref(false)
 
 onMounted(async () => {
-  const res = await api.get("/providers/")
-  const provider = res.data.find((p: any) => p.owner_id === authStore.user.id)
-  providerId.value = provider?.id || null
+  startLoading("Loading your schedule...")
+  try {
+    const res = await api.get("/providers/")
+    const provider = res.data.find((p: any) => p.owner_id === authStore.user.id)
+    providerId.value = provider?.id || null
 
-  if (providerId.value) {
-    availability.value = await getAvailability(providerId.value)
+    if (providerId.value) {
+      availability.value = await getAvailability(providerId.value)
+    }
+  } finally {
+    stopLoading()
   }
 })
 
 async function submit() {
   if (!providerId.value) return
-  if (editingId.value) {
-    await updateAvailability(editingId.value, form.value)
-  } else {
-    await createAvailability({
-      provider_id: providerId.value,
-      ...form.value
-    })
+  startLoading(editingId.value ? "Updating slot..." : "Adding slot...")
+  try {
+    if (editingId.value) {
+      await updateAvailability(editingId.value, form.value)
+    } else {
+      await createAvailability({
+        provider_id: providerId.value,
+        ...form.value
+      })
+    }
+    resetForm()
+    availability.value = await getAvailability(providerId.value!)
+  } finally {
+    stopLoading()
   }
-  resetForm()
-  availability.value = await getAvailability(providerId.value!)
 }
 
 function edit(a: any) {
@@ -58,8 +70,13 @@ function edit(a: any) {
 }
 
 async function remove(id: number) {
-  await deleteAvailability(id)
-  availability.value = await getAvailability(providerId.value!)
+  startLoading("Removing slot...")
+  try {
+    await deleteAvailability(id)
+    availability.value = await getAvailability(providerId.value!)
+  } finally {
+    stopLoading()
+  }
 }
 
 function resetForm() {

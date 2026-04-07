@@ -5,12 +5,15 @@ import { createProvider, uploadProviderImage, getMyProvider } from "../../servic
 import LocationPickerMap from "../../components/LocationPickerMap.vue"
 import { useNotification } from "../../hooks/useNotification"
 import { useAuthStore } from "../../stores/authStore"
+import { useLoading } from "../../hooks/useLoading"
 
 const router = useRouter()
 const auth = useAuthStore()
 const { notifySuccess, notifyError } = useNotification()
+const { startLoading, stopLoading } = useLoading()
 
 onMounted(async () => {
+  startLoading("Verifying your account...")
   try {
     const existingProvider = await getMyProvider()
     if (existingProvider) {
@@ -18,6 +21,8 @@ onMounted(async () => {
     }
   } catch (err) {
   
+  } finally {
+    stopLoading()
   }
 })
 
@@ -52,15 +57,23 @@ function onImageChange(e: Event) {
 
 const create = async () => {
   error.value = ""
-  loading.value = true
+  startLoading("Setting up your provider profile...")
 
   try {
-    if (!shop_name.value.trim()) { error.value = "Shop name is required"; loading.value = false; return }
-    if (!phone.value.trim())     { error.value = "Phone is required";     loading.value = false; return }
-    if (!email.value.trim())     { error.value = "Email is required";     loading.value = false; return }
+    if (!shop_name.value.trim()) { 
+      error.value = "Shop name is required"
+      return 
+    }
+    if (!phone.value.trim()) { 
+      error.value = "Phone is required"
+      return 
+    }
+    if (!email.value.trim()) { 
+      error.value = "Email is required"
+      return 
+    }
     if (latitude.value === null || longitude.value === null) {
       error.value = "Please select your shop location on the map"
-      loading.value = false
       return
     }
 
@@ -88,7 +101,7 @@ const create = async () => {
     notifyError("Error", msg)
     error.value = msg
   } finally {
-    loading.value = false
+    stopLoading()
   }
 }
 </script>

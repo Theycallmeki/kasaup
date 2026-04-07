@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue"
 import { useProviderStore } from "../../stores/providerStore"
+import { useLoading } from "../../hooks/useLoading"
 import api from "../../services/api"
 
 const providerStore = useProviderStore()
+const { startLoading, stopLoading } = useLoading()
 
 const shop_name = ref("")
 const description = ref("")
@@ -37,16 +39,21 @@ const shopInitials = computed(() => {
 })
 
 onMounted(async () => {
-  await providerStore.fetchMyProvider()
+  startLoading("Fetching profile...")
+  try {
+    await providerStore.fetchMyProvider()
 
-  if (providerStore.myProvider) {
-    const p = providerStore.myProvider
-    shop_name.value = p.shop_name
-    description.value = p.description
-    phone.value = p.phone
-    email.value = p.email
-    address.value = p.address
-    offers_home_service.value = p.offers_home_service
+    if (providerStore.myProvider) {
+      const p = providerStore.myProvider
+      shop_name.value = p.shop_name
+      description.value = p.description
+      phone.value = p.phone
+      email.value = p.email
+      address.value = p.address
+      offers_home_service.value = p.offers_home_service
+    }
+  } finally {
+    stopLoading()
   }
 })
 
@@ -71,30 +78,35 @@ const onFileChange = (e: Event) => {
 }
 
 const save = async () => {
+  startLoading("Updating profile...")
   loading.value = true
   saved.value = false
 
-  if (pendingImageFile.value) {
-    const providerId = providerStore.myProvider?.id
-    if (providerId) {
-      await providerStore.uploadProfileImage(providerId, pendingImageFile.value)
-      pendingImageFile.value = null
-      imagePreview.value = null
+  try {
+    if (pendingImageFile.value) {
+      const providerId = providerStore.myProvider?.id
+      if (providerId) {
+        await providerStore.uploadProfileImage(providerId, pendingImageFile.value)
+        pendingImageFile.value = null
+        imagePreview.value = null
+      }
     }
+
+    await providerStore.updateMy({
+      shop_name: shop_name.value,
+      description: description.value,
+      phone: phone.value,
+      email: email.value,
+      address: address.value,
+      offers_home_service: offers_home_service.value
+    })
+
+    saved.value = true
+    setTimeout(() => (saved.value = false), 2500)
+  } finally {
+    loading.value = false
+    stopLoading()
   }
-
-  await providerStore.updateMy({
-    shop_name: shop_name.value,
-    description: description.value,
-    phone: phone.value,
-    email: email.value,
-    address: address.value,
-    offers_home_service: offers_home_service.value
-  })
-
-  loading.value = false
-  saved.value = true
-  setTimeout(() => (saved.value = false), 2500)
 }
 </script>
 

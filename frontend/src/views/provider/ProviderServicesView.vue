@@ -2,10 +2,12 @@
 import { onMounted, ref } from "vue"
 import { useServiceStore } from "../../stores/serviceStore"
 import { useAuthStore } from "../../stores/authStore"
+import { useLoading } from "../../hooks/useLoading"
 import api from "../../services/api"
 
 const serviceStore = useServiceStore()
 const authStore = useAuthStore()
+const { startLoading, stopLoading } = useLoading()
 
 const providerId = ref<number | null>(null)
 const editingId = ref<number | null>(null)
@@ -28,8 +30,13 @@ const imgUrl = (path: string) => {
 }
   
 onMounted(async () => {
-  await resolveProvider()
-  await fetchServices()
+  startLoading("Loading services...")
+  try {
+    await resolveProvider()
+    await fetchServices()
+  } finally {
+    stopLoading()
+  }
 })
 
 async function resolveProvider() {
@@ -78,26 +85,41 @@ function removePreview(i: number) {
 }
 
 async function removeExistingImage(serviceId: number, imageId: number) {
-  await serviceStore.removeServiceImage(serviceId, imageId)
-  await fetchServices()
+  startLoading("Removing image...")
+  try {
+    await serviceStore.removeServiceImage(serviceId, imageId)
+    await fetchServices()
+  } finally {
+    stopLoading()
+  }
 }
 
 async function saveEdit() {
   if (!editingId.value) return
-  await serviceStore.editService(editingId.value, form.value)
-  if (imageFiles.value.length) {
-    await serviceStore.uploadImages(editingId.value, imageFiles.value)
+  startLoading("Saving changes...")
+  try {
+    await serviceStore.editService(editingId.value, form.value)
+    if (imageFiles.value.length) {
+      await serviceStore.uploadImages(editingId.value, imageFiles.value)
+    }
+    editingId.value = null
+    imageFiles.value = []
+    imagePreviews.value = []
+    resetForm()
+    await fetchServices()
+  } finally {
+    stopLoading()
   }
-  editingId.value = null
-  imageFiles.value = []
-  imagePreviews.value = []
-  resetForm()
-  await fetchServices()
 }
 
 async function deleteService(id: number) {
-  await serviceStore.removeService(id)
-  await fetchServices()
+  startLoading("Deleting service...")
+  try {
+    await serviceStore.removeService(id)
+    await fetchServices()
+  } finally {
+    stopLoading()
+  }
 }
 
 function resetForm() {
