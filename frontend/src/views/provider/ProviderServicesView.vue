@@ -169,26 +169,25 @@ function getService(id: number) {
 
         <!-- View mode -->
         <template v-if="editingId !== service.id">
-
-          <div v-if="service.images?.length" class="service-images">
-            <img
-              v-for="img in service.images"
-              :key="img.id"
-              :src="imgUrl(img.image_url)"
-              class="service-img"
-              alt=""
-              @click="viewingImage = imgUrl(img.image_url)"
-              style="cursor: zoom-in;"
-            />
-          </div>
-
-          <div class="card-top">
-            <div>
+          <div class="card-content">
+            <div class="service-details">
               <div class="service-name">{{ service.name }}</div>
               <div class="service-meta">
                 <span class="meta-pill">₱{{ service.price }}</span>
                 <span class="meta-pill">{{ service.duration_minutes }} min</span>
               </div>
+            </div>
+
+            <div v-if="service.images?.length" class="service-images">
+              <img
+                v-for="img in service.images"
+                :key="img.id"
+                :src="imgUrl(img.image_url)"
+                class="service-img"
+                alt=""
+                @click="viewingImage = imgUrl(img.image_url)"
+                style="cursor: zoom-in;"
+              />
             </div>
           </div>
 
@@ -365,10 +364,10 @@ function getService(id: number) {
 .spin { animation: spin 1s linear infinite; margin-bottom: 8px; }
 
 .cards {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-width: 680px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  max-width: 1200px;
 }
 
 .card {
@@ -385,10 +384,22 @@ function getService(id: number) {
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  margin-bottom: 14px;
   scrollbar-width: none;
+  flex-shrink: 0;
 }
 .service-images::-webkit-scrollbar { display: none; }
+
+.card-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.service-details {
+  flex: 1;
+}
 
 .service-img {
   width: 72px;
@@ -399,15 +410,12 @@ function getService(id: number) {
   flex-shrink: 0;
 }
 
-.card-top {
-  margin-bottom: 14px;
-}
-
 .service-name {
-  font-size: 15px;
-  font-weight: 500;
-  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
   margin-bottom: 8px;
+  font-family: inherit;
 }
 
 .service-meta {
@@ -436,7 +444,7 @@ function getService(id: number) {
   gap: 5px;
   padding: 7px 14px;
   border-radius: 8px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: inherit;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -574,9 +582,15 @@ label {
   margin-top: 4px;
 }
 
+@media (max-width: 900px) {
+  .cards { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 540px) {
   .page { padding: 24px 16px; }
   .field-row { grid-template-columns: 1fr; }
+  .card-content { flex-direction: column; gap: 12px; }
+  .service-images { width: 100%; overflow-x: auto; }
 }
 
 /* Image Viewer Lightbox */

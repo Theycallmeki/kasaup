@@ -2,8 +2,10 @@
 import { computed, onMounted, ref, watch } from "vue"
 import { useAppointmentStore } from "../../stores/appointmentStore"
 import RatingModal from "../../components/RatingModal.vue"
+import { useLoading } from "../../hooks/useLoading"
 
 const appointmentStore = useAppointmentStore()
+const { startLoading, stopLoading } = useLoading()
 
 const ratingModalOpen = ref(false)
 const selectedAppointmentId = ref<number | null>(null)
@@ -18,7 +20,12 @@ const onRatingSuccess = () => {
 }
 
 onMounted(async () => {
-  await appointmentStore.fetchAppointments()
+  startLoading("Loading your booking history...")
+  try {
+    await appointmentStore.fetchAppointments()
+  } finally {
+    stopLoading()
+  }
 })
 
 const sortedAppointments = computed(() => {
@@ -30,7 +37,12 @@ const sortedAppointments = computed(() => {
 })
 
 const cancel = async (id: number) => {
-  await appointmentStore.cancel(id)
+  startLoading("Canceling appointment...")
+  try {
+    await appointmentStore.cancel(id)
+  } finally {
+    stopLoading()
+  }
 }
 
 const statusClass = (status: string) => {

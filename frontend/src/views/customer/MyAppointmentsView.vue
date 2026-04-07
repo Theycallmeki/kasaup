@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import { computed, onMounted } from "vue"
 import { useAppointmentStore } from "../../stores/appointmentStore"
+import { useLoading } from "../../hooks/useLoading"
 
 const appointmentStore = useAppointmentStore()
+const { startLoading, stopLoading } = useLoading()
 
 onMounted(async () => {
-  await appointmentStore.fetchAppointments()
+  startLoading("Loading your appointments...")
+  try {
+    await appointmentStore.fetchAppointments()
+  } finally {
+    stopLoading()
+  }
 })
 
 const activeAppointments = computed(() => {
@@ -19,7 +26,12 @@ const activeAppointments = computed(() => {
 })
 
 const cancel = async (id: number) => {
-  await appointmentStore.cancel(id)
+  startLoading("Canceling appointment...")
+  try {
+    await appointmentStore.cancel(id)
+  } finally {
+    stopLoading()
+  }
 }
 
 const statusClass = (status: string) => {

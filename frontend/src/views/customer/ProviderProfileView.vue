@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { onMounted, ref, computed, watch } from "vue"
-import { useRoute } from "vue-router"
+import { useRouter, useRoute } from "vue-router"
 import { useProviderStore } from "../../stores/providerStore"
 import { useAppointmentStore } from "../../stores/appointmentStore"
 import HomeServiceMapCard from "../../components/HomeServiceMapCard.vue"
 import api from "../../services/api"
-import { useRouter } from "vue-router"
 import { useConfirm } from "primevue/useconfirm"
 import { useNotification } from "../../hooks/useNotification"
-
+import { useLoading } from "../../hooks/useLoading"
+ 
 const router = useRouter()
 const confirm = useConfirm()
 const { notifySuccess, notifyError } = useNotification()
+const { startLoading, stopLoading } = useLoading()
 const route = useRoute()
 const providerStore = useProviderStore()
 const appointmentStore = useAppointmentStore()
@@ -60,10 +61,13 @@ const imgUrl = (path: string) => {
 }
 
 onMounted(async () => {
+  startLoading("Syncing provider details...")
   try {
     await providerStore.fetchProviderProfile(id)
   } catch (e) {
     errorMsg.value = "Failed to load provider."
+  } finally {
+    stopLoading()
   }
 })
 
@@ -111,6 +115,7 @@ watch([calendarYear, calendarMonth], () => {
 
 async function fetchSlots() {
   if (!activeServiceId.value || !selectedDate.value) return
+  startLoading("Retrieving available times...")
   loadingSlots.value = true
   try {
     await appointmentStore.fetchAvailableSlots(activeServiceId.value, selectedDate.value)
@@ -118,6 +123,7 @@ async function fetchSlots() {
     errorMsg.value = "Failed to load available slots."
   } finally {
     loadingSlots.value = false
+    stopLoading()
   }
 }
 
@@ -137,6 +143,7 @@ async function book(serviceId: number, slot: string) {
 }
 
 async function proceedWithBooking(serviceId: number, slot: string) {
+  startLoading("Securing your appointment...")
   bookingLoading.value = true
   errorMsg.value = ""
   try {
@@ -170,6 +177,7 @@ async function proceedWithBooking(serviceId: number, slot: string) {
     notifyError("Booking Error", msg)
   } finally {
     bookingLoading.value = false
+    stopLoading()
   }
 }
 

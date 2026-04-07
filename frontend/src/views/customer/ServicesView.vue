@@ -7,9 +7,11 @@ import { useAuthStore } from "../../stores/authStore"
 import { searchServices } from "../../services/services"
 import { useRouter } from "vue-router"
 import api from "../../services/api"
+import { useLoading } from "../../hooks/useLoading"
 
 const showFilters = ref(false)
 const router = useRouter()
+const { startLoading, stopLoading } = useLoading()
 const svcStore = useServiceStore()
 const provStore = useProviderStore()
 const catStore = useCategoryStore()
@@ -41,6 +43,7 @@ async function fetchCurrentLocation() {
     alert("Geolocation is not supported by your browser")
     return
   }
+  startLoading("Detecting your location...")
   locLoading.value = true
   navigator.geolocation.getCurrentPosition(
     (pos) => {
@@ -48,12 +51,14 @@ async function fetchCurrentLocation() {
       currentLng.value = pos.coords.longitude
       tempUseLocation.value = true
       locLoading.value = false
+      stopLoading()
     },
     (err) => {
       console.error("Location error:", err)
       alert("Could not get your location. Please check your browser permissions.")
       tempUseLocation.value = false
       locLoading.value = false
+      stopLoading()
     },
     { timeout: 10000 }
   )
@@ -110,11 +115,16 @@ const viewingImage = ref<string | null>(null)
 const currentImageIndex = ref(0)
 
 onMounted(async () => {
-  await Promise.all([
-    svcStore.fetchServices(),
-    provStore.fetchProviders(),
-    catStore.fetchCategories?.() ?? Promise.resolve(),
-  ])
+  startLoading("Discovering services...")
+  try {
+    await Promise.all([
+      svcStore.fetchServices(),
+      provStore.fetchProviders(),
+      catStore.fetchCategories?.() ?? Promise.resolve(),
+    ])
+  } finally {
+    stopLoading()
+  }
 })
 
 const providerMap = computed(() => {

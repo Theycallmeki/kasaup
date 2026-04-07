@@ -4,9 +4,11 @@ import { useAuthStore } from "../../stores/authStore"
 import LocationPickerMap from "../../components/LocationPickerMap.vue"
 import api from "../../services/api"
 import { useNotification } from "../../hooks/useNotification"
+import { useLoading } from "../../hooks/useLoading"
 
 const auth = useAuthStore()
 const { notifySuccess, notifyError } = useNotification()
+const { startLoading, stopLoading } = useLoading()
 const loading = ref(false)
 const message = ref({ text: "", type: "" })
 
@@ -24,15 +26,20 @@ const uploadingImage = ref(false)
 const fileInput = ref<HTMLInputElement | null>(null)
 
 onMounted(async () => {
-  if (!auth.user) await auth.fetchUser()
-  if (auth.user) {
-    form.value.full_name = auth.user.full_name || ""
-    form.value.email = auth.user.email || ""
-    form.value.phone = auth.user.phone || ""
-    form.value.address = auth.user.address || ""
-    form.value.latitude = auth.user.latitude || null
-    form.value.longitude = auth.user.longitude || null
-    profileImageUrl.value = auth.user.profile_image || null
+  startLoading("Loading your profile...")
+  try {
+    if (!auth.user) await auth.fetchUser()
+    if (auth.user) {
+      form.value.full_name = auth.user.full_name || ""
+      form.value.email = auth.user.email || ""
+      form.value.phone = auth.user.phone || ""
+      form.value.address = auth.user.address || ""
+      form.value.latitude = auth.user.latitude || null
+      form.value.longitude = auth.user.longitude || null
+      profileImageUrl.value = auth.user.profile_image || null
+    }
+  } finally {
+    stopLoading()
   }
 })
 
@@ -42,6 +49,7 @@ const onLocationSelected = (loc: { latitude: number; longitude: number }) => {
 }
 
 const saveProfile = async () => {
+  startLoading("Updating your profile...")
   loading.value = true
   message.value = { text: "", type: "" }
   try {
@@ -58,6 +66,7 @@ const saveProfile = async () => {
     }
   } finally {
     loading.value = false
+    stopLoading()
   }
 }
 
@@ -70,6 +79,7 @@ const handleImageUpload = async (e: Event) => {
   const file = target.files?.[0]
   if (!file) return
 
+  startLoading("Uploading your photo...")
   uploadingImage.value = true
   const formData = new FormData()
   formData.append("file", file)
@@ -90,6 +100,7 @@ const handleImageUpload = async (e: Event) => {
     }
   } finally {
     uploadingImage.value = false
+    stopLoading()
   }
 }
 

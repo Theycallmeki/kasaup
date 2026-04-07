@@ -8,8 +8,10 @@ import {
   SEARCH_MATCH_THRESHOLD,
 } from "../../utils/providerSearch"
 import { getCategories } from "../../services/categories"
+import { useLoading } from "../../hooks/useLoading"
 
 const providerStore = useProviderStore()
+const { startLoading, stopLoading } = useLoading()
 
 const userLat = ref<number | null>(null)
 const userLng = ref<number | null>(null)
@@ -68,13 +70,17 @@ function haversine(lat1: number, lon1: number, lat2: number, lon2: number) {
 
 function useMyLocation() {
   if (!navigator.geolocation) return
+  startLoading("Detecting your location...")
   navigator.geolocation.getCurrentPosition(
     (pos) => {
       userLat.value = pos.coords.latitude
       userLng.value = pos.coords.longitude
       persistUserLocation(userLat.value, userLng.value)
+      stopLoading()
     },
-    () => { },
+    () => { 
+      stopLoading()
+    },
     { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
   )
 }
@@ -165,15 +171,20 @@ function onSearchKeydown(e: KeyboardEvent) {
 }
 
 onMounted(async () => {
-  restoreUserLocation()
-  await Promise.all([
-    providerStore.fetchProviders(),
-    getCategories({ limit: 500, offset: 0 })
-      .then((data: { id: number; name: string }[]) => {
-        categories.value = Array.isArray(data) ? data : []
-      })
-      .catch(() => { categories.value = [] }),
-  ])
+  startLoading("Finding providers near you...")
+  try {
+    restoreUserLocation()
+    await Promise.all([
+      providerStore.fetchProviders(),
+      getCategories({ limit: 500, offset: 0 })
+        .then((data: { id: number; name: string }[]) => {
+          categories.value = Array.isArray(data) ? data : []
+        })
+        .catch(() => { categories.value = [] }),
+    ])
+  } finally {
+    stopLoading()
+  }
 })
 
 watch(categoryFilter, () => { pinnedProviderId.value = null })
