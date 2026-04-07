@@ -50,7 +50,7 @@ jobs:
             SECRET_KEY=$SECRET_KEY
             ALGORITHM=HS256
             SMTP_HOST=smtp.gmail.com
-            SMTP_PORT=${SMTP_PORT:-465}
+            SMTP_PORT=${SMTP_PORT:-587}
             SMTP_USER=$SMTP_USER
             SMTP_PASSWORD=$SMTP_PASSWORD
             SMTP_FROM_EMAIL=$SMTP_FROM_EMAIL

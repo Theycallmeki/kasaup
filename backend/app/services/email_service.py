@@ -86,8 +86,11 @@ def _send_email(to_email: str, subject: str, html_body: str):
     except smtplib.SMTPAuthenticationError as e:
         print(f"[EMAIL ERROR] AUTHENTICATION FAILED: {e}")
         print("[EMAIL TIP] Most likely you need a 'Gmail App Password', not your normal password.")
+    except (smtplib.SMTPConnectError, TimeoutError, ConnectionRefusedError) as e:
+        print(f"[EMAIL ERROR] CONNECTION FAILED to {settings.SMTP_HOST}:{settings.SMTP_PORT}. This is usually a FIREWALL BLOCK by your hosting provider (DigitalOcean). Error: {e}")
     except Exception as e:
-        print(f"[EMAIL ERROR] SYSTEM ERROR of type {type(e).__name__}: {e}")
+        print(f"[EMAIL ERROR] SYSTEM ERROR of type {type(e).__name__}: {str(e)}")
+
 
 
 def send_approval_email(to_email: str, full_name: str | None):
