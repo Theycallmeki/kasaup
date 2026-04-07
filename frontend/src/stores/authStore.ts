@@ -33,8 +33,6 @@ export const useAuthStore = defineStore("auth", {
     async logout() {
       await logoutRequest()
       this.user = null
-      localStorage.removeItem("access_token")
-      localStorage.removeItem("refresh_token")
     },
 
     async fetchUser() {

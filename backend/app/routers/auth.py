@@ -69,12 +69,12 @@ async def google_callback(code: str, state: str = "customer", db: Session = Depe
     access_token = create_access_token({"user_id": user.id})
     refresh_token = create_refresh_token({"user_id": user.id})
 
-    response = RedirectResponse(url=f"{settings.FRONTEND_URL}{target_path}?access_token={access_token}&refresh_token={refresh_token}")
+    response = RedirectResponse(url=f"{settings.FRONTEND_URL}{target_path}")
 
     response.set_cookie(
         key="access_token",
         value=access_token,
-        httponly=False,
+        httponly=True,
         samesite="none",
         secure=True
     )
@@ -137,12 +137,12 @@ async def github_callback(code: str, state: str = "customer", db: Session = Depe
     access_token = create_access_token({"user_id": user.id})
     refresh_token = create_refresh_token({"user_id": user.id})
 
-    response = RedirectResponse(url=f"{settings.FRONTEND_URL}{target_path}?access_token={access_token}&refresh_token={refresh_token}")
+    response = RedirectResponse(url=f"{settings.FRONTEND_URL}{target_path}")
 
     response.set_cookie(
         key="access_token",
         value=access_token,
-        httponly=False,
+        httponly=True,
         samesite="none",
         secure=True
     )
@@ -180,7 +180,7 @@ def login(data: LoginRequest, response: Response, db: Session = Depends(get_db))
     response.set_cookie(
         key="access_token",
         value=access_token,
-        httponly=False,
+        httponly=True,
         samesite="none",
         secure=True
     )
@@ -227,7 +227,7 @@ def refresh_token(request: Request, response: Response, db: Session = Depends(ge
     response.set_cookie(
         key="access_token",
         value=new_access_token,
-        httponly=False,
+        httponly=True,
         samesite="none",
         secure=True
     )

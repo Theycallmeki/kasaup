@@ -7,13 +7,8 @@ const api = axios.create({
   withCredentials: true
 })
 
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token")
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
-})
+// Removed localStorage-based Authorization header interceptor.
+// Cookies are automatically sent with `withCredentials: true`.
 
 api.interceptors.response.use(
   (response: any) => response,

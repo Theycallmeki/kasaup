@@ -39,13 +39,13 @@ function providerHasCategory(p: Record<string, unknown>, categoryName: string): 
 
 function persistUserLocation(lat: number, lng: number) {
   try {
-    localStorage.setItem(USER_LOCATION_KEY, JSON.stringify({ lat, lng }))
+    sessionStorage.setItem(USER_LOCATION_KEY, JSON.stringify({ lat, lng }))
   } catch { }
 }
 
 function restoreUserLocation() {
   try {
-    const raw = localStorage.getItem(USER_LOCATION_KEY)
+    const raw = sessionStorage.getItem(USER_LOCATION_KEY)
     if (!raw) return
     const parsed = JSON.parse(raw) as { lat?: unknown; lng?: unknown }
     if (typeof parsed.lat === "number" && typeof parsed.lng === "number") {

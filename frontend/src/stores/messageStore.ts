@@ -89,11 +89,18 @@ export const useMessageStore = defineStore("messages", {
       if (this.socket) return
 
       const baseUrl = import.meta.env.VITE_API_URL || `${window.location.protocol}//${window.location.host}`
+      
+      let wsUrl: string;
+      if (baseUrl.startsWith("http")) {
+        wsUrl = `${baseUrl.replace("http", "ws")}/messages/ws`;
+      } else {
+        // Handle relative paths (like /api)
+        const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+        const host = window.location.host;
+        wsUrl = `${protocol}//${host}${baseUrl}/messages/ws`;
+      }
 
-      const token = document.cookie.split('; ').find(row => row.startsWith('access_token='))?.split('=')[1]
-      const wsUrl = `${baseUrl.replace("http", "ws")}/messages/ws${token ? `?token=${token}` : ''}`
-
-      this.socket = new WebSocket(wsUrl)
+      this.socket = new WebSocket(wsUrl);
 
       this.socket.onmessage = (event) => {
         const data = JSON.parse(event.data)

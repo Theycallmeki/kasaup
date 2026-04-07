@@ -19,22 +19,11 @@ const showSidebar = computed(() => {
 })
 
 onMounted(async () => {
-  const urlParams = new URLSearchParams(window.location.search)
-  const accessToken = urlParams.get("access_token")
-  const refreshToken = urlParams.get("refresh_token")
-
-  if (accessToken && refreshToken) {
-    const secure = window.location.protocol === "https:" ? "Secure;" : ""
-    document.cookie = `access_token=${accessToken}; path=/; max-age=900; ${secure} SameSite=Lax`
-    document.cookie = `refresh_token=${refreshToken}; path=/; max-age=604800; ${secure} SameSite=Lax`
-    
-    localStorage.setItem("access_token", accessToken)
-    localStorage.setItem("refresh_token", refreshToken)
-
-    const cleanUrl = window.location.pathname + window.location.hash
-    window.history.replaceState({}, document.title, cleanUrl)
-  }
-
+  // One-time cleanup of stale localStorage entries to ensure a clean migration to cookies.
+  const staleKeys = ["access_token", "refresh_token", "kasaup:user_location_v1", "pos_cart", "token"];
+  staleKeys.forEach(key => localStorage.removeItem(key));
+  
+  // Authentication is now cookie-based and handled by the browser.
   await auth.fetchUser()
 
   if (auth.user) {
