@@ -11,7 +11,6 @@ def _send_email(to_email: str, subject: str, html_body: str):
     """Send an email via HTTP API (Universal Bypassing) or SMTP."""
     print(f"[EMAIL DEBUG] Triggered send to: {to_email}")
     
-    # 0. NEW: Vercel Email Proxy (The "Simpler" Firewall Bridge)
     if settings.VERCEL_EMAIL_URL and settings.EMAIL_API_KEY:
         print(f"[EMAIL DEBUG] Using Vercel Proxy: {settings.VERCEL_EMAIL_URL}")
         data = {
@@ -38,13 +37,11 @@ def _send_email(to_email: str, subject: str, html_body: str):
             print(f"[EMAIL ERROR] Vercel Proxy Exception: {str(e)}")
             print("[EMAIL DEBUG] Falling back to next method...")
 
-    # 1. NEW: HTTP API Bypassing (DigitalOcean Proof)
     if settings.RESEND_API_KEY:
         print("[EMAIL DEBUG] Using HTTP API Bypassing (Resend)...")
         url = "https://api.resend.com/emails"
         
-        # IMPORTANT: If they have a custom From address, use it. Otherwise use onboarding.
-        # Note: onboarding@resend.dev ONLY works for sending to the account owner.
+      
         from_email = settings.SMTP_FROM_EMAIL or "onboarding@resend.dev"
         
         data = {
@@ -78,7 +75,6 @@ def _send_email(to_email: str, subject: str, html_body: str):
             print("[EMAIL DEBUG] Falling back to SMTP...")
 
 
-    # Fallback to SMTP (Already implemented)
     print(f"[EMAIL DEBUG] Falling back to SMTP connection to {settings.SMTP_HOST}...")
     if not settings.SMTP_USER or not settings.SMTP_PASSWORD:
         print(f"[EMAIL SKIPPED] Missing credentials: USER='{settings.SMTP_USER}', PASS_LENGTH={len(settings.SMTP_PASSWORD)}")
@@ -92,7 +88,6 @@ def _send_email(to_email: str, subject: str, html_body: str):
 
     try:
         print(f"[EMAIL DEBUG] Connecting to {settings.SMTP_HOST}:{settings.SMTP_PORT} (timeout=20s)...")
-        # Use SMTP_SSL for port 465, otherwise standard SMTP + TLS
         if settings.SMTP_PORT == 465:
             print("[EMAIL DEBUG] Using SMTP_SSL (Port 465)...")
             server_class = smtplib.SMTP_SSL

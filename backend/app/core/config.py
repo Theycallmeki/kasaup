@@ -22,7 +22,6 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: str = ""
     SMTP_FROM_EMAIL: str = ""
     
-    # HTTP Email Bypassing (DigitalOcean Proof)
     RESEND_API_KEY: str = ""
     VERCEL_EMAIL_URL: str = ""
     EMAIL_API_KEY: str = ""

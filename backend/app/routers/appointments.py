@@ -50,6 +50,7 @@ def create_appointment(
             **booking.__dict__,
             "service_name": booking.service.name,
             "customer_name": booking.user.full_name,
+            "customer_address": booking.user.address,
             "provider_name": booking.provider.shop_name,
             "user_rating": booking.review.rating if booking.review else None,
             "customer_profile_image": booking.user.profile_image
@@ -84,6 +85,9 @@ def get_appointments(
             **a.__dict__,
             "service_name": a.service.name,
             "customer_name": a.user.full_name,
+            "customer_address": a.user.address,
+            "customer_latitude": a.customer_latitude if a.customer_latitude is not None else a.user.latitude,
+            "customer_longitude": a.customer_longitude if a.customer_longitude is not None else a.user.longitude,
             "provider_name": a.provider.shop_name,
             "user_rating": a.review.rating if getattr(a, "review", None) else None,
             "customer_profile_image": a.user.profile_image
@@ -341,6 +345,7 @@ def get_appointment(
         **appointment.__dict__,
         "service_name": appointment.service.name,
         "customer_name": appointment.user.full_name,
+        "customer_address": appointment.user.address,
         "provider_name": appointment.provider.shop_name,
         "user_rating": appointment.review.rating if getattr(appointment, "review", None) else None
     }
@@ -382,6 +387,7 @@ def update_appointment(
         **db_appointment.__dict__,
         "service_name": db_appointment.service.name,
         "customer_name": db_appointment.user.full_name,
+        "customer_address": db_appointment.user.address,
         "provider_name": db_appointment.provider.shop_name,
         "user_rating": db_appointment.review.rating if getattr(db_appointment, "review", None) else None
     }

@@ -6,6 +6,7 @@ import { useMessageStore } from "./stores/messageStore"
 
 import Sidebar from "./components/Sidebar.vue"
 import Toast from 'primevue/toast'
+import ConfirmDialog from 'primevue/confirmdialog'
 
 const auth = useAuthStore()
 const messageStore = useMessageStore()
@@ -50,6 +51,7 @@ onMounted(async () => {
 
 <template>
   <Toast />
+  <ConfirmDialog />
   <div class="layout">
     <Sidebar v-if="showSidebar" />
 

@@ -74,14 +74,12 @@ def get_conversations(
     for convo in conversations:
         if convo.updated_at is None:
             convo.updated_at = get_ph_time()
-        # Add provider_owner_id and names for schema fulfillment
         convo.provider_owner_id = convo.provider.owner_id
         convo.user_name = convo.user.full_name
         convo.shop_name = convo.provider.shop_name
         convo.provider_profile_image = convo.provider.profile_image
         convo.user_profile_image = convo.user.profile_image
         
-        # Calculate unread messages (where sender is NOT current_user)
         convo.unread_count = db.query(Message).filter(
             Message.conversation_id == convo.id,
             Message.is_read == False,
@@ -101,13 +99,11 @@ def mark_as_read(
     if not conversation:
         raise HTTPException(status_code=404, detail="Conversation not found")
     
-    # Verify access
     is_customer = conversation.user_id == current_user.id
     is_provider_owner = conversation.provider.owner_id == current_user.id
     if not is_customer and not is_provider_owner:
         raise HTTPException(status_code=403, detail="Not authorized")
 
-    # Mark as read
     db.query(Message).filter(
         Message.conversation_id == conversation_id,
         Message.sender_id != current_user.id,
@@ -149,27 +145,20 @@ async def send_message(
     if not recipient:
         raise HTTPException(status_code=404, detail="Recipient not found")
     
-    # 1. Determine who is the customer and which provider is involved
-    # Check if current_user is the provider
     current_provider = db.query(Provider).filter(Provider.owner_id == current_user.id).first()
-    # Check if recipient is the provider
     recipient_provider = db.query(Provider).filter(Provider.owner_id == recipient.id).first()
 
     customer_id = None
     provider_id = None
 
     if current_provider and not recipient_provider:
-        # Current user is provider, recipient is customer
         customer_id = recipient.id
         provider_id = current_provider.id
     elif not current_provider and recipient_provider:
-        # Current user is customer, recipient is provider
         customer_id = current_user.id
         provider_id = recipient_provider.id
     else:
-        # Both or neither are providers - might be a chat between two users who are both providers
-        # but in this context, we need to know which provider profile we are chatting with.
-        # If recipient is a provider, prioritize that.
+  
         if recipient_provider:
             customer_id = current_user.id
             provider_id = recipient_provider.id
@@ -199,7 +188,6 @@ async def send_message(
     db.commit()
     db.refresh(db_msg)
 
-    # Populate sender_name for the return and websocket
     db_msg.sender_name = current_user.full_name
 
     msg_data = {

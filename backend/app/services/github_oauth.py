@@ -20,7 +20,6 @@ def get_github_auth_url(role: str = "customer"):
 
 async def get_github_user(code: str):
     async with httpx.AsyncClient() as client:
-        # 1. Get access token
         token_res = await client.post(
             TOKEN_URL,
             headers={"Accept": "application/json"},
@@ -46,7 +45,6 @@ async def get_github_user(code: str):
             "User-Agent": "Kasaup-App"
         }
         
-        # 2. Get user profile
         user_res = await client.get(USER_URL, headers=headers)
         if user_res.status_code != 200:
             raise Exception(f"Failed to get user info from github: {user_res.text}")
@@ -54,7 +52,6 @@ async def get_github_user(code: str):
         user_data = user_res.json()
         email = user_data.get("email")
         
-        # 3. If email is private, get it from /user/emails
         if not email:
             emails_res = await client.get(EMAILS_URL, headers=headers)
             if emails_res.status_code == 200:

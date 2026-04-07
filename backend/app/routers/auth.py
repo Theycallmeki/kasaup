@@ -32,7 +32,6 @@ async def google_callback(code: str, state: str = "customer", db: Session = Depe
     try:
         user_data = await get_google_user(code)
     except Exception as e:
-        # Redirect to login with error
         return RedirectResponse(url=f"{settings.FRONTEND_URL}/login?error=google_auth_failed")
 
     email = user_data["email"]
@@ -42,7 +41,6 @@ async def google_callback(code: str, state: str = "customer", db: Session = Depe
     user = db.query(User).filter(User.email == email).first()
 
     if not user:
-        # Create new user with role from state
         user = User(
             email=email,
             full_name=full_name,
@@ -54,7 +52,6 @@ async def google_callback(code: str, state: str = "customer", db: Session = Depe
         db.commit()
         db.refresh(user)
 
-    # Determine target redirect based on role and profile status
     target_path = "/"
     if user.role == "customer":
         target_path = "/providers"
@@ -66,14 +63,12 @@ async def google_callback(code: str, state: str = "customer", db: Session = Depe
     elif user.role == "admin":
         target_path = "/admin/dashboard"
 
-    # Check approval for providers
     if user.role == "provider" and not user.is_approved:
         return RedirectResponse(url=f"{settings.FRONTEND_URL}/login?error=pending_approval")
 
     access_token = create_access_token({"user_id": user.id})
     refresh_token = create_refresh_token({"user_id": user.id})
 
-    # Redirect to frontend
     response = RedirectResponse(url=f"{settings.FRONTEND_URL}{target_path}?access_token={access_token}&refresh_token={refresh_token}")
 
     response.set_cookie(
@@ -105,7 +100,6 @@ async def github_callback(code: str, state: str = "customer", db: Session = Depe
     try:
         user_data = await get_github_user(code)
     except Exception as e:
-        # Redirect to login with error
         return RedirectResponse(url=f"{settings.FRONTEND_URL}/login?error=github_auth_failed")
 
     email = user_data["email"]
@@ -115,7 +109,6 @@ async def github_callback(code: str, state: str = "customer", db: Session = Depe
     user = db.query(User).filter(User.email == email).first()
 
     if not user:
-        # Create new user with role from state
         user = User(
             email=email,
             full_name=full_name,
@@ -127,7 +120,6 @@ async def github_callback(code: str, state: str = "customer", db: Session = Depe
         db.commit()
         db.refresh(user)
 
-    # Determine target redirect based on role and profile status
     target_path = "/"
     if user.role == "customer":
         target_path = "/providers"
@@ -139,14 +131,12 @@ async def github_callback(code: str, state: str = "customer", db: Session = Depe
     elif user.role == "admin":
         target_path = "/admin/dashboard"
 
-    # Check approval for providers
     if user.role == "provider" and not user.is_approved:
         return RedirectResponse(url=f"{settings.FRONTEND_URL}/login?error=pending_approval")
 
     access_token = create_access_token({"user_id": user.id})
     refresh_token = create_refresh_token({"user_id": user.id})
 
-    # Redirect to frontend
     response = RedirectResponse(url=f"{settings.FRONTEND_URL}{target_path}?access_token={access_token}&refresh_token={refresh_token}")
 
     response.set_cookie(
@@ -255,6 +245,5 @@ def logout(response: Response):
 
 @router.get("/me/", response_model=UserOut, dependencies=[Depends(get_current_user)])
 def get_me(current_user: User = Depends(get_current_user)):
-    # Attach has_profile info for response
     current_user.has_profile = True if current_user.provided_shop else False
     return current_user

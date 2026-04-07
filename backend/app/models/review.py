@@ -14,7 +14,7 @@ class Review(Base):
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     provider_id = Column(Integer, ForeignKey("providers.id", ondelete="CASCADE"), nullable=False)
     
-    rating = Column(Float, nullable=False) # 1.0 to 5.0
+    rating = Column(Float, nullable=False) 
     comment = Column(String, nullable=True)
     
     created_at = Column(DateTime, default=get_ph_time)

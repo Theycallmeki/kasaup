@@ -3,8 +3,10 @@ import { ref, onMounted, computed } from "vue"
 import { useAuthStore } from "../../stores/authStore"
 import LocationPickerMap from "../../components/LocationPickerMap.vue"
 import api from "../../services/api"
+import { useNotification } from "../../hooks/useNotification"
 
 const auth = useAuthStore()
+const { notifySuccess, notifyError } = useNotification()
 const loading = ref(false)
 const message = ref({ text: "", type: "" })
 
@@ -12,6 +14,7 @@ const form = ref({
   full_name: "",
   email: "",
   phone: "",
+  address: "",
   latitude: null as number | null,
   longitude: null as number | null
 })
@@ -26,6 +29,7 @@ onMounted(async () => {
     form.value.full_name = auth.user.full_name || ""
     form.value.email = auth.user.email || ""
     form.value.phone = auth.user.phone || ""
+    form.value.address = auth.user.address || ""
     form.value.latitude = auth.user.latitude || null
     form.value.longitude = auth.user.longitude || null
     profileImageUrl.value = auth.user.profile_image || null
@@ -43,10 +47,13 @@ const saveProfile = async () => {
   try {
     const res = await api.put("/users/me", form.value)
     auth.user = res.data
+    notifySuccess("Success", "Profile updated successfully!")
     message.value = { text: "Profile updated successfully!", type: "success" }
   } catch (err: any) {
+    const errorText = err.response?.data?.detail || "Failed to update profile."
+    notifyError("Error", errorText)
     message.value = { 
-      text: err.response?.data?.detail || "Failed to update profile.", 
+      text: errorText, 
       type: "error" 
     }
   } finally {
@@ -141,6 +148,11 @@ const initials = computed(() => {
           <div class="input-group">
             <label>Phone Number</label>
             <input v-model="form.phone" type="tel" placeholder="0917XXXXXXX" />
+          </div>
+
+          <div class="input-group">
+            <label>Street Address</label>
+            <input v-model="form.address" type="text" placeholder="House No., Street, Brgy, City" />
           </div>
 
           <div v-if="message.text" :class="['alert', message.type]">

@@ -2,9 +2,11 @@
 import { ref, computed, onMounted, watch } from "vue"
 import { useRouter } from "vue-router"
 import { useAppointmentStore } from "../../stores/appointmentStore"
+import { useAuthStore } from "../../stores/authStore"
 import CustomerLocationMapCard from "../../components/CustomerLocationMapCard.vue"
 
 const appointmentStore = useAppointmentStore()
+const authStore = useAuthStore()
 const router = useRouter()
 const activeTab = ref<"pending" | "upcoming" | "past">("pending")
 const selectedApp = ref<any>(null)
@@ -23,7 +25,6 @@ const filteredItems = computed(() => {
 })
 
 function selectApp(app: any) {
-  if (!app.customer_latitude || !app.customer_longitude) return
   selectedApp.value = selectedApp.value?.id === app.id ? null : app
 }
 
@@ -135,7 +136,7 @@ const formatDateTime = (iso: string) => {
                 <h3 class="svc-name">{{ app.service_name }}</h3>
                 <div class="cb-badges">
                   <span class="badge" :class="statusClass(app.status)">{{ app.status }}</span>
-                  <span v-if="app.customer_latitude && app.customer_longitude" class="badge badge-home">
+                  <span v-if="app.customer_latitude && app.customer_longitude || app.customer_address" class="badge badge-home">
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline;vertical-align:middle;margin-right:4px">
                       <polygon points="3 11 22 2 13 21 11 13 3 11"/>
                     </svg>
@@ -149,7 +150,12 @@ const formatDateTime = (iso: string) => {
                    <img v-if="app.customer_profile_image" :src="app.customer_profile_image" alt="" class="ci-avatar-img" />
                    <span v-else>{{ app.customer_name.charAt(0).toUpperCase() }}</span>
                  </div>
-                 <div class="ci-name">{{ app.customer_name }}</div>
+                 <div class="ci-details">
+                    <div class="ci-name">{{ app.customer_name }}</div>
+                    <div v-if="app.customer_address" class="ci-address">
+                      {{ app.customer_address }}
+                    </div>
+                 </div>
               </div>
 
               <!-- Actions row -->
@@ -167,7 +173,7 @@ const formatDateTime = (iso: string) => {
                 </div>
                 
                 <button 
-                  v-if="app.customer_latitude && app.customer_longitude"
+                  v-if="app.customer_latitude && app.customer_longitude || app.customer_address"
                   class="map-toggle-btn"
                   :class="{ open: selectedApp?.id === app.id }"
                   @click="selectApp(app)"
@@ -186,10 +192,13 @@ const formatDateTime = (iso: string) => {
 
       <!-- Customer Location Map Card (right sidebar) -->
       <CustomerLocationMapCard
-        :show="Boolean(selectedApp && selectedApp.customer_latitude && selectedApp.customer_longitude)"
+        :show="Boolean(selectedApp)"
         :lat="selectedApp?.customer_latitude ?? null"
         :lng="selectedApp?.customer_longitude ?? null"
         :customerName="selectedApp?.customer_name"
+        :address="selectedApp?.customer_address"
+        :providerLat="authStore.user?.latitude"
+        :providerLng="authStore.user?.longitude"
       />
     </div>
   </div>
@@ -474,10 +483,23 @@ const formatDateTime = (iso: string) => {
   object-fit: cover;
 }
 
+.ci-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
 .ci-name {
   font-size: 0.95rem;
-  color: rgba(255,255,255,0.6);
-  font-weight: 500;
+  color: #fff;
+  font-weight: 600;
+}
+.ci-address {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .cb-bottom {

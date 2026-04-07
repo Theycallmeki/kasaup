@@ -36,6 +36,5 @@ class Message(Base):
     is_read = Column(Boolean, default=False)
     created_at = Column(DateTime, default=get_ph_time)
     
-    # Relationships
     conversation = relationship("Conversation", back_populates="messages")
     sender = relationship("User", back_populates="sent_messages")

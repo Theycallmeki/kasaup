@@ -6,8 +6,12 @@ import { useAppointmentStore } from "../../stores/appointmentStore"
 import HomeServiceMapCard from "../../components/HomeServiceMapCard.vue"
 import api from "../../services/api"
 import { useRouter } from "vue-router"
+import { useConfirm } from "primevue/useconfirm"
+import { useNotification } from "../../hooks/useNotification"
 
 const router = useRouter()
+const confirm = useConfirm()
+const { notifySuccess, notifyError } = useNotification()
 const route = useRoute()
 const providerStore = useProviderStore()
 const appointmentStore = useAppointmentStore()
@@ -124,6 +128,16 @@ function setLocation(data: any) {
 }
 
 async function book(serviceId: number, slot: string) {
+  confirm.require({
+    message: 'Are you sure you want to book this appointment?',
+    header: 'Confirm Booking',
+    icon: 'pi pi-exclamation-triangle',
+    accept: () => proceedWithBooking(serviceId, slot),
+    reject: () => { }
+  })
+}
+
+async function proceedWithBooking(serviceId: number, slot: string) {
   bookingLoading.value = true
   errorMsg.value = ""
   try {
@@ -132,7 +146,9 @@ async function book(serviceId: number, slot: string) {
 
     const isHome = serviceLocationType.value === "home"
     if (isHome && (!customerLat.value || !customerLng.value)) {
-      errorMsg.value = "Please pin your location for Home Service."
+      const msg = "Please pin your location for Home Service."
+      errorMsg.value = msg
+      notifyError("Location Required", msg)
       bookingLoading.value = false
       return
     }
@@ -146,10 +162,13 @@ async function book(serviceId: number, slot: string) {
       customer_longitude: isHome ? customerLng.value : null
     })
 
+    notifySuccess("Success", "Appointment booked successfully!")
     await fetchSlots()
     await appointmentStore.fetchAppointments()
-  } catch (e) {
-    errorMsg.value = "Booking failed. Try again."
+  } catch (e: any) {
+    const msg = e.response?.data?.detail || "Booking failed. Try again."
+    errorMsg.value = msg
+    notifyError("Booking Error", msg)
   } finally {
     bookingLoading.value = false
   }

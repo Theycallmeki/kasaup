@@ -22,6 +22,7 @@ class User(Base):
     
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
+    address = Column(String, nullable=True)
     profile_image = Column(String, nullable=True)
     is_approved = Column(Boolean, default=True, nullable=False)
     

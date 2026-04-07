@@ -20,5 +20,4 @@ class Service(Base):
     category = relationship("Category", back_populates="services")
     images = relationship("ServiceImage", back_populates="service", cascade="all, delete-orphan")
 
-    # If service is deleted, its appointments should also be removed.
     appointments = relationship("Appointment", back_populates="service", cascade="all, delete-orphan")

@@ -28,6 +28,7 @@ class AppointmentResponse(BaseModel):
 
     service_name: str
     customer_name: str
+    customer_address: str | None = None
     provider_name: str
     customer_profile_image: str | None = None
 

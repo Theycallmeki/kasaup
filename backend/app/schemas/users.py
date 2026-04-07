@@ -8,6 +8,7 @@ class UserCreate(BaseModel):
     full_name: str | None = None
     phone: str | None = None
     role: str | None = "customer"
+    address: str | None = None
 
 
 class UserUpdate(BaseModel):
@@ -17,6 +18,7 @@ class UserUpdate(BaseModel):
     password: str | None = None
     latitude: float | None = None
     longitude: float | None = None
+    address: str | None = None
 
 
 class UserResponse(BaseModel):
@@ -27,6 +29,7 @@ class UserResponse(BaseModel):
     role: str
     latitude: float | None
     longitude: float | None
+    address: str | None = None
     profile_image: str | None = None
     is_approved: bool = True
     has_profile: bool = False
@@ -44,6 +47,7 @@ class UserOut(BaseModel):
     role: str
     latitude: float | None
     longitude: float | None
+    address: str | None = None
     profile_image: str | None = None
     is_approved: bool = True
     has_profile: bool = False

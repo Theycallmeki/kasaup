@@ -7,10 +7,52 @@ const props = defineProps<{
   lat: number | null
   lng: number | null
   customerName?: string
+  address?: string
+  providerLat?: number | null
+  providerLng?: number | null
 }>()
 
 let map: any = null
+let routeLayer: any = null
 const mapReady = ref(false)
+
+async function drawRoute() {
+  if (!props.lat || !props.lng || !props.providerLat || !props.providerLng) return
+  if (!map) return
+
+  try {
+    const url = `https://router.project-osrm.org/route/v1/driving/${props.providerLng},${props.providerLat};${props.lng},${props.lat}?overview=full&geometries=geojson`
+    const res = await fetch(url)
+    const data = await res.json()
+    const route = data?.routes?.[0]
+
+    if (route?.geometry) {
+      if (routeLayer) map.removeLayer(routeLayer)
+
+      routeLayer = L.geoJSON(route.geometry, {
+        style: { color: "#a78bfa", weight: 4, opacity: 0.8 }
+      }).addTo(map)
+
+      const providerIcon = L.divIcon({
+        className: "",
+        html: `<div class="provider-shop-pin"></div>`,
+        iconSize: [16, 16],
+        iconAnchor: [8, 8]
+      })
+
+      L.marker([props.providerLat, props.providerLng], { icon: providerIcon })
+        .addTo(map)
+        .bindPopup("Your Shop")
+
+      const bounds = routeLayer.getBounds()
+      if (bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 })
+      }
+    }
+  } catch (err) {
+    console.error("Routing error:", err)
+  }
+}
 
 function initMap() {
   if (!props.lat || !props.lng) return
@@ -38,7 +80,12 @@ function initMap() {
 
   L.marker([props.lat, props.lng], { icon: pinIcon }).addTo(map)
 
-  setTimeout(() => map?.invalidateSize(), 150)
+  if (props.providerLat && props.providerLng) {
+    drawRoute()
+  } else {
+    setTimeout(() => map?.invalidateSize(), 150)
+  }
+  
   mapReady.value = true
 }
 
@@ -80,6 +127,11 @@ watch(() => [props.show, props.lat, props.lng], ([show]) => {
         </div>
         <div v-else class="map-empty">
           <span>No location data available</span>
+        </div>
+
+        <div v-if="address" class="map-coords" style="border-top: none; padding-top: 0; margin-bottom: 20px;">
+          <span class="coord-label">Street Address</span>
+          <span class="address-val">{{ address }}</span>
         </div>
 
         <div v-if="lat && lng" class="map-coords">
@@ -193,6 +245,14 @@ watch(() => [props.show, props.lat, props.lng], ([show]) => {
   font-weight: 500;
 }
 
+.address-val {
+  font-size: 14px;
+  color: #fff;
+  font-weight: 500;
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
 /* Transition */
 .slide-in-enter-active,
 .slide-in-leave-active {
@@ -240,5 +300,12 @@ watch(() => [props.show, props.lat, props.lng], ([show]) => {
   border-radius: 50%;
   background: #38bdf8;
   box-shadow: 0 0 0 5px rgba(56, 189, 248, 0.25);
+}
+.provider-shop-pin {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 0 5px rgba(52, 211, 153, 0.25);
 }
 </style>

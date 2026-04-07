@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue"
 import L from "leaflet"
+import { useUserLocation } from "../hooks/useUserLocation"
 
 const emit = defineEmits(["location-selected"])
+
+const { getSavedLocation } = useUserLocation()
 
 const lat = ref<number | null>(null)
 const lng = ref<number | null>(null)
@@ -17,31 +20,36 @@ const customPin = L.divIcon({
   iconAnchor: [8, 8]
 })
 
-function useMyLocation() {
-  if (!navigator.geolocation) return
+function updateMap(newLat: number, newLng: number) {
+  lat.value = newLat
+  lng.value = newLng
 
+  emit("location-selected", {
+    latitude: newLat,
+    longitude: newLng
+  })
+
+  if (map) {
+    map.setView([newLat, newLng], 15)
+    if (marker) {
+      marker.setLatLng([newLat, newLng])
+    } else {
+      marker = L.marker([newLat, newLng], { icon: customPin }).addTo(map)
+    }
+  }
+}
+
+function useMyLocation() {
+  const saved = getSavedLocation()
+  if (saved && saved.latitude && saved.longitude) {
+    updateMap(saved.latitude, saved.longitude)
+    return
+  }
+
+  if (!navigator.geolocation) return
   navigator.geolocation.getCurrentPosition(
     (pos) => {
-      const newLat = pos.coords.latitude
-      const newLng = pos.coords.longitude
-
-      lat.value = newLat
-      lng.value = newLng
-
-      emit("location-selected", {
-        latitude: newLat,
-        longitude: newLng
-      })
-
-      if (map) {
-        map.setView([newLat, newLng], 15)
-
-        if (marker) {
-          marker.setLatLng([newLat, newLng])
-        } else {
-          marker = L.marker([newLat, newLng], { icon: customPin }).addTo(map)
-        }
-      }
+      updateMap(pos.coords.latitude, pos.coords.longitude)
     },
     (err) => {
       console.warn("Location permission denied or unavailable.", err)
