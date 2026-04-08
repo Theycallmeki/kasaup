@@ -643,8 +643,8 @@ const formatDateTime = (iso: string) => {
 .badge-default   { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); border: 0.5px solid rgba(255,255,255,0.12); }
 .badge-home      { background: rgba(56,189,248,0.15); color: #38bdf8; border: 0.5px solid rgba(56,189,248,0.3); }
 
-@media (max-width: 600px) {
-  .page { padding: 20px 14px; }
+@media (max-width: 768px) {
+  .page { padding: 20px 14px 140px; }
   .app-card { flex-direction: column; }
   .card-left-strip {
     width: 100%;

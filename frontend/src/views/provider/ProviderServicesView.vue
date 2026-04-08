@@ -9,7 +9,7 @@ import api from "../../services/api"
 const serviceStore = useServiceStore()
 const authStore = useAuthStore()
 const { startLoading, stopLoading } = useLoading()
-const { scrollRef: imagesScroll } = useScroll()
+const { scrollRef: pageScroll } = useScroll()
 
 const providerId = ref<number | null>(null)
 const editingId = ref<number | null>(null)
@@ -134,7 +134,7 @@ function getService(id: number) {
 </script>
 
 <template>
-  <div class="page">
+  <div class="page" ref="pageScroll">
 
     <div class="page-header">
       <h1 class="title">My Services</h1>
@@ -180,7 +180,7 @@ function getService(id: number) {
               </div>
             </div>
 
-            <div v-if="service.images?.length" class="service-images" ref="imagesScroll">
+            <div v-if="service.images?.length" class="service-images">
               <img
                 v-for="img in service.images"
                 :key="img.id"
@@ -588,8 +588,10 @@ label {
   .cards { grid-template-columns: 1fr; }
 }
 
-@media (max-width: 540px) {
-  .page { padding: 24px 16px; }
+@media (max-width: 768px) {
+  .page { 
+    padding: 24px 16px 140px; 
+  }
   .field-row { grid-template-columns: 1fr; }
   .card-content { flex-direction: column; gap: 12px; }
   .service-images { width: 100%; overflow-x: auto; }

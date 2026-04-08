@@ -84,7 +84,12 @@ const createService = async () => {
   <div class="page">
 
     <div class="left-panel full">
-      <h1 class="title">Create Service</h1>
+      
+      <div class="page-header">
+        <p class="eyebrow">Service Management</p>
+        <h1 class="title">Create Service</h1>
+        <p class="hint">Fill in the details below to add a new service to your profile.</p>
+      </div>
 
       <div class="form">
 
@@ -204,10 +209,9 @@ const createService = async () => {
 
 .page {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   background: #0e0c1a;
   font-family: 'DM Sans', sans-serif;
-  overflow: hidden;
 }
 
 .left-panel.full {
@@ -217,19 +221,38 @@ const createService = async () => {
   padding: 36px 28px;
 }
 
+.page-header {
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  color: #a78bfa;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+
 .title {
   font-family: 'Sora', sans-serif;
-  font-size: 1.4rem;
+  font-size: 1.8rem;
   font-weight: 700;
   color: #fff;
-  letter-spacing: -0.01em;
-  margin: 0 0 24px;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+}
+
+.hint {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 18px;
 }
 
 .field {
@@ -365,7 +388,7 @@ select.input option {
   font-weight: 500;
   cursor: pointer;
   transition: opacity 0.15s, transform 0.15s;
-  margin-top: 4px;
+  margin-top: 12px;
 }
 .submit-btn:hover:not(:disabled) {
   opacity: 0.9;
@@ -375,5 +398,10 @@ select.input option {
   opacity: 0.45;
   cursor: not-allowed;
   transform: none;
+}
+@media (max-width: 768px) {
+  .left-panel.full {
+    padding: 48px 20px 140px;
+  }
 }
 </style>

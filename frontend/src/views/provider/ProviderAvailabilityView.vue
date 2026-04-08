@@ -770,6 +770,7 @@ const dayShort = ["S", "M", "T", "W", "T", "F", "S"]
 
 /* Responsive */
 @media (max-width: 900px) {
+  .page { padding: 24px 16px 120px; }
   .layout-grid {
     flex-direction: column;
   }

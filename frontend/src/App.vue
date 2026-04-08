@@ -79,9 +79,10 @@ onMounted(async () => {
   }
 
   .content{
-    height: 100%;
+    min-height: 100vh;
+    height: auto;
     padding: 0;
-    padding-bottom: 64px;
+    padding-bottom: 150px; /* Increased to provide plenty of scroll space */
   }
 }
 
