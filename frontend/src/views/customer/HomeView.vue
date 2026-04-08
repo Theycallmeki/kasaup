@@ -4,10 +4,10 @@
     <div class="bg-orb orb2" />
 
     <div class="hero-card">
-      <span class="eyebrow">Local Services</span>
+      <span class="eyebrow">Manpower Services</span>
       <h1 class="title">Kasa<span class="accent">up</span></h1>
       <p class="subtitle">
-        Find trusted local services near you — fast, easy, and reliable.
+        Find trusted local services near you  fast, easy, and reliable.
       </p>
 
       <div class="actions">
@@ -27,11 +27,6 @@
         </button>
       </div>
 
-      <div class="trust-dots">
-        <span class="dot-item"><span class="dot" />Free to browse</span>
-        <span class="dot-item"><span class="dot" />Verified providers</span>
-        <span class="dot-item"><span class="dot" />Near you</span>
-      </div>
     </div>
   </div>
 </template>

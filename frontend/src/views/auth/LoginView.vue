@@ -137,7 +137,7 @@ const githubLogin = () => {
 
       <p class="register">
         Don't have an account?
-        <router-link to="/auth">Register as Customer or Provider</router-link>
+        <router-link to="/auth">Register </router-link>
       </p>
     </div>
   </div>
