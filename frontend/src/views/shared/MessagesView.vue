@@ -19,6 +19,9 @@ const pendingShopName = ref<string | null>(null);
 const showDeleteConfirm = ref(false);
 const conversationToDelete = ref<any>(null);
 
+// Mobile panel state: 'list' | 'chat'
+const mobilePanel = ref<'list' | 'chat'>('list');
+
 onMounted(async () => {
   await messageStore.fetchConversations();
   if (authStore.user) {
@@ -39,6 +42,7 @@ onMounted(async () => {
       messageStore.activeMessages = [];
       pendingReceiverId.value = receiverId;
       pendingShopName.value = shopName || `Provider #${providerId}`;
+      mobilePanel.value = 'chat';
     }
   } else if (receiverId) {
     const existing = messageStore.conversations.find(c => c.user_id === receiverId);
@@ -50,6 +54,7 @@ onMounted(async () => {
       messageStore.activeMessages = [];
       pendingReceiverId.value = receiverId;
       pendingShopName.value = customerName || `User #${receiverId}`;
+      mobilePanel.value = 'chat';
     }
   }
 });
@@ -59,7 +64,12 @@ const selectConversation = async (id: number) => {
   pendingShopName.value = null;
   await messageStore.fetchMessages(id);
   await messageStore.markAsRead(id);
+  mobilePanel.value = 'chat';
   scrollToBottom();
+};
+
+const goBackToList = () => {
+  mobilePanel.value = 'list';
 };
 
 const sendMessage = async () => {
@@ -167,7 +177,7 @@ const activeConversation = computed(() => {
 </script>
 
 <template>
-  <div class="page">
+  <div class="page" :data-panel="mobilePanel">
     <div class="page-header">
       <h1 class="title">Messages</h1>
       <p class="hint">Keep in touch with your service providers and clients.</p>
@@ -220,6 +230,12 @@ const activeConversation = computed(() => {
       <div class="chat-window">
         <template v-if="messageStore.activeConversationId">
           <div class="chat-header">
+            <!-- Mobile back button -->
+            <button class="back-btn" @click="goBackToList" aria-label="Back to conversations">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 5l-7 7 7 7" />
+              </svg>
+            </button>
             <div class="header-info">
               <template v-if="messageStore.activeConversationId === -1">
                 <div class="avatar sm">{{ pendingShopName?.charAt(0) }}</div>
