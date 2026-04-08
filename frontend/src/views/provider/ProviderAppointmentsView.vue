@@ -240,9 +240,9 @@ const formatDateTime = (iso: string) => {
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@700&family=DM+Sans:wght@400;500;600;700&display=swap');
 
 .page {
-  min-height: 100vh;
+  min-height: auto;
   background: #0e0c1a;
-  padding: 36px 32px;
+  padding: 24px 16px;
   font-family: 'DM Sans', sans-serif;
   color: #fff;
 }
@@ -361,6 +361,10 @@ const formatDateTime = (iso: string) => {
   background: rgba(255,255,255,0.015);
   border: 1px dashed rgba(255,255,255,0.1);
   border-radius: 20px;
+  min-height: 260px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 .empty-icon {
   color: rgba(167,139,250,0.6);
@@ -644,13 +648,13 @@ const formatDateTime = (iso: string) => {
 .badge-home      { background: rgba(56,189,248,0.15); color: #38bdf8; border: 0.5px solid rgba(56,189,248,0.3); }
 
 @media (max-width: 768px) {
-  .page { padding: 20px 14px 140px; }
+  .page { padding: 16px 12px 120px; }
   .app-card { flex-direction: column; }
   .card-left-strip {
     width: 100%;
     flex-direction: row;
     justify-content: space-between;
-    padding: 12px 20px;
+    padding: 10px 16px;
     border-right: none;
     border-bottom: 1px dashed rgba(255,255,255,0.05);
   }

@@ -172,7 +172,7 @@ const activeConversation = computed(() => {
 </script>
 
 <template>
-  <div class="page" :data-panel="mobilePanel">
+  <div class="page full-height" :data-panel="mobilePanel">
     <div class="page-header">
       <h1 class="title">Messages</h1>
       <p class="hint">Keep in touch with your service providers and clients.</p>

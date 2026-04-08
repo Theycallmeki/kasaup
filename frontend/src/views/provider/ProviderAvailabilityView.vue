@@ -297,9 +297,10 @@ const dayShort = ["S", "M", "T", "W", "T", "F", "S"]
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@700&family=DM+Sans:wght@400;500;600&display=swap');
 
 .page {
-  min-height: 100vh;
+  min-height: auto;
   background: #0e0c1a;
   padding: 36px 32px;
+  padding-bottom: 200px;
   font-family: 'DM Sans', sans-serif;
   color: #fff;
 }
@@ -768,9 +769,8 @@ const dayShort = ["S", "M", "T", "W", "T", "F", "S"]
   color: #e5e7eb;
 }
 
-/* Responsive */
 @media (max-width: 900px) {
-  .page { padding: 24px 16px 120px; }
+  .page { padding: 24px 16px 220px; }
   .layout-grid {
     flex-direction: column;
   }

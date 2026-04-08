@@ -2,7 +2,6 @@
 import { onMounted, computed } from "vue"
 import { useRoute } from "vue-router"
 import { useAuthStore } from "./stores/authStore"
-import { useScroll } from "./hooks/useScroll"
 import { useMessageStore } from "./stores/messageStore"
 
 import Sidebar from "./components/Sidebar.vue"
@@ -13,7 +12,6 @@ import ConfirmDialog from 'primevue/confirmdialog'
 const auth = useAuthStore()
 const messageStore = useMessageStore()
 const route = useRoute()
-const { scrollRef: layoutScroll } = useScroll()
 
 const hideSidebarRoutes = ["/provider/create-profile", "/auth/login", "/auth/register"]
 const showSidebar = computed(() => {
@@ -21,11 +19,9 @@ const showSidebar = computed(() => {
 })
 
 onMounted(async () => {
-  // One-time cleanup of stale localStorage entries to ensure a clean migration to cookies.
-  const staleKeys = ["access_token", "refresh_token", "kasaup:user_location_v1", "pos_cart", "token"];
-  staleKeys.forEach(key => localStorage.removeItem(key));
-  
-  // Authentication is now cookie-based and handled by the browser.
+  const staleKeys = ["access_token", "refresh_token", "kasaup:user_location_v1", "pos_cart", "token"]
+  staleKeys.forEach(key => localStorage.removeItem(key))
+
   await auth.fetchUser()
 
   if (auth.user) {
@@ -39,7 +35,8 @@ onMounted(async () => {
   <Toast />
   <ConfirmDialog />
   <GlobalLoader />
-  <div class="layout" ref="layoutScroll">
+
+  <div class="layout">
     <Sidebar v-if="showSidebar" />
 
     <main class="content">
@@ -57,32 +54,24 @@ onMounted(async () => {
 
 .layout {
   display: flex;
-  min-height: 100vh; /* Changed from height: 100vh */
-  width: 100vw;
-  /* Allow scrolling to handle long forms and profile creation */
-  overflow-y: auto;
+  height: 100vh;
+  overflow: hidden;
+  width: 100%;
 }
 
 .content {
   flex: 1;
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
+  height: 100vh;
+  overflow-y: auto;
+  padding-bottom: 120px;
   background: #0e0c1a;
   display: flex;
   flex-direction: column;
 }
 
 @media (max-width: 768px){
-  .layout{
-    flex-direction: row;
-  }
-
   .content{
-    min-height: 100vh;
-    height: auto;
-    padding: 0;
-    padding-bottom: 150px; /* Increased to provide plenty of scroll space */
+    padding-bottom: 140px;
   }
 }
 

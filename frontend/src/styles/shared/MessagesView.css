@@ -8,14 +8,16 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
-  padding: 28px 24px 24px;
-  background: #0e0c1a;
-  font-family: 'DM Sans', sans-serif;
-  overflow: hidden;
+  padding: 5px 8px 5px;
+}
+
+.page.full-height {
+  flex: 1;
+  height: 100%;
 }
 
 .page-header {
-  margin-bottom: 20px;
+  margin-bottom: 8px;
   flex-shrink: 0;
 }
 
@@ -39,7 +41,7 @@
 ═══════════════════════════════════════ */
 .chat-container {
   flex: 1;
-  min-height: 0;
+  min-height: calc(100vh - 110px);
   display: flex;
   background: rgba(255, 255, 255, 0.025);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -52,7 +54,7 @@
    SIDEBAR
 ═══════════════════════════════════════ */
 .sidebar {
-  width: 300px;
+  width: 420px;
   flex-shrink: 0;
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
@@ -70,13 +72,16 @@
 .conversation-list::-webkit-scrollbar {
   width: 4px;
 }
+
 .conversation-list::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .conversation-list::-webkit-scrollbar-thumb {
   background: rgba(167, 139, 250, 0.15);
   border-radius: 100px;
 }
+
 .conversation-list::-webkit-scrollbar-thumb:hover {
   background: rgba(167, 139, 250, 0.3);
 }
@@ -182,7 +187,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 140px;
+  max-width: 250px;
 }
 
 .time {
@@ -306,13 +311,16 @@
 .messages-area::-webkit-scrollbar {
   width: 4px;
 }
+
 .messages-area::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .messages-area::-webkit-scrollbar-thumb {
   background: rgba(167, 139, 250, 0.1);
   border-radius: 100px;
 }
+
 .messages-area::-webkit-scrollbar-thumb:hover {
   background: rgba(167, 139, 250, 0.25);
 }
@@ -320,7 +328,7 @@
 .message-wrapper {
   display: flex;
   flex-direction: column;
-  max-width: 70%;
+  max-width: 85%;
   align-self: flex-start;
 }
 
@@ -543,6 +551,7 @@
   color: rgba(255, 255, 255, 0.7);
   border: 0.5px solid rgba(255, 255, 255, 0.1) !important;
 }
+
 .btn-cancel:hover {
   background: rgba(255, 255, 255, 0.09);
   color: #fff;
@@ -552,6 +561,7 @@
   background: #f87171;
   color: #fff;
 }
+
 .btn-delete:hover {
   background: #ef4444;
   transform: translateY(-1px);
@@ -561,13 +571,25 @@
    ANIMATIONS
 ═══════════════════════════════════════ */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ═══════════════════════════════════════
@@ -577,13 +599,13 @@
 ═══════════════════════════════════════ */
 @media (max-width: 768px) {
   .page {
-    padding: 20px 12px 12px;
+    padding: 8px 8px 0;
     height: 100%;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .page-header {
-    margin-bottom: 14px;
+    margin-bottom: 6px;
   }
 
   .title {
@@ -592,8 +614,8 @@
 
   .chat-container {
     flex: 1;
-    min-height: 0;
-    border-radius: 16px;
+    min-height: calc(100vh - 160px);
+    border-radius: 8px;
     position: relative;
     overflow: hidden;
   }

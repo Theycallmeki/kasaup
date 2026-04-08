@@ -215,12 +215,12 @@ const save = async () => {
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@700&family=DM+Sans:wght@400;500&display=swap');
 
 .page {
-  min-height: 100vh;
+  min-height: auto;
   background: #0e0c1a;
   padding: 36px 32px;
+  padding-bottom: 200px;
   font-family: 'DM Sans', sans-serif;
 }
-
 .page-header {
   margin-bottom: 28px;
 }
@@ -475,7 +475,7 @@ const save = async () => {
 
 @media (max-width: 640px) {
   .page {
-    padding: 24px 16px;
+    padding: 24px 16px 220px;
   }
 
   .field-row {
