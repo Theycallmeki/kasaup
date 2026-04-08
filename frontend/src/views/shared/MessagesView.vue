@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch, nextTick } from 'vue';
+import { useScroll } from '../../hooks/useScroll';
 import { useRoute } from 'vue-router';
 import { useMessageStore } from '../../stores/messageStore';
 import { useAuthStore } from '../../stores/authStore';
@@ -11,7 +12,7 @@ const messageStore = useMessageStore();
 const authStore = useAuthStore();
 
 const newMessage = ref('');
-const messagesDropdown = ref<HTMLElement | null>(null);
+const { scrollRef: messagesDropdown, scrollToBottom } = useScroll();
 
 const pendingReceiverId = ref<number | null>(null);
 const pendingShopName = ref<string | null>(null);
@@ -115,13 +116,7 @@ const sendMessage = async () => {
   }
 };
 
-const scrollToBottom = () => {
-  nextTick(() => {
-    if (messagesDropdown.value) {
-      messagesDropdown.value.scrollTop = messagesDropdown.value.scrollHeight;
-    }
-  });
-};
+/* scrollToBottom logic is now handled by the useScroll hook */
 
 const confirmDelete = (conv: any) => {
   conversationToDelete.value = conv;

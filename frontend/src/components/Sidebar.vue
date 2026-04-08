@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from "vue"
+import { useScroll } from "../hooks/useScroll"
 import { useAuthStore } from "../stores/authStore"
 import { useMessageStore } from "../stores/messageStore"
 import { useRouter } from "vue-router"
@@ -7,6 +8,7 @@ import { useRouter } from "vue-router"
 const auth = useAuthStore()
 const messageStore = useMessageStore()
 const router = useRouter()
+const { scrollRef: navScroll } = useScroll()
 
 const collapsed = ref(false)
 const mobileDrawerOpen = ref(false)
@@ -106,7 +108,7 @@ const icons: Record<string, string> = {
 
     <div v-if="!collapsed && role" class="role-badge">{{ role }}</div>
 
-    <nav id="sidebar-nav" class="nav">
+    <nav id="sidebar-nav" class="nav" ref="navScroll">
       <router-link
         v-for="item in menuItems"
         :key="item.path"

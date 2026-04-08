@@ -2,12 +2,14 @@
 import { onMounted, ref } from "vue"
 import { useServiceStore } from "../../stores/serviceStore"
 import { useAuthStore } from "../../stores/authStore"
+import { useScroll } from "../../hooks/useScroll"
 import { useLoading } from "../../hooks/useLoading"
 import api from "../../services/api"
 
 const serviceStore = useServiceStore()
 const authStore = useAuthStore()
 const { startLoading, stopLoading } = useLoading()
+const { scrollRef: imagesScroll } = useScroll()
 
 const providerId = ref<number | null>(null)
 const editingId = ref<number | null>(null)
@@ -178,7 +180,7 @@ function getService(id: number) {
               </div>
             </div>
 
-            <div v-if="service.images?.length" class="service-images">
+            <div v-if="service.images?.length" class="service-images" ref="imagesScroll">
               <img
                 v-for="img in service.images"
                 :key="img.id"

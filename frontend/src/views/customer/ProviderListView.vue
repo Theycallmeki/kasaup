@@ -8,10 +8,12 @@ import {
   SEARCH_MATCH_THRESHOLD,
 } from "../../utils/providerSearch"
 import { getCategories } from "../../services/categories"
+import { useScroll } from "../../hooks/useScroll"
 import { useLoading } from "../../hooks/useLoading"
 
 const providerStore = useProviderStore()
 const { startLoading, stopLoading } = useLoading()
+const { scrollRef: suggestionScroll } = useScroll()
 
 const userLat = ref<number | null>(null)
 const userLng = ref<number | null>(null)
@@ -323,7 +325,7 @@ const activeFilterCount = computed(() => {
           </button>
 
           <!-- Suggestion Dropdown -->
-          <ul v-show="showSuggestionDropdown" class="suggest-dropdown">
+          <ul v-show="showSuggestionDropdown" class="suggest-dropdown" ref="suggestionScroll">
             <li v-for="(p, i) in suggestions" :key="String(p.id)" class="suggest-item"
               :class="{ active: i === highlightIndex }" @mousedown.prevent="selectSuggestion(p)">
               <div class="suggest-title">{{ p.shop_name }}</div>

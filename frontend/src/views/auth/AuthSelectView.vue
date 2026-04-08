@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router"
+import { useScroll } from "../../hooks/useScroll"
 
 const router = useRouter()
+const { scrollRef: pageScroll } = useScroll()
 
 const goCustomer = () => router.push("/register?role=customer")
 const goProvider = () => router.push("/register?role=provider")
 </script>
 
 <template>
-  <div class="auth-page">
+  <div class="auth-page" ref="pageScroll">
     <div class="bg-orb orb1" />
     <div class="bg-orb orb2" />
 

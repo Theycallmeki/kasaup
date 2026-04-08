@@ -2,6 +2,7 @@
 import { onMounted, computed } from "vue"
 import { useRoute } from "vue-router"
 import { useAuthStore } from "./stores/authStore"
+import { useScroll } from "./hooks/useScroll"
 import { useMessageStore } from "./stores/messageStore"
 
 import Sidebar from "./components/Sidebar.vue"
@@ -12,6 +13,7 @@ import ConfirmDialog from 'primevue/confirmdialog'
 const auth = useAuthStore()
 const messageStore = useMessageStore()
 const route = useRoute()
+const { scrollRef: layoutScroll } = useScroll()
 
 const hideSidebarRoutes = ["/provider/create-profile", "/auth/login", "/auth/register"]
 const showSidebar = computed(() => {
@@ -37,7 +39,7 @@ onMounted(async () => {
   <Toast />
   <ConfirmDialog />
   <GlobalLoader />
-  <div class="layout">
+  <div class="layout" ref="layoutScroll">
     <Sidebar v-if="showSidebar" />
 
     <main class="content">

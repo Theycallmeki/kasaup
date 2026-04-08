@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue"
+import { useScroll } from "../../hooks/useScroll"
 import { useAppointmentStore } from "../../stores/appointmentStore"
 import RatingModal from "../../components/RatingModal.vue"
 import { useLoading } from "../../hooks/useLoading"
 
 const appointmentStore = useAppointmentStore()
 const { startLoading, stopLoading } = useLoading()
+const { scrollRef: cardsScroll } = useScroll()
 
 const ratingModalOpen = ref(false)
 const selectedAppointmentId = ref<number | null>(null)
@@ -146,7 +148,7 @@ watch(totalPages, (tp) => {
         Showing {{ rangeStart }}–{{ rangeEnd }} of {{ sortedAppointments.length }}
       </p>
 
-      <div class="cards-scroll">
+      <div class="cards-scroll" ref="cardsScroll">
         <div v-for="appointment in paginatedAppointments" :key="appointment.id" class="card"
           :class="{ 'card-cancelled': appointment.status === 'cancelled' }">
           <div class="card-top">

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue"
 import { useRouter, useRoute } from "vue-router"
+import { useScroll } from "../../hooks/useScroll"
 import { useAuthStore } from "../../stores/authStore"
 import { useNotification } from "../../hooks/useNotification"
 
@@ -8,6 +9,7 @@ const router = useRouter()
 const route = useRoute()
 const auth = useAuthStore()
 const { notifySuccess, notifyError } = useNotification()
+const { scrollRef: pageScroll } = useScroll()
 
 const email = ref("")
 const password = ref("")
@@ -60,7 +62,7 @@ const goGithub = () => {
 </script>
 
 <template>
-  <div class="register-page">
+  <div class="register-page" ref="pageScroll">
     <div class="bg-orb orb1" />
     <div class="bg-orb orb2" />
 

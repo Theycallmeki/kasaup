@@ -3,6 +3,7 @@ import { ref, computed, onMounted, watch } from "vue"
 import { useRouter } from "vue-router"
 import { useAppointmentStore } from "../../stores/appointmentStore"
 import { useAuthStore } from "../../stores/authStore"
+import { useScroll } from "../../hooks/useScroll"
 import { useLoading } from "../../hooks/useLoading"
 import CustomerLocationMapCard from "../../components/CustomerLocationMapCard.vue"
 
@@ -10,6 +11,7 @@ const appointmentStore = useAppointmentStore()
 const authStore = useAuthStore()
 const router = useRouter()
 const { startLoading, stopLoading } = useLoading()
+const { scrollRef: appointmentsScroll } = useScroll()
 const activeTab = ref<"pending" | "upcoming" | "past">("pending")
 const selectedApp = ref<any>(null)
 
@@ -146,7 +148,7 @@ const formatDateTime = (iso: string) => {
           <p class="empt-sub">You have a clear schedule right now.</p>
         </div>
 
-        <div v-else class="cards-grid">
+        <div v-else class="cards-grid" ref="appointmentsScroll">
           <div
             v-for="app in filteredItems"
             :key="app.id"
@@ -304,7 +306,7 @@ const formatDateTime = (iso: string) => {
 }
 .active-stat b { color: #c4b5fd; }
 
-/* Tabs */
+
 .tabs-container {
   margin-bottom: 24px;
   border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -313,10 +315,10 @@ const formatDateTime = (iso: string) => {
 .tabs {
   display: flex;
   gap: 24px;
-  overflow-x: auto;
-  scrollbar-width: none;
+  
+
 }
-.tabs::-webkit-scrollbar { display: none; }
+
 .tab-btn {
   background: transparent;
   border: none;

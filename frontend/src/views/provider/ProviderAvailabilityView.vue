@@ -8,10 +8,13 @@ import {
   updateAvailability,
   deleteAvailability
 } from "../../services/availability"
+import { useScroll } from "../../hooks/useScroll"
 import { useLoading } from "../../hooks/useLoading"
 
 const authStore = useAuthStore()
 const { startLoading, stopLoading } = useLoading()
+const { scrollRef: slotsScroll } = useScroll()
+const { scrollRef: calendarScroll } = useScroll()
 
 const availability = ref<any[]>([])
 const providerId = ref<number | null>(null)
@@ -64,8 +67,8 @@ function edit(a: any) {
   editingId.value = a.id
   form.value = {
     day_of_week: a.day_of_week,
-    start_time: a.start_time,
-    end_time: a.end_time
+    start_time: formatTimeForInput(a.start_time),
+    end_time: formatTimeForInput(a.end_time)
   }
 }
 
@@ -88,6 +91,17 @@ function resetForm() {
   }
 }
 
+// Helper to ensure time strings are in HH:mm format for input[type="time"]
+function formatTimeForInput(timeStr: string) {
+  if (!timeStr) return "09:00"
+  // If it's already HH:mm or HH:mm:ss
+  if (timeStr.includes(':')) {
+    const parts = timeStr.split(':')
+    return `${parts[0].padStart(2, '0')}:${parts[1].padStart(2, '0')}`
+  }
+  return timeStr
+}
+
 const year = new Date().getFullYear()
 const months = Array.from({ length: 12 }, (_, i) => i)
 
@@ -95,26 +109,32 @@ function getDaysInMonth(month: number) {
   return new Date(year, month + 1, 0).getDate()
 }
 
+function getFirstDayOfMonth(month: number) {
+  return new Date(year, month, 1).getDay()
+}
+
 function formatDate(y: number, m: number, d: number) {
   return `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`
 }
 
-function getWeekday(date: string) {
-  return new Date(date).getDay()
+function getWeekdayForDate(y: number, m: number, d: number) {
+  return new Date(y, m, d).getDay()
 }
 
-function hasAvailability(date: string) {
-  const weekday = getWeekday(date)
+function hasAvailability(y: number, m: number, d: number) {
+  const weekday = getWeekdayForDate(y, m, d)
   return availability.value.some(a => a.day_of_week === weekday)
 }
 
 const slotsForSelectedDate = computed(() => {
   if (!selectedDate.value) return []
-  const weekday = getWeekday(selectedDate.value)
+  const [y, m, d] = selectedDate.value.split("-").map(Number)
+  const weekday = getWeekdayForDate(y, m - 1, d)
   return availability.value.filter(a => a.day_of_week === weekday)
 })
 
 const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+const dayShort = ["S", "M", "T", "W", "T", "F", "S"]
 </script>
 
 <template>
@@ -171,7 +191,7 @@ const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", 
 
         <div class="card-divider" />
 
-        <div class="slots-list">
+        <div class="slots-list" ref="slotsScroll">
           <div v-if="availability.length === 0" class="empty-state">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -207,19 +227,35 @@ const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", 
 
       <!-- Right Column: Calendar Overview -->
       <div class="calendar-panel">
-        <h2 class="section-title">Yearly Overview</h2>
+        <div class="panel-header">
+          <div class="ph-left">
+            <h2 class="section-title">Yearly Overview</h2>
+            <div class="year-badge">{{ year }}</div>
+          </div>
+          <button class="today-btn" @click="selectedDate = formatDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())">
+            Go to Today
+          </button>
+        </div>
         
-        <div class="months-grid">
+        <div class="months-grid" ref="calendarScroll">
           <div v-for="month in months" :key="month" class="month-card">
-            <div class="month-name">{{ new Date(year, month).toLocaleString("default", { month: "short" }) }}</div>
+            <div class="month-name">{{ new Date(year, month).toLocaleString("default", { month: "long" }) }}</div>
+            <div class="days-header">
+              <div v-for="d in dayShort" :key="d" class="day-label">{{ d }}</div>
+            </div>
             <div class="days-grid">
+              <!-- Empty cells for alignment -->
+              <div v-for="empty in getFirstDayOfMonth(month)" :key="'empty-'+empty" class="day-cell empty"></div>
+              
+              <!-- Real day cells -->
               <div
                 v-for="day in getDaysInMonth(month)"
                 :key="day"
                 class="day-cell"
                 :class="{
-                  'has-slot': hasAvailability(formatDate(year, month, day)),
-                  'selected': selectedDate === formatDate(year, month, day)
+                  'has-slot': hasAvailability(year, month, day),
+                  'selected': selectedDate === formatDate(year, month, day),
+                  'is-today': formatDate(year, month, day) === formatDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
                 }"
                 @click="selectedDate = formatDate(year, month, day)"
               >
@@ -543,26 +579,86 @@ const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", 
   flex-direction: column;
 }
 
+.calendar-panel .panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.ph-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.today-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.today-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(167, 139, 250, 0.4);
+}
+
+.year-badge {
+  background: rgba(167, 139, 250, 0.15);
+  color: #a78bfa;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  border: 1px solid rgba(167, 139, 250, 0.2);
+}
+
 .months-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
 }
 
 .month-card {
   background: rgba(255, 255, 255, 0.02);
   border: 0.5px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 14px;
+  border-radius: 16px;
+  padding: 18px;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.month-card:hover {
+  border-color: rgba(167, 139, 250, 0.2);
+  background: rgba(255, 255, 255, 0.035);
 }
 
 .month-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 16px;
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+}
+
+.days-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 8px;
+}
+
+.day-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.3);
+  text-align: center;
 }
 
 .days-grid {
@@ -576,34 +672,60 @@ const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", 
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.4);
-  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid transparent;
 }
 
-.day-cell:hover {
-  background: rgba(255, 255, 255, 0.1);
+.day-cell:hover:not(.empty) {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.day-cell.empty {
+  cursor: default;
+}
+
+.day-cell.is-today {
+  color: #a78bfa;
+  font-weight: 700;
+  position: relative;
+}
+
+.day-cell.is-today::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  width: 3px;
+  height: 3px;
+  background: #a78bfa;
+  border-radius: 50%;
 }
 
 .day-cell.has-slot {
-  background: rgba(124, 58, 237, 0.2);
+  background: rgba(124, 58, 237, 0.15);
   color: #c4b5fd;
+  border: 0.5px solid rgba(124, 58, 237, 0.1);
 }
 
 .day-cell.has-slot:hover {
-  background: rgba(124, 58, 237, 0.4);
+  background: rgba(124, 58, 237, 0.3);
+  border-color: rgba(124, 58, 237, 0.4);
 }
 
 .day-cell.selected {
-  background: rgba(124, 58, 237, 0.5);
-  border-color: #a855f7;
-  color: #fff;
-  transform: scale(1.1);
+  background: #7c3aed !important;
+  border-color: #a78bfa !important;
+  color: #fff !important;
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
+  transform: scale(1.15);
   z-index: 2;
+  font-weight: 700;
 }
 
 /* Selected Day Panel */

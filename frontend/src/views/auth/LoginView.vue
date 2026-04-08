@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { useRouter, useRoute } from "vue-router"
+import { useScroll } from "../../hooks/useScroll"
 import { useAuthStore } from "../../stores/authStore"
 import { onMounted } from "vue"
 
 const router = useRouter()
 const route = useRoute()
 const auth = useAuthStore()
+const { scrollRef: pageScroll } = useScroll()
 
 const email = ref("")
 const password = ref("")
@@ -65,7 +67,7 @@ const githubLogin = () => {
 </script>
 
 <template>
-  <div class="login-page">
+  <div class="login-page" ref="pageScroll">
     <div class="bg-orb orb1" />
     <div class="bg-orb orb2" />
 
