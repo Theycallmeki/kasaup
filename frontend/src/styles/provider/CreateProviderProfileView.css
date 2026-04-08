@@ -24,7 +24,7 @@
 
 .title {
   font-family: 'Sora', sans-serif;
-  font-size: 1.9rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #fff;
   letter-spacing: -0.02em;
@@ -445,7 +445,7 @@ textarea.input {
   }
 
   .title {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
   }
 
   .field-row {

@@ -311,7 +311,7 @@ const dayShort = ["S", "M", "T", "W", "T", "F", "S"]
 
 .title {
   font-family: 'Sora', sans-serif;
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #fff;
   letter-spacing: -0.01em;

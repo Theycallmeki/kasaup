@@ -267,7 +267,7 @@ const formatDateTime = (iso: string) => {
 
 .title {
   font-family: 'Sora', sans-serif;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 700;
   margin: 0;
   letter-spacing: -0.02em;
