@@ -1,8 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@700&family=DM+Sans:wght@400;500&display=swap');
 
-/* ═══════════════════════════════════════
-   PAGE LAYOUT — fits inside .content flex column
-═══════════════════════════════════════ */
+
 .page {
   flex: 1;
   min-height: 0;
@@ -36,9 +34,7 @@
   margin: 0;
 }
 
-/* ═══════════════════════════════════════
-   CHAT CONTAINER: sidebar + chat window
-═══════════════════════════════════════ */
+
 .chat-container {
   flex: 1;
   min-height: calc(100vh - 110px);
@@ -50,9 +46,6 @@
   backdrop-filter: blur(20px);
 }
 
-/* ═══════════════════════════════════════
-   SIDEBAR
-═══════════════════════════════════════ */
 .sidebar {
   width: 420px;
   flex-shrink: 0;
@@ -133,9 +126,7 @@
   transform: scale(1.05);
 }
 
-/* ═══════════════════════════════════════
-   AVATAR
-═══════════════════════════════════════ */
+
 .avatar {
   width: 46px;
   height: 46px;
@@ -165,9 +156,7 @@
   object-fit: cover;
 }
 
-/* ═══════════════════════════════════════
-   CONVERSATION INFO
-═══════════════════════════════════════ */
+
 .conv-info {
   flex: 1;
   min-width: 0;
@@ -205,9 +194,6 @@
   margin: 0;
 }
 
-/* ═══════════════════════════════════════
-   CHAT WINDOW
-═══════════════════════════════════════ */
 .chat-window {
   flex: 1;
   min-width: 0;
@@ -294,9 +280,7 @@
   opacity: 0.8;
 }
 
-/* ═══════════════════════════════════════
-   MESSAGES AREA
-═══════════════════════════════════════ */
+
 .messages-area {
   flex: 1;
   overflow-y: auto;
@@ -369,9 +353,7 @@
   text-align: right;
 }
 
-/* ═══════════════════════════════════════
-   CHAT FOOTER
-═══════════════════════════════════════ */
+
 .chat-footer {
   padding: 14px 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.07);
@@ -439,9 +421,7 @@
   filter: grayscale(0.6);
 }
 
-/* ═══════════════════════════════════════
-   EMPTY STATES
-═══════════════════════════════════════ */
+
 .chat-empty {
   flex: 1;
   display: flex;
@@ -482,9 +462,7 @@
   margin: 0;
 }
 
-/* ═══════════════════════════════════════
-   DELETE MODAL
-═══════════════════════════════════════ */
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -567,9 +545,7 @@
   transform: translateY(-1px);
 }
 
-/* ═══════════════════════════════════════
-   ANIMATIONS
-═══════════════════════════════════════ */
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -592,11 +568,7 @@
   }
 }
 
-/* ═══════════════════════════════════════
-   RESPONSIVE — MOBILE (≤768px)
-   Uses data-panel attribute on .page
-   to show only the active panel
-═══════════════════════════════════════ */
+
 @media (max-width: 768px) {
   .page {
     padding: 8px 8px 0;
@@ -609,7 +581,7 @@
   }
 
   .title {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
   }
 
   .chat-container {
@@ -620,8 +592,7 @@
     overflow: hidden;
   }
 
-  /* On mobile the sidebar and chat window each take full width,
-     and we toggle between them via data-panel */
+
   .sidebar {
     width: 100%;
     border-right: none;
@@ -638,7 +609,7 @@
     z-index: 1;
   }
 
-  /* data-panel="list" → show sidebar, hide chat */
+
   .page[data-panel="list"] .sidebar {
     transform: translateX(0);
     opacity: 1;
@@ -653,7 +624,7 @@
     z-index: 1;
   }
 
-  /* data-panel="chat" → show chat, hide sidebar */
+
   .page[data-panel="chat"] .sidebar {
     transform: translateX(-100%);
     opacity: 0;
@@ -668,7 +639,7 @@
     z-index: 2;
   }
 
-  /* Show back button on mobile */
+
   .back-btn {
     display: flex;
   }
