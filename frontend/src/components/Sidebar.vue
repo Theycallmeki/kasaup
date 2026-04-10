@@ -181,7 +181,7 @@ const icons: Record<string, string> = {
 
         <router-link 
           v-if="menuItems.some(i => i.label === 'Tutorial')"
-          :to="menuItems.find(i => i.label === 'Tutorial').path" 
+          :to="menuItems.find(i => i.label === 'Tutorial')?.path || '#'" 
           class="mob-drawer-link"
           @click="closeMobileDrawer"
         >
