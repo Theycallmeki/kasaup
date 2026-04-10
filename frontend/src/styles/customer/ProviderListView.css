@@ -2,7 +2,7 @@
 
 .providers-page {
   position: relative;
-  height: 100vh;
+  height: 100%;
   flex: 1;
   background: #0e0c1a;
   font-family: 'DM Sans', sans-serif;
