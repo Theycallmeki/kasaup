@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue"
+import { ref, computed, onMounted, watch } from "vue"
 import { useServiceStore } from "../../stores/serviceStore"
 import { useProviderStore } from "../../stores/providerStore"
 import { useCategoryStore } from "../../stores/categoryStore"
@@ -113,6 +113,15 @@ const selected = ref<any | null>(null)
 const searching = ref(false)
 const viewingImage = ref<string | null>(null)
 const currentImageIndex = ref(0)
+
+// Lock body scroll when modal or filters are open
+watch([selected, showFilters], ([s, f]) => {
+  if (s || f) {
+    document.body.style.overflow = "hidden"
+  } else {
+    document.body.style.overflow = ""
+  }
+})
 
 onMounted(async () => {
   startLoading("Discovering services...")
@@ -428,37 +437,64 @@ const firstImage = (svc: any): string | null => {
 
     <!-- Modal for Preview -->
     <Teleport to="body">
-      <div class="ov" :class="{ show: !!selected }" @click.self="selected = null">
-        <div class="modal" v-if="selected" :style="{ '--a': accent(selected.category_id) }">
-          <button class="mc" @click="selected = null">✕</button>
+  <div class="ov" :class="{ show: !!selected }" @click.self="selected = null">
+    
+    <div class="modal" v-if="selected" :style="{ '--a': accent(selected.category_id) }">
+      
+      <!-- CLOSE BUTTON stays outside scroll -->
+      <button class="mc" @click="selected = null">✕</button>
 
-          <div v-if="selected.images?.length" class="modal-carousel">
-            <button v-if="selected.images.length > 1" @click.stop="prevImage" class="carousel-btn prev">‹</button>
-            <div class="modal-carousel-track">
-              <img :src="imgUrl(selected.images[currentImageIndex].image_url)" :alt="selected.name"
-                   class="modal-carousel-img" @click="viewingImage = imgUrl(selected.images[currentImageIndex].image_url)" />
-            </div>
-            <button v-if="selected.images.length > 1" @click.stop="nextImage" class="carousel-btn next">›</button>
-            <div v-if="selected.images.length > 1" class="carousel-dots">
-               <span v-for="(_, i) in selected.images" :key="i" class="carousel-dot" :class="{active: Number(i) === currentImageIndex}" @click.stop="currentImageIndex = Number(i)"></span>
-            </div>
+      <!-- 🔥 SCROLL WRAPPER START -->
+      <div class="modal-scroll">
+
+        <div v-if="selected.images?.length" class="modal-carousel">
+          <button v-if="selected.images.length > 1" @click.stop="prevImage" class="carousel-btn prev">‹</button>
+          <div class="modal-carousel-track">
+            <img 
+              :src="imgUrl(selected.images[currentImageIndex].image_url)" 
+              :alt="selected.name"
+              class="modal-carousel-img" 
+              @click="viewingImage = imgUrl(selected.images[currentImageIndex].image_url)" 
+            />
           </div>
+          <button v-if="selected.images.length > 1" @click.stop="nextImage" class="carousel-btn next">›</button>
 
-          <span class="badge lg">{{ catName(selected.category_id) }}</span>
-          <h2 class="mt">{{ selected.name }}</h2>
-          <p class="mb">{{ shopName(selected.provider_id) }}</p>
-          <p v-if="selected.description" class="mdesc">{{ selected.description }}</p>
-
-          <div class="mst">
-            <div><b>₱{{ Number(selected.price).toLocaleString() }}</b><em>Price</em></div>
-            <div><b>{{ selected.duration_minutes }} min</b><em>Duration</em></div>
-            <div><b>{{ catName(selected.category_id) }}</b><em>Category</em></div>
+          <div v-if="selected.images.length > 1" class="carousel-dots">
+            <span 
+              v-for="(_, i) in selected.images" 
+              :key="i" 
+              class="carousel-dot" 
+              :class="{active: Number(i) === currentImageIndex}" 
+              @click.stop="currentImageIndex = Number(i)"
+            ></span>
           </div>
-
-          <button class="mbk" @click="goBook(selected)">Book This Service</button>
         </div>
+
+        <span class="badge lg">{{ catName(selected.category_id) }}</span>
+        <h2 class="mt">{{ selected.name }}</h2>
+        <p class="mb">{{ shopName(selected.provider_id) }}</p>
+
+        <p v-if="selected.description" class="mdesc">
+          {{ selected.description }}
+        </p>
+
+        <div class="mst">
+          <div><b>₱{{ Number(selected.price).toLocaleString() }}</b><em>Price</em></div>
+          <div><b>{{ selected.duration_minutes }} min</b><em>Duration</em></div>
+          <div><b>{{ catName(selected.category_id) }}</b><em>Category</em></div>
+        </div>
+
+        <button class="mbk" @click="goBook(selected)">
+          Book This Service
+        </button>
+
       </div>
-    </Teleport>
+      <!-- 🔥 SCROLL WRAPPER END -->
+
+    </div>
+
+  </div>
+</Teleport>
 
     <!-- Fullscreen Image Viewer -->
     <Teleport to="body">
@@ -467,6 +503,9 @@ const firstImage = (svc: any): string | null => {
         <img :src="viewingImage" />
       </div>
     </Teleport>
+
+    <!-- Direct spacer to the bottom of the list -->
+    <div class="bottom-spacer"></div>
 
   </div>
 </template>
