@@ -572,8 +572,8 @@
 @media (max-width: 768px) {
   .page {
     padding: 8px 8px 0;
-    height: 100%;
-    overflow: visible;
+    height: 100vh;
+    overflow: hidden;
   }
 
   .page-header {
@@ -586,12 +586,11 @@
 
   .chat-container {
     flex: 1;
-    min-height: calc(100vh - 160px);
+    height: 100%;
     border-radius: 8px;
     position: relative;
     overflow: hidden;
   }
-
 
   .sidebar {
     width: 100%;
@@ -605,10 +604,10 @@
   .chat-window {
     position: absolute;
     inset: 0;
-    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s;
+    display: flex;
+    flex-direction: column;
     z-index: 1;
   }
-
 
   .page[data-panel="list"] .sidebar {
     transform: translateX(0);
@@ -624,7 +623,6 @@
     z-index: 1;
   }
 
-
   .page[data-panel="chat"] .sidebar {
     transform: translateX(-100%);
     opacity: 0;
@@ -639,7 +637,6 @@
     z-index: 2;
   }
 
-
   .back-btn {
     display: flex;
   }
@@ -653,7 +650,9 @@
   }
 
   .messages-area {
-    padding: 14px 14px 6px;
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
   }
 
   .message-wrapper {
@@ -661,6 +660,9 @@
   }
 
   .chat-footer {
-    padding: 10px 12px;
-  }
+  position: sticky;
+  bottom: 70px;
+  padding: 10px 12px;
+  background: #0b0917;
+}
 }
