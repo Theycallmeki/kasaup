@@ -1,210 +1,93 @@
-# Kasaup Marketplace 
+# ⚡ KasaUp Marketplace 
 
-Kasaup is a **service marketplace platform** where customers can discover local service providers, browse services, and book appointments.
-
-This repository contains the **backend API** built using **FastAPI**, **SQLAlchemy**, and **PostgreSQL**.
-
-The system supports provider listings, service management, appointment scheduling, and location-based provider discovery.
+KasaUp is a premium **full-stack service marketplace** designed to connect local service providers with customers through a sleek, modern, and high-performance interface.
 
 ---
 
-# Tech Stack
+## ✨ Project Highlights
 
-Backend Framework
-
-* FastAPI
-
-Database
-
-* PostgreSQL
-
-ORM
-
-* SQLAlchemy
-
-Authentication
-
-* JWT Access Tokens
-* Refresh Tokens
-* Cookie-based Authentication
-
-Security
-
-* bcrypt password hashing
-
-Planned Frontend
-
-* Vue
-* PrimeVue
-
-Future Infrastructure
-
-* Docker
-* Nginx
-* DigitalOcean
+- **🛡️ Advanced Authentication**: Secure JWT session management with **GitHub OAuth** integration.
+- **🎭 Role-Based Portals**: Tailored experiences for Customers, Service Providers, and Administrators.
+- **📖 Interactive Tutorials**: Comprehensive step-by-step guides for both Customers and Providers to get started quickly.
+- **📍 Map-Based Discovery**: Intuitive provider discovery using interactive maps and location services.
+- **💬 Built-in Chat**: Direct real-time communication between customers and providers.
+- **🎨 Premium Design System**: A high-end "Glassmorphism" aesthetic featuring dynamic background orbs, smooth micro-animations, and a responsive dark theme.
 
 ---
 
-# Architecture Overview
+## 🛠️ Tech Stack
 
-The backend follows a **layered architecture**.
+### **Frontend**
+- **Framework**: [Vue 3](https://vuejs.org/) (Composition API)
+- **Build Tool**: [Vite](https://vitejs.dev/)
+- **Styling**: Vanilla CSS (Premium Glassmorphism Design)
+- **State Management**: [Pinia](https://pinia.vuejs.org/)
+- **Routing**: Vue Router
 
-Router Layer
-Handles API endpoints.
-
-Service Layer
-Contains business logic and reusable services.
-
-Schema Layer
-Pydantic models for request and response validation.
-
-Model Layer
-SQLAlchemy ORM models representing database tables.
-
-Core Layer
-Application configuration, dependencies, and security utilities.
+### **Backend**
+- **Framework**: [FastAPI](https://fastapi.tiangolo.com/)
+- **Database**: [PostgreSQL](https://www.postgresql.org/)
+- **ORM**: [SQLAlchemy](https://www.sqlalchemy.org/)
+- **Security**: JWT tokens, bcrypt hashing, and HTTP-only cookies.
 
 ---
 
-# Core Features
+## 📂 Project Structure
 
-Authentication System
-
-* JWT Access Tokens
-* Refresh Tokens
-* Cookie-based authentication
-* bcrypt password hashing
-* Protected routes
-
-Authentication Endpoints
-
-```text
-POST /auth/login
-POST /auth/refresh
-POST /auth/logout
-GET /auth/me
+```bash
+KasaUp/
+├── frontend/          # Vue 3 + Vite application
+│   ├── src/
+│   │   ├── components/  # Reusable UI elements (Sidebar, etc.)
+│   │   ├── views/       # Role-specific pages (Customer, Provider, Admin)
+│   │   ├── stores/      # Pinia state management
+│   │   └── hooks/       # Custom Vue composables (useScroll, etc.)
+└── backend/           # FastAPI application
+    ├── app/
+    │   ├── routers/     # API Endpoints
+    │   ├── services/    # Business logic (Auth, Bookings, OAuth)
+    │   ├── models/      # SQLAlchemy DB models
+    │   └── schemas/     # Pydantic validation models
 ```
 
 ---
 
-# Running the Backend
+## 🚀 Getting Started
 
-Follow these steps to start the backend locally.
-
-## 1 Clone the repository
-
+### **1. Backend Setup**
 ```bash
-git clone <repository-url>
-cd kasaup-backend
-```
-
----
-
-## 2 Create a virtual environment
-
-```bash
+cd backend
 python -m venv venv
-```
-
-Activate the virtual environment.
-
-Windows
-
-```bash
-venv\Scripts\activate
-```
-
-macOS / Linux
-
-```bash
-source venv/bin/activate
-```
-
----
-
-## 3 Install dependencies
-
-```bash
+source venv/bin/activate # or venv\Scripts\activate on Windows
 pip install -r requirements.txt
-```
-
----
-
-## 4 Configure environment variables
-
-Create a `.env` file in the project root.
-
-Example configuration
-
-```env
-DATABASE_URL=postgresql://postgres:password@localhost/your-db-name
-SECRET_KEY=your-secret-key
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-REFRESH_TOKEN_EXPIRE_DAYS=7
-```
-
-Make sure PostgreSQL is running and the database exists.
-
-Example
-
-```sql
-CREATE DATABASE kasaup;
-```
-
----
-
-## 5 Start the FastAPI server
-
-Run the development server using Uvicorn.
-
-```bash
+# Configure your .env file
 uvicorn app.main:app --reload
 ```
 
-After the server starts, open the following page in your browser to view and test the API documentation:
-
+### **2. Frontend Setup**
+```bash
+cd frontend
+npm install
+# Configure your .env.local file
+npm run dev
 ```
-http://127.0.0.1:8000/docs#/
-```
-
-This interactive documentation allows you to explore and test all available API endpoints directly from the browser.
 
 ---
 
-# Development Status
+## 📈 Development Status
 
-Current progress
-
-Authentication ✔
-Users ✔
-Providers ✔
-Services ✔
-Categories ✔
-Appointments ✔
-Provider availability ✔
-Booking system ✔
-Nearby search ✔
-Provider dashboard ✔
-
-
-
+- ✅ Authentication (Email & GitHub)
+- ✅ Customer Discovery & Provider Map
+- ✅ Provider Dashboard & Service Management
+- ✅ Appointment Booking & Tracking
+- ✅ Real-time Messaging System
+- ✅ Tutorial Guides (Customer/Provider)
+- ✅ Admin Management Dashboard
+- 🔄 Notification System (In Progress)
 
 ---
 
-# Frontend (Planned)
+## 📜 License
 
-Frontend will be built with
-
-* Vue
-* PrimeVue
-
-
-
----
-
-# License
-
-This project is currently under development.
-D e p l o y m e n t   H e a r t b e a t :   0 4 / 0 7 / 2 0 2 6   1 5 : 3 6 : 0 0  
-
-<!-- Email System Update: Fixed dynamic "From" and SMTP Port 587 -->
+This project is currently under active development.
+**Deployment Heartbeat**: Updated for 2026 Production Standards.

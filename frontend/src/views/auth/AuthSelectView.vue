@@ -54,14 +54,35 @@ const goProvider = () => router.push("/register?role=provider")
 }
 
 .auth-page {
-  position: fixed;
-  inset: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   background: #0e0c1a;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   font-family: 'DM Sans', sans-serif;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 60, 220, 0.2) transparent;
+  padding: 40px 0;
+}
+
+.auth-page::-webkit-scrollbar {
+  width: 6px;
+}
+.auth-page::-webkit-scrollbar-track {
+  background: transparent;
+}
+.auth-page::-webkit-scrollbar-thumb {
+  background: rgba(99, 60, 220, 0.2);
+  border-radius: 10px;
+}
+.auth-page::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 60, 220, 0.4);
 }
 
 @media (max-width: 480px) {

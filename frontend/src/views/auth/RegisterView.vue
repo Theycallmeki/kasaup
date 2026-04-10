@@ -182,14 +182,35 @@ const goGithub = () => {
 }
 
 .register-page {
-  position: fixed;
-  inset: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   background: #0e0c1a;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   font-family: 'DM Sans', sans-serif;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(167, 139, 250, 0.2) transparent;
+  padding: 40px 0;
+}
+
+.register-page::-webkit-scrollbar {
+  width: 6px;
+}
+.register-page::-webkit-scrollbar-track {
+  background: transparent;
+}
+.register-page::-webkit-scrollbar-thumb {
+  background: rgba(167, 139, 250, 0.2);
+  border-radius: 10px;
+}
+.register-page::-webkit-scrollbar-thumb:hover {
+  background: rgba(167, 139, 250, 0.4);
 }
 
 @media (max-width: 480px) {
