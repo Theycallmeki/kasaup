@@ -374,11 +374,9 @@ const firstImage = (svc: any): string | null => {
             </div>
 
             <div class="fp-actions">
-               <button class="f-btn f-clear" @click="clearFilters">Clear All</button>
-               <div class="fp-r">
-                 <button class="f-btn f-cancel" @click="cancelFilters">Cancel</button>
-                 <button class="f-btn f-apply" @click="applyFilters">Apply Filters</button>
-               </div>
+              <button class="f-btn f-clear" @click="clearFilters">Clear All</button>
+              <button class="f-btn f-cancel" @click="cancelFilters">Cancel</button>
+              <button class="f-btn f-apply" @click="applyFilters">Apply Filters</button>
             </div>
           </div>
         </div>

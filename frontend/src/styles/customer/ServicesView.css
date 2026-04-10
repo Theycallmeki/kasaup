@@ -441,16 +441,13 @@
 
 .fp-actions {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
+  gap: 10px;
   padding-top: 20px;
   border-top: 1px dashed rgba(255, 255, 255, 0.1);
 }
 
-.fp-r {
-  display: flex;
-  gap: 12px;
+.fp-actions > button {
+  flex: 1;
 }
 
 .f-clear {
@@ -458,7 +455,7 @@
   border: 1px solid rgba(248, 113, 113, 0.2);
   color: rgba(248, 113, 113, 0.7);
   font-size: 0.85rem;
-  padding: 8px 16px;
+  padding: 10px 12px;
 }
 
 .f-clear:hover {
@@ -469,18 +466,35 @@
 
 .f-btn {
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  padding: 10px 24px;
+  padding: 10px 12px;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
+  width: 100%;
 }
 
 .f-cancel {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: rgba(255, 255, 255, 0.7);
+}
+
+.f-cancel:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.f-apply {
+  background: #a78bfa;
+  border: none;
+  color: #110e1b;
+}
+
+.f-apply:hover {
+  background: #b49eff;
+  transform: translateY(-1px);
 }
 
 .f-cancel:hover {

@@ -158,7 +158,7 @@ const icons: Record<string, string> = {
         </svg>
         <div v-if="item.label === 'Messages' && messageStore.totalUnreadCount > 0" class="unread-dot mob"></div>
       </div>
-      <span class="mob-label">{{ item.label }}</span>
+      <span v-if="false" class="mob-label">{{ item.label }}</span>
     </router-link>
 
     <!-- More / Logout button -->
@@ -166,7 +166,7 @@ const icons: Record<string, string> = {
       <svg class="mob-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path :d="mobileDrawerOpen ? icons.close : icons.menu" />
       </svg>
-      <span class="mob-label">More</span>
+      <span v-if="false" class="mob-label">More</span>
     </button>
   </nav>
 
