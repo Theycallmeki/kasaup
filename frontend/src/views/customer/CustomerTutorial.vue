@@ -30,10 +30,6 @@ const steps = [
 
 <template>
   <div class="page tutorial-page" ref="pageScroll">
-    <!-- Background Orbs -->
-    <div class="bg-orb orb1" />
-    <div class="bg-orb orb2" />
-
     <header class="section-header">
       <div class="eyebrow">Getting Started</div>
       <h1 class="title">How to use Kasa<span class="accent">Up</span></h1>
@@ -60,7 +56,7 @@ const steps = [
 .tutorial-page {
   position: relative;
   min-height: 100%;
-  padding: 60px 40px;
+  padding: 80px 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -87,29 +83,6 @@ const steps = [
   background: rgba(167, 139, 250, 0.4);
 }
 
-.bg-orb {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  filter: blur(80px);
-  opacity: 0.4;
-  z-index: 0;
-}
-.orb1 {
-  width: 400px;
-  height: 400px;
-  top: -100px;
-  left: -200px;
-  background: radial-gradient(circle, #7c3aed 0%, transparent 70%);
-}
-.orb2 {
-  width: 300px;
-  height: 300px;
-  bottom: -50px;
-  right: -100px;
-  background: radial-gradient(circle, #a855f7 0%, transparent 70%);
-}
-
 .section-header {
   position: relative;
   z-index: 1;
@@ -119,25 +92,28 @@ const steps = [
 }
 
 .eyebrow {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.2em;
   color: #a78bfa;
   margin-bottom: 12px;
+  opacity: 0.9;
 }
 
 .title {
   font-family: 'Sora', sans-serif;
-  font-size: 2.8rem;
+  font-size: 3.2rem;
   font-weight: 700;
-  margin-bottom: 20px;
+  margin: 0 0 20px;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
 }
 .accent { color: #a78bfa; }
 
 .subtitle {
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.15rem;
+  color: rgba(255, 255, 255, 0.5);
   line-height: 1.6;
 }
 
@@ -145,7 +121,7 @@ const steps = [
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 24px;
   width: 100%;
   max-width: 1200px;
@@ -153,38 +129,40 @@ const steps = [
 
 .step-card {
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 20px;
   padding: 32px;
   display: flex;
   gap: 24px;
-  backdrop-filter: blur(12px);
-  transition: transform 0.3s ease, border-color 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .step-card:hover {
   transform: translateY(-8px);
+  background: rgba(255, 255, 255, 0.05);
   border-color: rgba(167, 139, 250, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
 .step-num {
   font-family: 'Sora', sans-serif;
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 700;
-  color: rgba(167, 139, 250, 0.2);
+  color: rgba(167, 139, 250, 0.25);
   line-height: 1;
 }
 
 .step-title {
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 12px;
   color: #fff;
+  letter-spacing: -0.01em;
 }
 
 .step-desc {
   font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.45);
   line-height: 1.6;
 }
 
@@ -196,24 +174,37 @@ const steps = [
 
 .btn-primary {
   display: inline-block;
-  padding: 16px 40px;
-  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  padding: 18px 48px;
+  background: #7c3aed;
   color: #fff;
   font-weight: 600;
   text-decoration: none;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
-  transition: all 0.2s ease;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(124, 58, 237, 0.25);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(124, 58, 237, 0.4);
+  background: #6d28d9;
+  box-shadow: 0 15px 40px rgba(124, 58, 237, 0.35);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 @media (max-width: 768px) {
-  .tutorial-page { padding: 40px 20px 120px; }
-  .title { font-size: 2rem; }
-  .steps-grid { grid-template-columns: 1fr; }
+  .tutorial-page { padding: 60px 24px 140px; }
+  .title { 
+    font-size: 2.2rem; 
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+  .subtitle { font-size: 1rem; }
+  .section-header { margin-bottom: 40px; }
+  .steps-grid { grid-template-columns: 1fr; gap: 16px; }
+  .step-card { padding: 24px; gap: 16px; }
+  .step-num { font-size: 1.8rem; }
+  .cta-section { margin-top: 60px; }
+  .btn-primary { width: 100%; text-align: center; padding: 16px; }
 }
 </style>

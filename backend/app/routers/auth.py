@@ -54,7 +54,7 @@ async def google_callback(code: str, state: str = "customer", db: Session = Depe
 
     target_path = "/"
     if user.role == "customer":
-        target_path = "/providers"
+        target_path = "/services"
     elif user.role == "provider":
         if not user.provided_shop:
             target_path = "/provider/create-profile"
@@ -122,7 +122,7 @@ async def github_callback(code: str, state: str = "customer", db: Session = Depe
 
     target_path = "/"
     if user.role == "customer":
-        target_path = "/providers"
+        target_path = "/services"
     elif user.role == "provider":
         if not user.provided_shop:
             target_path = "/provider/create-profile"

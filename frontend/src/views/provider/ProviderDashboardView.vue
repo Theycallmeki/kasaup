@@ -6,6 +6,8 @@ const router = useRouter()
 function goServices()     { router.push("/provider/services") }
 function goAppointments() { router.push("/provider/appointments") }
 function goAvailability() { router.push("/provider/availability") }
+function goMessages()     { router.push("/messages") }
+function goTutorial()     { router.push("/provider/tutorial") }
 function goProfile()      { router.push("/provider/profile") }
 </script>
 
@@ -14,7 +16,7 @@ function goProfile()      { router.push("/provider/profile") }
 
     <div class="page-header">
       <h1 class="title">Provider Dashboard</h1>
-      <p class="subtitle">Manage your services and appointments.</p>
+      <p class="subtitle">Manage your services, appointments, and communication.</p>
     </div>
 
     <div class="cards">
@@ -74,6 +76,22 @@ function goProfile()      { router.push("/provider/profile") }
       <div class="card">
         <div class="card-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <h3 class="card-title">Messages</h3>
+        <p class="card-desc">Chat with customers about their service requests.</p>
+        <button class="card-btn" @click="goMessages">
+          Open Chats
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
           </svg>
         </div>
@@ -81,6 +99,22 @@ function goProfile()      { router.push("/provider/profile") }
         <p class="card-desc">View how customers see your provider profile.</p>
         <button class="card-btn" @click="goProfile">
           View Profile
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+        </div>
+        <h3 class="card-title">Tutorial Guide</h3>
+        <p class="card-desc">Learn how to make the most of your KasaUp account.</p>
+        <button class="card-btn" @click="goTutorial">
+          View Guide
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="9 18 15 12 9 6"/>
           </svg>

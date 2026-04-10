@@ -205,42 +205,42 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
-
   const auth = useAuthStore()
 
-  if (to.meta.requiresAuth) {
-
-    if (!auth.user) {
-      try {
-        await auth.fetchUser()
-      } catch {
-        return { path: "/login" }
-      }
+  // 1. Ensure user is loaded if possible
+  if (!auth.user) {
+    try {
+      await auth.fetchUser()
+    } catch {
+      // Not logged in
     }
+  }
 
+  // 2. Redirect logged-in users away from landing/auth pages
+  const publicPages = ["/", "/login", "/register", "/auth"]
+  if (auth.user && publicPages.includes(to.path)) {
+    if (auth.user.role === "customer") return { path: "/services" }
+    if (auth.user.role === "provider") {
+      return auth.user.has_profile ? { path: "/provider/dashboard" } : { path: "/provider/create-profile" }
+    }
+    if (auth.user.role === "admin") return { path: "/admin/dashboard" }
+  }
+
+  // 3. Handle Protected Routes
+  if (to.meta.requiresAuth) {
     if (!auth.user) {
       return { path: "/login" }
     }
 
     const allowedRoles = to.meta.roles as string[]
-
     if (allowedRoles && !allowedRoles.includes(auth.user.role)) {
-
-      if (auth.user.role === "provider") {
-        return { path: "/provider/dashboard" }
-      }
-
-      if (auth.user.role === "admin") {
-        return { path: "/admin/dashboard" }
-      }
-
-      if (auth.user.role === "customer") {
-        if (to.path === "/") return { path: "/" }
-        return { path: "/services" }
-      }
-
+      // Role mismatch fallback
+      if (auth.user.role === "provider") return { path: "/provider/dashboard" }
+      if (auth.user.role === "admin") return { path: "/admin/dashboard" }
+      if (auth.user.role === "customer") return { path: "/services" }
     }
 
+    // Provider profile enforcement
     if (auth.user.role === "provider") {
       if (!auth.user.has_profile && to.name !== "createProviderProfile") {
         return { name: "createProviderProfile" }
@@ -249,9 +249,7 @@ router.beforeEach(async (to) => {
         return { name: "providerDashboard" }
       }
     }
-
   }
-
 })
 
 export default router

@@ -24,7 +24,7 @@ const login = async () => {
   try {
     await auth.login(email.value, password.value)
 
-    if (auth.user?.role === "customer") router.push("/providers")
+    if (auth.user?.role === "customer") router.push("/services")
     if (auth.user?.role === "provider") {
       if (auth.user?.has_profile) {
         router.push("/provider/dashboard")
