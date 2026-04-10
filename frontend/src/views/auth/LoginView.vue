@@ -73,7 +73,7 @@ const githubLogin = () => {
 
     <div class="login-card">
       <span class="eyebrow">Welcome back</span>
-      <h1 class="title">Kasa<span class="accent">up</span></h1>
+      <h1 class="title">Kasa<span class="accent">Up</span></h1>
       <p class="subtitle">Login to your account</p>
 
       <form @submit.prevent="login">

@@ -68,7 +68,7 @@ const goGithub = () => {
 
     <div class="register-card">
       <span class="eyebrow">Create account</span>
-      <h1 class="title">Kasa<span class="accent">up</span></h1>
+      <h1 class="title">Kasa<span class="accent">Up</span></h1>
 
       <!-- Pending Approval State -->
       <template v-if="showPendingMessage">

@@ -90,7 +90,7 @@ const icons: Record<string, string> = {
     aria-label="Sidebar navigation"
   >
     <div class="top">
-      <div v-if="!collapsed" class="logo">Kasa<span class="accent">up</span></div>
+      <div v-if="!collapsed" class="logo">Kasa<span class="accent">Up</span></div>
       <button
         class="toggle"
         type="button"
