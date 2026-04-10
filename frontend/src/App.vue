@@ -61,9 +61,7 @@ onMounted(async () => {
 
 .content {
   flex: 1;
-  height: 100vh;
   overflow-y: auto;
-  padding-bottom: 120px;
   background: #0e0c1a;
   display: flex;
   flex-direction: column;
@@ -71,7 +69,7 @@ onMounted(async () => {
 
 @media (max-width: 768px){
   .content{
-    padding-bottom: 140px;
+    /* Global padding removed to support full-screen pages like the Map */
   }
 }
 
