@@ -20,6 +20,8 @@ import ProviderAppointmentsView from "../views/provider/ProviderAppointmentsView
 import CreateServiceView from "../views/provider/CreateServiceView.vue"
 import CreateProviderProfileView from "../views/provider/CreateProviderProfileView.vue"
 import ProviderProfileViewProvider from "../views/provider/ProviderProfileView.vue"
+import CustomerTutorialView from "../views/customer/CustomerTutorial.vue"
+import ProviderTutorialView from "../views/provider/ProviderTutorial.vue"
 
 import AdminDashboardView from "../views/admin/AdminDashboardView.vue"
 import AdminCategoriesView from "../views/admin/AdminCategoriesView.vue"
@@ -105,6 +107,13 @@ const routes = [
   },
 
   {
+    path: "/customer/tutorial",
+    name: "customerTutorial",
+    component: CustomerTutorialView,
+    meta: { requiresAuth: true, roles: ["customer"] }
+  },
+
+  {
     path: "/provider/create-profile",
     name: "createProviderProfile",
     component: CreateProviderProfileView,
@@ -150,6 +159,13 @@ const routes = [
     path: "/provider/profile",
     name: "providerProfileEdit",
     component: ProviderProfileViewProvider,
+    meta: { requiresAuth: true, roles: ["provider"] }
+  },
+
+  {
+    path: "/provider/tutorial",
+    name: "providerTutorial",
+    component: ProviderTutorialView,
     meta: { requiresAuth: true, roles: ["provider"] }
   },
 

@@ -40,7 +40,8 @@ const menus = {
     { label: "Appointments",         path: "/appointments",         icon: "calendar" },
     { label: "History",          path: "/appointments/history", icon: "clock"    },
     { label: "Messages",         path: "/messages",             icon: "message"  },
-    { label: "Profile",          path: "/profile",              icon: "user"     }
+    { label: "Profile",          path: "/profile",              icon: "user"     },
+    { label: "Tutorial",         path: "/customer/tutorial",    icon: "tutorial" }
   ],
   provider: [
     { label: "Dashboard",    path: "/provider/dashboard",    icon: "grid"     },
@@ -48,7 +49,8 @@ const menus = {
     { label: "Appointments", path: "/provider/appointments", icon: "calendar" },
     { label: "Availability", path: "/provider/availability", icon: "clock"    },
     { label: "Messages",     path: "/messages",             icon: "message"  },
-    { label: "Profile",      path: "/provider/profile",      icon: "users"    }
+    { label: "Profile",      path: "/provider/profile",      icon: "users"    },
+    { label: "Tutorial",     path: "/provider/tutorial",     icon: "tutorial" }
   ],
   admin: [
     { label: "Dashboard",  path: "/admin/dashboard",  icon: "grid"   },
@@ -76,7 +78,8 @@ const icons: Record<string, string> = {
   logout:   "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9",
   menu:     "M3 12h18M3 6h18M3 18h18",
   user:     "M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
-  close:    "M18 6L6 18M6 6l12 12"
+  close:    "M18 6L6 18M6 6l12 12",
+  tutorial: "M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"
 }
 </script>
 
@@ -143,7 +146,7 @@ const icons: Record<string, string> = {
   ═══════════════════════════════════ -->
   <nav class="mobile-bottom-nav" aria-label="Mobile navigation">
     <router-link
-      v-for="item in menuItems"
+      v-for="item in menuItems.filter(i => i.label !== 'Tutorial')"
       :key="item.path"
       :to="item.path"
       class="mob-link"
@@ -172,9 +175,22 @@ const icons: Record<string, string> = {
     <div v-if="mobileDrawerOpen" class="mob-overlay" @click="closeMobileDrawer">
       <div class="mob-drawer" @click.stop>
         <div class="mob-drawer-header">
-          <div class="logo">Kasa<span class="accent">up</span></div>
+          <div class="logo">Kasa<span class="accent">Up</span></div>
           <div v-if="role" class="role-badge">{{ role }}</div>
         </div>
+
+        <router-link 
+          v-if="menuItems.some(i => i.label === 'Tutorial')"
+          :to="menuItems.find(i => i.label === 'Tutorial').path" 
+          class="mob-drawer-link"
+          @click="closeMobileDrawer"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path :d="icons.tutorial" />
+          </svg>
+          Tutorial Guide
+        </router-link>
+
         <button class="mob-drawer-logout" @click="logout">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path :d="icons.logout" />
@@ -457,9 +473,9 @@ const icons: Record<string, string> = {
     line-height: 1;
   }
 
-  .mob-logout .mob-icon { color: rgba(248, 113, 113, 0.7); }
-  .mob-logout { color: rgba(248, 113, 113, 0.6) !important; }
-  .mob-logout:hover { color: #f87171 !important; background: rgba(248,113,113,0.08) !important; }
+  .mob-logout .mob-icon { color: rgba(255, 255, 255, 0.7) !important; }
+  .mob-link.mob-logout { color: rgba(255, 255, 255, 0.4) !important; }
+  .mob-link.mob-logout:hover { color: #fff !important; background: rgba(255,255,255,0.05) !important; }
 }
 
 /* ════════════════════════════════════════
@@ -519,6 +535,24 @@ const icons: Record<string, string> = {
   }
   .mob-drawer-logout:hover { background: rgba(248,113,113,0.15); color: #f87171; }
   .mob-drawer-logout svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+  .mob-drawer-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.05);
+    border: 0.5px solid rgba(255, 255, 255, 0.1);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+  }
+  .mob-drawer-link:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+  .mob-drawer-link svg { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.7; }
 }
 
 /* ════════════════════════════════════════
