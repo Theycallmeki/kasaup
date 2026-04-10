@@ -1,6 +1,6 @@
 FROM python:3.12-slim
 
-# Install system dependencies for psycopg2 and utilities
+
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     gcc \
