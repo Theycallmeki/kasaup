@@ -104,9 +104,14 @@ const handleImageUpload = async (e: Event) => {
   }
 }
 
-const initials = computed(() => {
-  const name = form.value.full_name || auth.user?.email || "?"
-  return name.charAt(0).toUpperCase()
+const displayImageUrl = computed(() => {
+  const path = profileImageUrl.value;
+  if (!path || path === 'null' || path.trim() === '') return null;
+  if (path.startsWith("http") || path.startsWith("data:")) return path;
+  
+  const base = api.defaults.baseURL?.replace(/\/$/, '') || '';
+  const safePath = path.startsWith('/') ? path : `/${path}`;
+  return `${base}${safePath}`;
 })
 </script>
 
@@ -123,8 +128,13 @@ const initials = computed(() => {
         <!-- Avatar Upload -->
         <div class="avatar-section">
           <div class="avatar-wrapper" @click="triggerUpload">
-            <img v-if="profileImageUrl" :src="profileImageUrl" alt="Photo" class="avatar-img" />
-            <div v-else class="avatar-placeholder">{{ initials }}</div>
+            <img v-if="displayImageUrl" :src="displayImageUrl" alt="Profile" class="avatar-img" />
+            <div v-else class="avatar-placeholder">
+              <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </div>
             <div class="avatar-overlay" :class="{ uploading: uploadingImage }">
               <svg v-if="!uploadingImage" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>

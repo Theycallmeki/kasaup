@@ -34,8 +34,8 @@ export const useMessageStore = defineStore("messages", {
       this.activeMessages = await getConversationMessages(conversationId)
     },
 
-    async send(receiverId: number, content: string) {
-      const msg = await sendMessage(receiverId, content)
+    async send(receiverId: number, content: string | null, imageUrl: string | null = null) {
+      const msg = await sendMessage(receiverId, content, imageUrl)
 
       if (this.activeConversationId === -1) {
         this.activeConversationId = msg.conversation_id
@@ -43,7 +43,7 @@ export const useMessageStore = defineStore("messages", {
 
       const index = this.conversations.findIndex(c => c.id === msg.conversation_id)
       if (index !== -1) {
-        this.conversations[index].last_message = content
+        this.conversations[index].last_message = content || "Sent an image"
         this.conversations[index].updated_at = msg.created_at
       } else {
         await this.fetchConversations()
@@ -125,7 +125,7 @@ export const useMessageStore = defineStore("messages", {
 
       const index = this.conversations.findIndex(c => c.id === message.conversation_id)
       if (index !== -1) {
-        this.conversations[index].last_message = message.content
+        this.conversations[index].last_message = message.content || "Sent an image"
         this.conversations[index].updated_at = message.created_at
         const conv = this.conversations.splice(index, 1)[0]
 

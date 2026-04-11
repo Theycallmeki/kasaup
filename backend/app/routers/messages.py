@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect, status
+from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect, status, File, UploadFile
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from typing import List
@@ -13,6 +13,7 @@ from app.models.providers import Provider
 from app.schemas.message import MessageCreate, Message as MessageSchema, Conversation as ConversationSchema
 from app.core.dependencies import get_current_user
 from app.services.websocket_manager import manager
+from app.services.upload_service import save_image
 from jose import jwt, JWTError
 from app.core.security import SECRET_KEY, ALGORITHM
 
@@ -141,6 +142,9 @@ async def send_message(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    if not msg_in.content and not msg_in.image_url:
+        raise HTTPException(status_code=400, detail="Message cannot be completely empty")
+        
     recipient = db.query(User).filter(User.id == msg_in.receiver_id).first()
     if not recipient:
         raise HTTPException(status_code=404, detail="Recipient not found")
@@ -178,11 +182,12 @@ async def send_message(
     db_msg = Message(
         conversation_id=conversation.id,
         sender_id=current_user.id,
-        content=msg_in.content
+        content=msg_in.content,
+        image_url=msg_in.image_url
     )
     db.add(db_msg)
 
-    conversation.last_message = msg_in.content
+    conversation.last_message = msg_in.content or "Sent an image"
     conversation.updated_at = db_msg.created_at
 
     db.commit()
@@ -198,6 +203,7 @@ async def send_message(
             "sender_id": db_msg.sender_id,
             "sender_name": db_msg.sender_name,
             "content": db_msg.content,
+            "image_url": db_msg.image_url,
             "created_at": db_msg.created_at.isoformat()
         }
     }
@@ -225,3 +231,15 @@ def delete_conversation(
     db.delete(conversation)
     db.commit()
     return {"message": "Conversation deleted"}
+
+
+@router.post("/upload-image/")
+def upload_chat_image(
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user)
+):
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="File must be an image")
+    
+    url = save_image(file)
+    return {"url": url}

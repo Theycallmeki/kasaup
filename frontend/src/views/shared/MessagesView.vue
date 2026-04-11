@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch, nextTick } from 'vue';
+import { uploadMessageImage } from '../../services/messages';
 import { useScroll } from '../../hooks/useScroll';
 import { useRoute } from 'vue-router';
 import { useMessageStore } from '../../stores/messageStore';
@@ -22,6 +23,68 @@ const conversationToDelete = ref<any>(null);
 
 // Mobile panel state: 'list' | 'chat'
 const mobilePanel = ref<'list' | 'chat'>('list');
+
+const uploadingImage = ref(false);
+const imageInput = ref<HTMLInputElement | null>(null);
+const fullScreenImage = ref<string | null>(null);
+
+const triggerImageUpload = () => {
+  imageInput.value?.click();
+};
+
+const handleImageSelected = async (e: Event) => {
+  const target = e.target as HTMLInputElement;
+  const file = target.files?.[0];
+  if (!file) return;
+
+  uploadingImage.value = true;
+  try {
+    const imageUrl = await uploadMessageImage(file);
+    await sendMessageInternal(null, imageUrl);
+  } catch (err) {
+    alert("Failed to upload image");
+    console.error(err);
+  } finally {
+    uploadingImage.value = false;
+    if (imageInput.value) imageInput.value.value = '';
+  }
+};
+
+const sendMessageInternal = async (content: string | null, imageUrl: string | null = null) => {
+  let targetReceiverId: number | null = null;
+
+  if (messageStore.activeConversationId === -1 && pendingReceiverId.value) {
+    targetReceiverId = pendingReceiverId.value;
+  } else if (messageStore.activeConversationId) {
+    const conv = messageStore.conversations.find(c => c.id === messageStore.activeConversationId);
+    if (conv) {
+      targetReceiverId = authStore.user!.id === conv.user_id 
+        ? conv.provider_owner_id 
+        : conv.user_id;
+    }
+  }
+
+  if (!targetReceiverId) {
+    console.error("Could not determine recipient ID");
+    return;
+  }
+
+  try {
+    const msg = await messageStore.send(targetReceiverId, content, imageUrl);
+    if (content) newMessage.value = '';
+    
+    if (messageStore.activeConversationId === -1) {
+       messageStore.activeConversationId = msg.conversation_id;
+       pendingReceiverId.value = null;
+       pendingShopName.value = null;
+       await messageStore.fetchConversations();
+    }
+    
+    scrollToBottom();
+  } catch (err) {
+    console.error("Failed to send message", err);
+  }
+};
 
 onMounted(async () => {
   await messageStore.fetchConversations();
@@ -75,45 +138,7 @@ const goBackToList = () => {
 
 const sendMessage = async () => {
   if (!newMessage.value.trim()) return;
-
-  let targetReceiverId: number | null = null;
-
-  if (messageStore.activeConversationId === -1 && pendingReceiverId.value) {
-    targetReceiverId = pendingReceiverId.value;
-  } else if (messageStore.activeConversationId) {
-    const conv = messageStore.conversations.find(c => c.id === messageStore.activeConversationId);
-    if (conv) {
-      
-      targetReceiverId = authStore.user.id === conv.user_id 
-        ? conv.provider_owner_id 
-        : conv.user_id;
-    }
-  }
-
-  if (!targetReceiverId) {
-    console.error("Could not determine recipient ID", {
-      activeId: messageStore.activeConversationId,
-      pendingId: pendingReceiverId.value,
-      conv: messageStore.conversations.find(c => c.id === messageStore.activeConversationId)
-    });
-    return;
-  }
-
-  try {
-    const msg = await messageStore.send(targetReceiverId, newMessage.value);
-    newMessage.value = '';
-    
-    if (messageStore.activeConversationId === -1) {
-       messageStore.activeConversationId = msg.conversation_id;
-       pendingReceiverId.value = null;
-       pendingShopName.value = null;
-       await messageStore.fetchConversations();
-    }
-    
-    scrollToBottom();
-  } catch (err) {
-    console.error("Failed to send message", err);
-  }
+  await sendMessageInternal(newMessage.value.trim());
 };
 
 /* scrollToBottom logic is now handled by the useScroll hook */
@@ -268,10 +293,16 @@ const activeConversation = computed(() => {
               v-for="msg in messageStore.activeMessages" 
               :key="msg.id"
               class="message-wrapper"
-              :class="{ 'mine': msg.sender_id === authStore.user?.id }"
+              :class="{ 
+                'mine': msg.sender_id === authStore.user?.id,
+                'is-image-only': msg.image_url && !msg.content 
+              }"
             >
-              <div class="message-bubble">
-                <p>{{ msg.content }}</p>
+              <div class="message-bubble" :class="{ 'image-only': msg.image_url && !msg.content }">
+                <div v-if="msg.image_url" class="msg-image" @click="fullScreenImage = imgUrl(msg.image_url)">
+                  <img :src="imgUrl(msg.image_url)" alt="Attachment" />
+                </div>
+                <p v-if="msg.content" class="text-content">{{ msg.content }}</p>
                 <span class="msg-time">{{ formatTime(msg.created_at) }}</span>
               </div>
             </div>
@@ -279,6 +310,15 @@ const activeConversation = computed(() => {
 
           <div class="chat-footer">
             <div class="input-wrapper">
+              <input type="file" accept="image/*" class="hidden-input" ref="imageInput" @change="handleImageSelected" style="display: none;" />
+              <button class="attach-btn" @click="triggerImageUpload" :disabled="uploadingImage" title="Attach Image">
+                <svg v-if="!uploadingImage" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+                </svg>
+                <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
+                   <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                </svg>
+              </button>
               <input 
                 v-model="newMessage" 
                @keydown.enter.prevent="sendMessage"
@@ -317,6 +357,13 @@ const activeConversation = computed(() => {
         </div>
       </div>
     </div>
+    
+    <!-- Full-screen Image Modal -->
+    <div v-if="fullScreenImage" class="img-viewer-ov" @click="fullScreenImage = null">
+      <button class="close-viewer" @click="fullScreenImage = null">×</button>
+      <img :src="fullScreenImage" alt="Fullscreen preview" @click.stop />
+    </div>
+
   </div>
 </template>
 

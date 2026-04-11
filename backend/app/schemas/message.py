@@ -4,7 +4,8 @@ from typing import List, Optional
 
 
 class MessageBase(BaseModel):
-    content: str
+    content: Optional[str] = None
+    image_url: Optional[str] = None
 
 
 class MessageCreate(MessageBase):

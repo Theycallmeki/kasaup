@@ -323,6 +323,15 @@
   border: 1px solid rgba(255, 255, 255, 0.07);
   color: #fff;
   line-height: 1.5;
+  transition: all 0.2s ease;
+}
+
+.message-bubble.image-only {
+  padding: 0;
+  background: none;
+  border: none;
+  box-shadow: none;
+  position: relative;
 }
 
 .message-bubble p {
@@ -336,6 +345,21 @@
   margin-top: 5px;
   display: block;
   padding: 0 2px;
+}
+
+.image-only .msg-time {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  margin: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(6px);
+  padding: 3px 8px;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 9px;
+  pointer-events: none;
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
 }
 
 .mine {
