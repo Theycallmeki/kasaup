@@ -276,7 +276,7 @@
 
 @media (max-width: 640px) {
   .page {
-    padding: 20px 14px;
+    padding: 20px 14px 100px;
   }
 
   .cards-scroll {

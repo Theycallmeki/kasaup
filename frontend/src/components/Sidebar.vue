@@ -220,7 +220,21 @@ const icons: Record<string, string> = {
 }
 
 .sidebar.collapsed {
-  width: 54px;
+  width: 64px;
+}
+
+.sidebar.collapsed .top {
+  justify-content: center;
+}
+
+.sidebar.collapsed .link {
+  padding-left: 0;
+  padding-right: 0;
+  justify-content: center;
+}
+
+.sidebar.collapsed .link-content {
+  justify-content: center;
 }
 
 .top {

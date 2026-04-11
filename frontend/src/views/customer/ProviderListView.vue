@@ -358,7 +358,13 @@ const activeFilterCount = computed(() => {
             <span class="btn-label">Use my location</span>
           </button>
 
-          <button type="submit" class="search-btn">Search</button>
+          <button type="submit" class="search-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+            Search
+          </button>
         </div>
       </form>
 

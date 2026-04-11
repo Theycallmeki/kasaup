@@ -151,7 +151,7 @@ function refreshProviderMarkers() {
     const name = typeof provider.shop_name === "string" ? provider.shop_name : "Provider"
     const dist =
       typeof provider.distance_km === "number"
-        ? `<p class="kasaup-popup-sub">${provider.distance_km.toFixed(1)} km away</p>`
+        ? `<div class="kasaup-popup-sub"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg><span>${provider.distance_km.toFixed(1)} km away</span></div>`
         : ""
 
     const rawImage = typeof provider.profile_image === "string" ? provider.profile_image : null
@@ -180,17 +180,17 @@ function refreshProviderMarkers() {
       <div class="kasaup-popup-header">
         ${avatarHTML}
         <div class="kasaup-popup-header-info">
-          <p class="kasaup-popup-name">${escapeHtml(name)}</p>
+          <h3 class="kasaup-popup-name">${escapeHtml(name)}</h3>
           ${dist}
         </div>
       </div>
       <div class="kasaup-popup-btns">
         <button class="kasaup-popup-btn kasaup-btn-view" id="view-${id}">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           View
         </button>
         <button class="kasaup-popup-btn kasaup-btn-dir" id="dir-${id}">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
           Directions
         </button>
       </div>
@@ -198,8 +198,8 @@ function refreshProviderMarkers() {
 
     marker.bindPopup(popupDiv, {
       className: "kasaup-leaflet-popup",
-      maxWidth: 220,
-      minWidth: 180
+      maxWidth: 240,
+      minWidth: 200
     })
 
     marker.on("popupopen", () => {
@@ -322,6 +322,12 @@ watch(
   pointer-events: all;
 }
 
+@media (max-width: 600px) {
+  .cancel-directions-bar {
+    top: 130px;
+  }
+}
+
 .cancel-directions-inner {
   display: flex;
   align-items: center;
@@ -402,10 +408,12 @@ watch(
 }
 
 .kasaup-leaflet-popup .leaflet-popup-content-wrapper {
-  background: #13111f;
-  border: 1px solid rgba(167, 139, 250, 0.2);
-  border-radius: 14px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  background: rgba(18, 16, 30, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.02);
   padding: 0;
 }
 .kasaup-leaflet-popup .leaflet-popup-content {
@@ -414,94 +422,121 @@ watch(
 .kasaup-leaflet-popup .leaflet-popup-tip-container {
   display: none;
 }
+.kasaup-leaflet-popup .leaflet-popup-close-button {
+  display: none !important;
+}
 
 /* Popup layout */
 .kasaup-popup {
-  padding: 14px 16px;
+  padding: 18px;
   font-family: 'DM Sans', sans-serif;
 }
 
 .kasaup-popup-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .kasaup-popup-header-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   min-width: 0;
+  justify-content: center;
 }
 
 .kasaup-popup-avatar {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   flex-shrink: 0;
+  box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.25);
+  background: #1a1829;
 }
 
 .kasaup-popup-avatar--img {
   object-fit: cover;
-  border: 1px solid rgba(167, 139, 250, 0.25);
+  border: none;
 }
 
 .kasaup-popup-avatar--initials {
-  background: rgba(124, 58, 237, 0.25);
-  border: 1px solid rgba(124, 58, 237, 0.35);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(167, 139, 250, 0.08));
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
-  color: rgba(167, 139, 250, 0.9);
+  color: #c4b5fd;
   font-family: 'Sora', sans-serif;
 }
 
 .kasaup-popup-name {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
   color: #fff;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: 0.2px;
+  line-height: 1.2;
 }
 
 .kasaup-popup-sub {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.5);
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1;
+}
+.kasaup-popup-sub svg {
+  color: rgba(167, 139, 250, 0.8);
 }
 
 .kasaup-popup-btns {
   display: flex;
-  gap: 7px;
+  gap: 8px;
 }
 .kasaup-popup-btn {
   flex: 1;
-  padding: 8px 10px;
-  border-radius: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
   font-family: 'DM Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  transition: opacity 0.15s;
+  gap: 6px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.kasaup-popup-btn:hover { opacity: 0.85; }
+.kasaup-popup-btn:active {
+  transform: scale(0.96);
+}
 .kasaup-btn-view {
   background: linear-gradient(135deg, #7c3aed, #a855f7);
   color: #fff;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+}
+.kasaup-btn-view:hover {
+  background: linear-gradient(135deg, #8b5cf6, #b165f8);
+  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.35);
+  transform: translateY(-1px);
 }
 .kasaup-btn-dir {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.6);
+  color: #fff;
+}
+.kasaup-btn-dir:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
 }
 </style>

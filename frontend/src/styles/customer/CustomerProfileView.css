@@ -285,7 +285,7 @@
 
 @media (max-width: 600px) {
   .profile-page {
-    padding: 24px 16px;
+    padding: 24px 16px 100px;
   }
 
   .profile-card {
@@ -293,6 +293,6 @@
   }
 
   .title {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
   }
 }

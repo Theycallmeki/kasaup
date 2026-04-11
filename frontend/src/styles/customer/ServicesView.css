@@ -1043,7 +1043,7 @@
 
 @media (max-width: 640px) {
   .pg {
-    padding: 24px 16px 24px;
+    padding: 24px 16px 100px;
   }
 
   .hd {

@@ -430,7 +430,7 @@ textarea.input {
 /* Tablet and below: Stack everything vertically */
 @media (max-width: 1024px) {
   .page {
-    padding: 28px 24px 48px;
+    padding: 28px 24px 100px;
   }
 
   .layout {
@@ -445,7 +445,7 @@ textarea.input {
 /* Small Tablet: 541px - 768px */
 @media (max-width: 768px) {
   .page {
-    padding: 24px 16px 40px;
+    padding: 24px 16px 100px;
   }
 
   .title {
@@ -469,7 +469,7 @@ textarea.input {
 /* Mobile: 540px and below */
 @media (max-width: 540px) {
   .page {
-    padding: 20px 12px 36px;
+    padding: 20px 12px 100px;
   }
 
   .page-header {
@@ -610,7 +610,7 @@ textarea.input {
 /* Extra Small: 320px and below */
 @media (max-width: 320px) {
   .page {
-    padding: 16px 8px 32px;
+    padding: 16px 8px 100px;
   }
 
   .title {
