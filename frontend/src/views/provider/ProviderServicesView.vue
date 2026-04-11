@@ -404,13 +404,8 @@ function getService(id: number) {
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@700&family=DM+Sans:wght@400;500&display=swap');
 
 .page {
-  min-height: 100vh;
-  height: 100vh;             
-  overflow-y: auto;          
-  background: #0b0917;
-  padding: 32px 28px 140px;   /* reduce back */
-  font-family: 'DM Sans', sans-serif;
-  color: #fff;
+  min-height: 100%;
+  padding: 32px 28px 120px;
 }
 
 .page-header {
@@ -876,7 +871,6 @@ function getService(id: number) {
 }
 
 @media (max-width: 640px) {
-  .page { padding: 20px 16px 280px; }
-  .field-row { grid-template-columns: 1fr; }
+  .page { padding: 20px 16px 140px; }
 }
 </style>

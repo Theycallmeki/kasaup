@@ -209,7 +209,7 @@ const createService = async () => {
 
 .page {
   display: flex;
-  min-height: 100vh;
+  min-height: 100%;
   background: #0e0c1a;
   font-family: 'DM Sans', sans-serif;
 }
@@ -218,7 +218,7 @@ const createService = async () => {
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
-  padding: 36px 28px;
+  padding: 36px 28px 120px;
 }
 
 .page-header {
@@ -253,6 +253,7 @@ const createService = async () => {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  padding-bottom: 80px;
 }
 
 .field {
@@ -399,9 +400,14 @@ select.input option {
   cursor: not-allowed;
   transform: none;
 }
+
 @media (max-width: 768px) {
   .left-panel.full {
-    padding: 48px 20px 140px;
+    padding: 48px 20px 120px;
+  }
+
+  .form {
+    padding-bottom: 120px;
   }
 }
 </style>

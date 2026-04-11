@@ -312,7 +312,8 @@ textarea.input {
 }
 
 .actions-row {
-  grid-column: 1; /* Stay under the form column on desktop */
+  grid-column: 1;
+  /* Stay under the form column on desktop */
   margin-top: 24px;
   padding-bottom: 20px;
   width: 100%;
@@ -326,14 +327,16 @@ textarea.input {
 
 @media (max-width: 1024px) {
   .actions-row {
-     grid-column: 1;
-     justify-content: center;
-     margin-top: 32px;
+    grid-column: 1;
+    justify-content: center;
+    margin-top: 32px;
   }
+
   .actions-row .submit-btn {
     max-width: 100%;
   }
 }
+
 .map-card {
   background: rgba(255, 255, 255, 0.025);
   border: 1px solid rgba(167, 139, 250, 0.18);
@@ -385,7 +388,8 @@ textarea.input {
   background: #0e0c1a;
   box-sizing: border-box;
   flex-shrink: 0;
-  display: flex; /* Added to ensure child fills height */
+  display: flex;
+  /* Added to ensure child fills height */
   flex-direction: column;
 }
 
@@ -590,14 +594,16 @@ textarea.input {
     border-radius: 10px;
   }
 
-  .coords-row, .coords-hint-empty {
+  .coords-row,
+  .coords-hint-empty {
     font-size: 11px;
     gap: 4px;
   }
 
   .actions-row {
     margin-top: 40px;
-    margin-bottom: 100px; /* Increased for better mobile clearance */
+    margin-bottom: 100px;
+    /* Increased for better mobile clearance */
   }
 }
 

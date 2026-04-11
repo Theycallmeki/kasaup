@@ -762,3 +762,129 @@
 .lightbox-close:hover {
   background: rgba(255, 255, 255, 0.15);
 }
+
+/* Custom Confirm Dialog */
+.custom-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+
+.custom-dialog {
+  background: #1a1728;
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  padding: 28px 28px 24px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.custom-dialog-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.custom-dialog-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(251, 191, 36, 0.12);
+  border: 0.5px solid rgba(251, 191, 36, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fbbf24;
+  flex-shrink: 0;
+}
+
+.custom-dialog-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  flex: 1;
+}
+
+.custom-dialog-close {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.custom-dialog-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.custom-dialog-message {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0 0 24px;
+  line-height: 1.6;
+}
+
+.custom-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.custom-dialog-cancel {
+  padding: 9px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.05);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.5);
+  transition: all 0.2s;
+}
+
+.custom-dialog-cancel:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: #fff;
+}
+
+.custom-dialog-confirm {
+  padding: 9px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  border: none;
+  color: #fff;
+  transition: all 0.2s;
+}
+
+.custom-dialog-confirm:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}

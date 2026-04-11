@@ -5,12 +5,10 @@ import { useProviderStore } from "../../stores/providerStore"
 import { useAppointmentStore } from "../../stores/appointmentStore"
 import HomeServiceMapCard from "../../components/HomeServiceMapCard.vue"
 import api from "../../services/api"
-import { useConfirm } from "primevue/useconfirm"
 import { useNotification } from "../../hooks/useNotification"
 import { useLoading } from "../../hooks/useLoading"
  
 const router = useRouter()
-const confirm = useConfirm()
 const { notifySuccess, notifyError } = useNotification()
 const { startLoading, stopLoading } = useLoading()
 const route = useRoute()
@@ -37,6 +35,10 @@ const serviceLocationType = ref<"shop" | "home">("shop")
 const customerLat = ref<number | null>(null)
 const customerLng = ref<number | null>(null)
 const lightboxImg = ref<string | null>(null)
+
+// Custom confirm dialog state
+const confirmDialog = ref(false)
+const pendingBooking = ref<{ serviceId: number; slot: string } | null>(null)
 
 const imageIndices = ref<Record<number, number>>({})
 function getImgIndex(serviceId: number) { return imageIndices.value[serviceId] || 0 }
@@ -132,14 +134,22 @@ function setLocation(data: any) {
   customerLng.value = data.longitude
 }
 
-async function book(serviceId: number, slot: string) {
-  confirm.require({
-    message: 'Are you sure you want to book this appointment?',
-    header: 'Confirm Booking',
-    icon: 'pi pi-exclamation-triangle',
-    accept: () => proceedWithBooking(serviceId, slot),
-    reject: () => { }
-  })
+function book(serviceId: number, slot: string) {
+  pendingBooking.value = { serviceId, slot }
+  confirmDialog.value = true
+}
+
+function cancelBooking() {
+  confirmDialog.value = false
+  pendingBooking.value = null
+}
+
+function acceptBooking() {
+  confirmDialog.value = false
+  if (pendingBooking.value) {
+    proceedWithBooking(pendingBooking.value.serviceId, pendingBooking.value.slot)
+    pendingBooking.value = null
+  }
 }
 
 async function proceedWithBooking(serviceId: number, slot: string) {
@@ -300,7 +310,8 @@ const isPrevDisabled = computed(() => {
     <template v-else>
       <div class="provider-header">
         <div class="provider-avatar" :class="{ 'has-img': providerStore.providerProfile.provider.profile_image }">
-          <img v-if="providerStore.providerProfile.provider.profile_image" :src="imgUrl(providerStore.providerProfile.provider.profile_image)" alt="Profile" class="avatar-img" />
+          <img v-if="providerStore.providerProfile.provider.profile_image"
+            :src="imgUrl(providerStore.providerProfile.provider.profile_image)" alt="Profile" class="avatar-img" />
           <span v-else>{{ providerStore.providerProfile.provider.shop_name?.charAt(0) }}</span>
         </div>
         <div>
@@ -353,17 +364,18 @@ const isPrevDisabled = computed(() => {
               :class="{ 'service-active': activeServiceId === service.id }">
 
               <div v-if="service.images?.length" class="modal-carousel">
-                <button v-if="service.images.length > 1" @click.stop="prevImg(service.id, service.images.length)" class="carousel-btn prev">‹</button>
+                <button v-if="service.images.length > 1" @click.stop="prevImg(service.id, service.images.length)"
+                  class="carousel-btn prev">‹</button>
                 <div class="modal-carousel-track">
-                  <img :src="imgUrl(service.images[getImgIndex(service.id)].image_url)" 
-                       class="modal-carousel-img" 
-                       @click="lightboxImg = imgUrl(service.images[getImgIndex(service.id)].image_url)" />
+                  <img :src="imgUrl(service.images[getImgIndex(service.id)].image_url)" class="modal-carousel-img"
+                    @click="lightboxImg = imgUrl(service.images[getImgIndex(service.id)].image_url)" />
                 </div>
-                <button v-if="service.images.length > 1" @click.stop="nextImg(service.id, service.images.length)" class="carousel-btn next">›</button>
+                <button v-if="service.images.length > 1" @click.stop="nextImg(service.id, service.images.length)"
+                  class="carousel-btn next">›</button>
                 <div v-if="service.images.length > 1" class="carousel-dots">
-                   <span v-for="(_, i) in service.images" :key="i" class="carousel-dot" 
-                         :class="{active: Number(i) === getImgIndex(service.id)}" 
-                         @click.stop="setImg(service.id, Number(i))"></span>
+                  <span v-for="(_, i) in service.images" :key="i" class="carousel-dot"
+                    :class="{ active: Number(i) === getImgIndex(service.id) }"
+                    @click.stop="setImg(service.id, Number(i))"></span>
                 </div>
               </div>
 
@@ -474,7 +486,8 @@ const isPrevDisabled = computed(() => {
                           'cal-today': isToday(cell.dateStr) && !isSelected(cell.dateStr),
                         }" @click="selectDay(cell.dateStr)">
                           {{ cell.day }}
-                          <span v-if="!isPast(cell.dateStr) && isAvailable(cell.dateStr) && !isSelected(cell.dateStr)"
+                          <span
+                            v-if="!isPast(cell.dateStr) && isAvailable(cell.dateStr) && !isSelected(cell.dateStr)"
                             class="cal-dot" />
                         </div>
                       </template>
@@ -503,6 +516,34 @@ const isPrevDisabled = computed(() => {
 
       </div>
     </template>
+
+    <!-- Custom Confirm Dialog -->
+    <Teleport to="body">
+      <div v-if="confirmDialog" class="custom-dialog-overlay" @click.self="cancelBooking">
+        <div class="custom-dialog">
+          <div class="custom-dialog-header">
+            <div class="custom-dialog-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+            </div>
+            <h3 class="custom-dialog-title">Confirm Booking</h3>
+            <button class="custom-dialog-close" @click="cancelBooking">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+          <p class="custom-dialog-message">Are you sure you want to book this appointment?</p>
+          <div class="custom-dialog-actions">
+            <button class="custom-dialog-cancel" @click="cancelBooking">No, cancel</button>
+            <button class="custom-dialog-confirm" @click="acceptBooking">Yes, book it</button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
 
     <!-- Lightbox -->
     <Teleport to="body">

@@ -54,8 +54,7 @@ onMounted(async () => {
 
 .layout {
   display: flex;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
   width: 100%;
 }
 
