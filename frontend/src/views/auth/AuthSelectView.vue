@@ -95,7 +95,7 @@ const goProvider = () => router.push("/register?role=provider")
   }
 }
 
-.bg-orb {
+/* .bg-orb {
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
@@ -113,7 +113,7 @@ const goProvider = () => router.push("/register?role=provider")
   bottom: -60px;
   right: -80px;
   background: radial-gradient(circle, rgba(168, 85, 247, 0.25) 0%, transparent 70%);
-}
+} */
 
 .auth-card {
   position: relative;
@@ -178,8 +178,8 @@ const goProvider = () => router.push("/register?role=provider")
 @media (max-width: 480px) {
   .title { font-size: 2rem; }
   .subtitle { margin-bottom: 24px; }
-  .orb1 { width: 260px; height: 260px; }
-  .orb2 { width: 220px; height: 220px; }
+  /* .orb1 { width: 260px; height: 260px; }
+  .orb2 { width: 220px; height: 220px; } */
   .btn { font-size: 0.9rem; padding: 12px 16px; }
 }
 

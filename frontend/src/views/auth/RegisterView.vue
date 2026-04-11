@@ -223,7 +223,7 @@ const goGithub = () => {
   }
 }
 
-.bg-orb {
+/* .bg-orb {
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
@@ -241,7 +241,7 @@ const goGithub = () => {
   bottom: -60px;
   right: -80px;
   background: radial-gradient(circle, rgba(168, 85, 247, 0.25) 0%, transparent 70%);
-}
+} */
 
 .register-card {
   position: relative;
@@ -311,8 +311,8 @@ const goGithub = () => {
   .title { font-size: 2rem; }
   .subtitle { margin-bottom: 18px; }
   .eyebrow { margin-bottom: 14px; }
-  .orb1 { width: 260px; height: 260px; }
-  .orb2 { width: 220px; height: 220px; }
+  /* .orb1 { width: 260px; height: 260px; }
+  .orb2 { width: 220px; height: 220px; } */
 }
 
 /* Landscape mobile: reduce gaps so form fits without scrolling if possible */
