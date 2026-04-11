@@ -47,6 +47,19 @@ def require_provider(current_user: User = Depends(get_current_user)):
     return current_user
 
 
+class RoleChecker:
+    def __init__(self, allowed_roles: list[str]):
+        self.allowed_roles = allowed_roles
+
+    def __call__(self, user: User = Depends(get_current_user)):
+        if user.role not in self.allowed_roles:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Access denied. Required roles: {', '.join(self.allowed_roles)}"
+            )
+        return user
+
+
 def require_admin(current_user: User = Depends(get_current_user)):
 
     if current_user.role != "admin":

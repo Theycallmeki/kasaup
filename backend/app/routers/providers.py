@@ -19,7 +19,7 @@ router = APIRouter()
 @router.get("/me/")
 def get_my_provider(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_provider)
 ):
     provider = db.query(Provider).filter(
         Provider.owner_id == current_user.id
@@ -35,7 +35,7 @@ def get_my_provider(
 def update_my_provider(
     provider: ProviderUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_provider)
 ):
     db_provider = db.query(Provider).filter(
         Provider.owner_id == current_user.id

@@ -64,6 +64,21 @@ def get_profile(current_user: User = Depends(get_current_user)):
     return current_user
 
 
+@router.post("/me/promote", response_model=UserResponse)
+def promote_to_provider(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role == "provider":
+        raise HTTPException(status_code=400, detail="User is already a provider")
+    
+    current_user.role = "provider"
+    current_user.is_approved = False  # Still needs admin approval
+    db.commit()
+    db.refresh(current_user)
+    return current_user
+
+
 @router.post("/me/profile-image/")
 def upload_user_profile_image(
     file: UploadFile = File(...),
