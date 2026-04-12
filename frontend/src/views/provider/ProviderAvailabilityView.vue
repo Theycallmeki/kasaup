@@ -91,10 +91,8 @@ function resetForm() {
   }
 }
 
-// Helper to ensure time strings are in HH:mm format for input[type="time"]
 function formatTimeForInput(timeStr: string) {
   if (!timeStr) return "09:00"
-  // If it's already HH:mm or HH:mm:ss
   if (timeStr.includes(':')) {
     const parts = timeStr.split(':')
     return `${parts[0].padStart(2, '0')}:${parts[1].padStart(2, '0')}`
@@ -136,7 +134,6 @@ const slotsForSelectedDate = computed(() => {
 const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 const dayShort = ["S", "M", "T", "W", "T", "F", "S"]
 
-/** Convert "09:00", "09:00:00", "17:00" etc. to "9:00 AM" / "5:00 PM" */
 function formatAmPm(timeStr: string): string {
   if (!timeStr) return timeStr
   const parts = timeStr.split(':').map(Number)
@@ -251,18 +248,17 @@ function formatAmPm(timeStr: string): string {
         <div class="months-grid" ref="calendarScroll">
           <div v-for="month in months" :key="month" class="month-card">
             <div class="month-name">{{ new Date(year, month).toLocaleString("default", { month: "long" }) }}</div>
-            <div class="days-header">
-              <div v-for="d in dayShort" :key="d" class="day-label">{{ d }}</div>
-            </div>
             <div class="days-grid">
+              <div v-for="d in dayShort" :key="'label-'+d" class="day-label cell-shared">{{ d }}</div>
+              
               <!-- Empty cells for alignment -->
-              <div v-for="empty in getFirstDayOfMonth(month)" :key="'empty-'+empty" class="day-cell empty"></div>
+              <div v-for="empty in getFirstDayOfMonth(month)" :key="'empty-'+empty" class="day-cell empty cell-shared"></div>
               
               <!-- Real day cells -->
               <div
                 v-for="day in getDaysInMonth(month)"
                 :key="day"
-                class="day-cell"
+                class="day-cell cell-shared"
                 :class="{
                   'has-slot': hasAvailability(year, month, day),
                   'selected': selectedDate === formatDate(year, month, day),
@@ -349,7 +345,6 @@ function formatAmPm(timeStr: string): string {
   color: #fff;
 }
 
-/* Glass Card Global Styles */
 .card {
   background: rgba(255, 255, 255, 0.035);
   border: 0.5px solid rgba(255, 255, 255, 0.08);
@@ -363,7 +358,6 @@ function formatAmPm(timeStr: string): string {
   margin: 24px 0;
 }
 
-/* Schedule Column */
 .schedule-card {
   flex: 1;
   max-width: 400px;
@@ -503,7 +497,6 @@ function formatAmPm(timeStr: string): string {
   transform: scale(0.98);
 }
 
-/* Slots List */
 .slots-list {
   display: flex;
   flex-direction: column;
@@ -584,7 +577,6 @@ function formatAmPm(timeStr: string): string {
 .edit-btn:hover { color: #34d399; }
 .delete-btn:hover { color: #ef4444; }
 
-/* Calendar Column */
 .calendar-panel {
   flex: 2;
   display: flex;
@@ -633,15 +625,16 @@ function formatAmPm(timeStr: string): string {
 
 .months-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 20px;
 }
 
+/* ✅ FIX: increased horizontal padding so Saturday dates don't hug the border */
 .month-card {
   background: rgba(255, 255, 255, 0.02);
   border: 0.5px solid rgba(255, 255, 255, 0.05);
   border-radius: 16px;
-  padding: 18px;
+  padding: 18px 20px;
   transition: transform 0.3s ease, border-color 0.3s ease;
 }
 
@@ -660,11 +653,20 @@ function formatAmPm(timeStr: string): string {
   letter-spacing: 0.02em;
 }
 
-.days-header {
+.days-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 4px;
-  margin-bottom: 8px;
+  width: 100%;
+  justify-items: center;
+}
+
+.cell-shared {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 .day-label {
@@ -672,19 +674,12 @@ function formatAmPm(timeStr: string): string {
   font-weight: 700;
   color: rgba(255, 255, 255, 0.3);
   text-align: center;
-}
-
-.days-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  border: 1px solid transparent;
 }
 
 .day-cell {
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: transparent;
+  width: 100%;
   font-size: 11px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.5);
@@ -723,7 +718,7 @@ function formatAmPm(timeStr: string): string {
 .day-cell.has-slot {
   background: rgba(124, 58, 237, 0.15);
   color: #c4b5fd;
-  border: 0.5px solid rgba(124, 58, 237, 0.1);
+  border: 1px solid rgba(124, 58, 237, 0.15);
 }
 
 .day-cell.has-slot:hover {
@@ -733,7 +728,7 @@ function formatAmPm(timeStr: string): string {
 
 .day-cell.selected {
   background: #7c3aed !important;
-  border-color: #a78bfa !important;
+  border: 1px solid #a78bfa !important;
   color: #fff !important;
   box-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
   transform: scale(1.15);
@@ -741,7 +736,6 @@ function formatAmPm(timeStr: string): string {
   font-weight: 700;
 }
 
-/* Selected Day Panel */
 .selected-date-panel {
   margin-top: 24px;
   background: rgba(124, 58, 237, 0.08);
