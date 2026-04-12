@@ -9,7 +9,8 @@ import {
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     user: null as any,
-    loading: false
+    loading: false,
+    justLoggedOut: false
   }),
 
   getters: {
@@ -33,20 +34,20 @@ export const useAuthStore = defineStore("auth", {
     async logout() {
       await logoutRequest()
       this.user = null
+      this.justLoggedOut = true
     },
 
     async fetchUser() {
-
-      try {
-
-        this.user = await getCurrentUser()
-
-      } catch {
-
-        this.user = null
-
+      if (this.justLoggedOut) {
+        this.justLoggedOut = false
+        return
       }
 
+      try {
+        this.user = await getCurrentUser()
+      } catch {
+        this.user = null
+      }
     },
 
     async register(data: any) {

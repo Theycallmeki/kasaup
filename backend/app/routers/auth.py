@@ -237,8 +237,8 @@ def refresh_token(request: Request, response: Response, db: Session = Depends(ge
 
 @router.post("/logout/")
 def logout(response: Response):
-    response.delete_cookie("access_token")
-    response.delete_cookie("refresh_token")
+    response.delete_cookie(key="access_token", samesite="none", secure=True)
+    response.delete_cookie(key="refresh_token", samesite="none", secure=True)
 
     return {"message": "Logged out"}
 
