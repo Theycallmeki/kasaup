@@ -6,10 +6,8 @@ import { useAuthStore } from "../../stores/authStore"
 import { useNotification } from "../../hooks/useNotification"
 import {
   validateEmail,
-  validatePHPhone,
   validatePassword,
-  validateFullName,
-  normalizePHPhone
+  validateFullName
 } from "../../utils/validators"
 
 const router = useRouter()
@@ -21,28 +19,20 @@ const { scrollRef: pageScroll } = useScroll()
 const email = ref("")
 const password = ref("")
 const full_name = ref("")
-const phone = ref("")
 const loading = ref(false)
 const error = ref("")
 const showPassword = ref(false)
 
 // Per-field errors
-const fieldErrors = ref({ email: "", phone: "", password: "", full_name: "" })
+const fieldErrors = ref({ email: "", password: "", full_name: "" })
 
 const role = computed(() => (route.query.role as string) || "customer")
 const showPendingMessage = ref(false)
 
-// Auto-normalize phone to +63 on blur
-const onPhoneBlur = () => {
-  const normalized = normalizePHPhone(phone.value)
-  if (normalized) phone.value = normalized
-  fieldErrors.value.phone = validatePHPhone(phone.value) || ""
-}
 
 const validateAll = (): boolean => {
   fieldErrors.value.full_name = validateFullName(full_name.value) || ""
   fieldErrors.value.email = validateEmail(email.value) || ""
-  fieldErrors.value.phone = validatePHPhone(phone.value) || ""
   fieldErrors.value.password = validatePassword(password.value) || ""
   return !Object.values(fieldErrors.value).some(Boolean)
 }
@@ -57,7 +47,6 @@ const register = async () => {
       email: email.value.trim(),
       password: password.value,
       full_name: full_name.value.trim(),
-      phone: phone.value.trim() || undefined,
       role: role.value
     })
 
@@ -157,35 +146,27 @@ const goGithub = () => {
           <span v-if="fieldErrors.email" class="field-hint-error">{{ fieldErrors.email }}</span>
         </div>
         <div class="field-wrap">
-          <input
-            v-model="phone"
-            class="field"
-            :class="{ 'field-error': fieldErrors.phone }"
-            placeholder="+63 9XX XXX XXXX (optional)"
-            @blur="onPhoneBlur"
-          />
-          <span v-if="fieldErrors.phone" class="field-hint-error">{{ fieldErrors.phone }}</span>
-        </div>
-        <div class="password-wrapper field-wrap">
-          <input
-            v-model="password"
-            class="field pr-field"
-            :class="{ 'field-error': fieldErrors.password }"
-            :type="showPassword ? 'text' : 'password'"
-            placeholder="Password (min 8 chars)"
-            required
-            @blur="fieldErrors.password = validatePassword(password) || ''"
-          />
-          <button type="button" class="toggle-password" @click="showPassword = !showPassword">
-            <svg v-if="showPassword" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-              <line x1="2" y1="2" x2="22" y2="22" />
-            </svg>
-            <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
-          </button>
+          <div class="password-wrapper">
+            <input
+              v-model="password"
+              class="field pr-field"
+              :class="{ 'field-error': fieldErrors.password }"
+              :type="showPassword ? 'text' : 'password'"
+              placeholder="Password (min 8 chars)"
+              required
+              @blur="fieldErrors.password = validatePassword(password) || ''"
+            />
+            <button type="button" class="toggle-password" @click="showPassword = !showPassword">
+              <svg v-if="showPassword" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <line x1="2" y1="2" x2="22" y2="22" />
+              </svg>
+              <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
           <span v-if="fieldErrors.password" class="field-hint-error">{{ fieldErrors.password }}</span>
         </div>
 
@@ -231,14 +212,14 @@ const goGithub = () => {
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   background: #0e0c1a;
   overflow-y: auto;
   overflow-x: hidden;
   font-family: 'DM Sans', sans-serif;
   scrollbar-width: thin;
   scrollbar-color: rgba(167, 139, 250, 0.2) transparent;
-  padding: 40px 0;
+  padding: 80px 0 40px;
 }
 
 .register-page::-webkit-scrollbar {
@@ -449,7 +430,7 @@ form {
   font-size: 11px;
   color: #f87171;
   text-align: left;
-  padding-left: 2px;
+  padding-left: 16px;
 }
 
 .btn {
@@ -469,6 +450,7 @@ form {
   color: #fff;
   transition: transform 0.18s ease, opacity 0.18s ease;
   margin-top: 4px;
+  box-sizing: border-box;
 }
 .btn:hover:not(:disabled) {
   transform: translateY(-2px);

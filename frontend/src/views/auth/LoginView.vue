@@ -165,14 +165,14 @@ const githubLogin = () => {
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   background: #0e0c1a;
   overflow-y: auto;
   overflow-x: hidden;
   font-family: 'DM Sans', sans-serif;
   scrollbar-width: thin;
   scrollbar-color: rgba(99, 60, 220, 0.2) transparent;
-  padding: 40px 0;
+  padding: 80px 0 40px;
 }
 
 .login-page::-webkit-scrollbar {
@@ -364,6 +364,7 @@ form {
   color: #fff;
   transition: transform 0.18s ease, opacity 0.18s ease;
   margin-top: 4px;
+  box-sizing: border-box;
 }
 .btn:hover:not(:disabled) {
   transform: translateY(-2px);
