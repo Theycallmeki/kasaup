@@ -24,6 +24,12 @@ const conversationToDelete = ref<any>(null);
 // Mobile panel state: 'list' | 'chat'
 const mobilePanel = ref<'list' | 'chat'>('list');
 
+// Desktop sidebar collapsed state
+const sidebarCollapsed = ref(false);
+const toggleSidebar = () => {
+  sidebarCollapsed.value = !sidebarCollapsed.value;
+};
+
 const uploadingImage = ref(false);
 const imageInput = ref<HTMLInputElement | null>(null);
 
@@ -261,7 +267,7 @@ const activeConversation = computed(() => {
       <p class="hint">Keep in touch with your service providers and clients.</p>
     </div>
 
-    <div class="chat-container">
+    <div class="chat-container" :class="{ 'sidebar-hidden': sidebarCollapsed }">
       <!-- Sidebar -->
       <div class="sidebar">
         <div class="conversation-list">
@@ -318,6 +324,17 @@ const activeConversation = computed(() => {
             <button class="back-btn" @click="goBackToList" aria-label="Back to conversations">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M19 12H5M12 5l-7 7 7 7" />
+              </svg>
+            </button>
+            <button class="sidebar-toggle-btn" @click="toggleSidebar" :aria-label="sidebarCollapsed ? 'Show conversations' : 'Hide conversations'" :title="sidebarCollapsed ? 'Show conversations' : 'Hide conversations'">
+              <svg v-if="!sidebarCollapsed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <path d="M9 3v18" />
+              </svg>
+              <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <path d="M9 3v18" />
+                <path d="M14 9l3 3-3 3" />
               </svg>
             </button>
             <div class="header-info">

@@ -54,7 +54,7 @@
    SIDEBAR
 ───────────────────────────────────────────────────────────── */
 .sidebar {
-  width: 420px;
+  width: 280px;
   flex-shrink: 0;
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
@@ -252,6 +252,45 @@
 .back-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
+}
+
+/* Desktop sidebar toggle button */
+.sidebar-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 0.5px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.18s, color 0.18s, transform 0.18s;
+}
+
+.sidebar-toggle-btn:hover {
+  background: rgba(167, 139, 250, 0.12);
+  border-color: rgba(167, 139, 250, 0.3);
+  color: #a78bfa;
+  transform: scale(1.05);
+}
+
+/* Smooth sidebar collapse on desktop */
+.chat-container .sidebar {
+  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.25s ease,
+              min-width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.chat-container.sidebar-hidden .sidebar {
+  width: 0;
+  min-width: 0;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-right: none;
 }
 
 .header-info {
@@ -1014,6 +1053,10 @@
 
   .back-btn {
     display: flex;
+  }
+
+  .sidebar-toggle-btn {
+    display: none;
   }
 
   .conversation-item {
