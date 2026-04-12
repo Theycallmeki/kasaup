@@ -4,6 +4,13 @@ import { useRouter, useRoute } from "vue-router"
 import { useScroll } from "../../hooks/useScroll"
 import { useAuthStore } from "../../stores/authStore"
 import { useNotification } from "../../hooks/useNotification"
+import {
+  validateEmail,
+  validatePHPhone,
+  validatePassword,
+  validateFullName,
+  normalizePHPhone
+} from "../../utils/validators"
 
 const router = useRouter()
 const route = useRoute()
@@ -19,25 +26,42 @@ const loading = ref(false)
 const error = ref("")
 const showPassword = ref(false)
 
-const role = computed(() => (route.query.role as string) || "customer")
+// Per-field errors
+const fieldErrors = ref({ email: "", phone: "", password: "", full_name: "" })
 
+const role = computed(() => (route.query.role as string) || "customer")
 const showPendingMessage = ref(false)
+
+// Auto-normalize phone to +63 on blur
+const onPhoneBlur = () => {
+  const normalized = normalizePHPhone(phone.value)
+  if (normalized) phone.value = normalized
+  fieldErrors.value.phone = validatePHPhone(phone.value) || ""
+}
+
+const validateAll = (): boolean => {
+  fieldErrors.value.full_name = validateFullName(full_name.value) || ""
+  fieldErrors.value.email = validateEmail(email.value) || ""
+  fieldErrors.value.phone = validatePHPhone(phone.value) || ""
+  fieldErrors.value.password = validatePassword(password.value) || ""
+  return !Object.values(fieldErrors.value).some(Boolean)
+}
 
 const register = async () => {
   error.value = ""
-  loading.value = true
+  if (!validateAll()) return
 
+  loading.value = true
   try {
     await auth.register({
-      email: email.value,
+      email: email.value.trim(),
       password: password.value,
-      full_name: full_name.value,
-      phone: phone.value,
+      full_name: full_name.value.trim(),
+      phone: phone.value.trim() || undefined,
       role: role.value
     })
 
     notifySuccess("Success", "Account created successfully!")
-
     if (role.value === "provider") {
       showPendingMessage.value = true
     } else {
@@ -109,31 +133,48 @@ const goGithub = () => {
         <div class="divider">or use email</div>
 
       <form @submit.prevent="register">
-        <input
-          v-model="full_name"
-          class="field"
-          placeholder="Full Name"
-          required
-        />
-        <input
-          v-model="email"
-          class="field"
-          type="email"
-          placeholder="Email"
-          required
-        />
-        <input
-          v-model="phone"
-          class="field"
-          placeholder="Phone"
-        />
-        <div class="password-wrapper">
+        <div class="field-wrap">
+          <input
+            v-model="full_name"
+            class="field"
+            :class="{ 'field-error': fieldErrors.full_name }"
+            placeholder="Full Name"
+            required
+            @blur="fieldErrors.full_name = validateFullName(full_name) || ''"
+          />
+          <span v-if="fieldErrors.full_name" class="field-hint-error">{{ fieldErrors.full_name }}</span>
+        </div>
+        <div class="field-wrap">
+          <input
+            v-model="email"
+            class="field"
+            :class="{ 'field-error': fieldErrors.email }"
+            type="email"
+            placeholder="Email"
+            required
+            @blur="fieldErrors.email = validateEmail(email) || ''"
+          />
+          <span v-if="fieldErrors.email" class="field-hint-error">{{ fieldErrors.email }}</span>
+        </div>
+        <div class="field-wrap">
+          <input
+            v-model="phone"
+            class="field"
+            :class="{ 'field-error': fieldErrors.phone }"
+            placeholder="+63 9XX XXX XXXX (optional)"
+            @blur="onPhoneBlur"
+          />
+          <span v-if="fieldErrors.phone" class="field-hint-error">{{ fieldErrors.phone }}</span>
+        </div>
+        <div class="password-wrapper field-wrap">
           <input
             v-model="password"
             class="field pr-field"
+            :class="{ 'field-error': fieldErrors.password }"
             :type="showPassword ? 'text' : 'password'"
-            placeholder="Password"
+            placeholder="Password (min 8 chars)"
             required
+            @blur="fieldErrors.password = validatePassword(password) || ''"
           />
           <button type="button" class="toggle-password" @click="showPassword = !showPassword">
             <svg v-if="showPassword" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -145,6 +186,7 @@ const goGithub = () => {
               <circle cx="12" cy="12" r="3" />
             </svg>
           </button>
+          <span v-if="fieldErrors.password" class="field-hint-error">{{ fieldErrors.password }}</span>
         </div>
 
         <p v-if="error" class="error">{{ error }}</p>
@@ -390,6 +432,24 @@ form {
   color: #f87171;
   text-align: left;
   margin-top: -4px;
+}
+
+.field-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.field-error {
+  border-color: rgba(248, 113, 113, 0.6) !important;
+}
+
+.field-hint-error {
+  font-size: 11px;
+  color: #f87171;
+  text-align: left;
+  padding-left: 2px;
 }
 
 .btn {

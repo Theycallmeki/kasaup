@@ -5,6 +5,11 @@ import LocationPickerMap from "../../components/LocationPickerMap.vue"
 import api from "../../services/api"
 import { useNotification } from "../../hooks/useNotification"
 import { useLoading } from "../../hooks/useLoading"
+import {
+  validateEmail,
+  validatePHPhone,
+  normalizePHPhone
+} from "../../utils/validators"
 
 const auth = useAuthStore()
 const { notifySuccess, notifyError } = useNotification()
@@ -20,6 +25,8 @@ const form = ref({
   latitude: null as number | null,
   longitude: null as number | null
 })
+
+const fieldErrors = ref({ email: "", phone: "" })
 
 const profileImageUrl = ref<string | null>(null)
 const uploadingImage = ref(false)
@@ -48,7 +55,21 @@ const onLocationSelected = (loc: { latitude: number; longitude: number }) => {
   form.value.longitude = loc.longitude
 }
 
+const onPhoneBlur = () => {
+  const normalized = normalizePHPhone(form.value.phone)
+  if (normalized) form.value.phone = normalized
+  fieldErrors.value.phone = validatePHPhone(form.value.phone) || ""
+}
+
+const validateAll = (): boolean => {
+  fieldErrors.value.email = validateEmail(form.value.email) || ""
+  fieldErrors.value.phone = validatePHPhone(form.value.phone) || ""
+  return !Object.values(fieldErrors.value).some(Boolean)
+}
+
 const saveProfile = async () => {
+  if (!validateAll()) return
+
   startLoading("Updating your profile...")
   loading.value = true
   message.value = { text: "", type: "" }
@@ -163,12 +184,26 @@ const displayImageUrl = computed(() => {
 
           <div class="input-group">
             <label>Email Address</label>
-            <input v-model="form.email" type="email" placeholder="email@example.com" />
+            <input
+              v-model="form.email"
+              type="email"
+              placeholder="email@example.com"
+              :class="{ 'input-invalid': fieldErrors.email }"
+              @blur="fieldErrors.email = validateEmail(form.email) || ''"
+            />
+            <span v-if="fieldErrors.email" class="field-err">{{ fieldErrors.email }}</span>
           </div>
 
           <div class="input-group">
             <label>Phone Number</label>
-            <input v-model="form.phone" type="tel" placeholder="0917XXXXXXX" />
+            <input
+              v-model="form.phone"
+              type="tel"
+              placeholder="+63 9XX XXX XXXX (optional)"
+              :class="{ 'input-invalid': fieldErrors.phone }"
+              @blur="onPhoneBlur"
+            />
+            <span v-if="fieldErrors.phone" class="field-err">{{ fieldErrors.phone }}</span>
           </div>
 
           <div class="input-group">

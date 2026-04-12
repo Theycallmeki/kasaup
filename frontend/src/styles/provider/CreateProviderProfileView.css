@@ -131,6 +131,16 @@ label {
   background: rgba(167, 139, 250, 0.03);
 }
 
+.input-error {
+  border-color: rgba(248, 113, 113, 0.6) !important;
+}
+
+.inline-error {
+  font-size: 11px;
+  color: #f87171;
+  margin-top: 2px;
+}
+
 textarea.input {
   resize: vertical;
   min-height: 90px;

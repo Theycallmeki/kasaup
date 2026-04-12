@@ -135,6 +135,17 @@ const slotsForSelectedDate = computed(() => {
 
 const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 const dayShort = ["S", "M", "T", "W", "T", "F", "S"]
+
+/** Convert "09:00", "09:00:00", "17:00" etc. to "9:00 AM" / "5:00 PM" */
+function formatAmPm(timeStr: string): string {
+  if (!timeStr) return timeStr
+  const parts = timeStr.split(':').map(Number)
+  let hours = parts[0]
+  const minutes = parts[1] ?? 0
+  const ampm = hours >= 12 ? 'PM' : 'AM'
+  hours = hours % 12 || 12
+  return `${hours}:${String(minutes).padStart(2, '0')} ${ampm}`
+}
 </script>
 
 <template>
@@ -205,7 +216,7 @@ const dayShort = ["S", "M", "T", "W", "T", "F", "S"]
           <div v-for="slot in availability" :key="slot.id" class="slot-item">
             <div class="slot-info">
               <div class="slot-day">{{ days[slot.day_of_week] }}</div>
-              <div class="slot-time">{{ slot.start_time }} - {{ slot.end_time }}</div>
+              <div class="slot-time">{{ formatAmPm(slot.start_time) }} - {{ formatAmPm(slot.end_time) }}</div>
             </div>
             <div class="slot-actions">
               <button class="icon-btn edit-btn" @click.prevent="edit(slot)" title="Edit">
@@ -283,7 +294,7 @@ const dayShort = ["S", "M", "T", "W", "T", "F", "S"]
           </div>
           <div v-else class="day-slots-grid">
             <div v-for="slot in slotsForSelectedDate" :key="slot.id" class="day-slot-pill">
-              {{ slot.start_time }} - {{ slot.end_time }}
+              {{ formatAmPm(slot.start_time) }} - {{ formatAmPm(slot.end_time) }}
             </div>
           </div>
         </div>
@@ -652,6 +663,7 @@ const dayShort = ["S", "M", "T", "W", "T", "F", "S"]
 .days-header {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
   margin-bottom: 8px;
 }
 

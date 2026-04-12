@@ -151,6 +151,17 @@
   box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.1);
 }
 
+.input-group input.input-invalid {
+  border-color: rgba(248, 113, 113, 0.6) !important;
+  box-shadow: none !important;
+}
+
+.field-err {
+  font-size: 11px;
+  color: #f87171;
+  margin-top: -4px;
+}
+
 .save-btn {
   margin-top: 12px;
   background: linear-gradient(135deg, #a78bfa, #7c3aed);

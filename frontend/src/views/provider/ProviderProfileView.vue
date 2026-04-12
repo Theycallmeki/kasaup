@@ -2,10 +2,18 @@
 import { ref, onMounted, computed } from "vue"
 import { useProviderStore } from "../../stores/providerStore"
 import { useLoading } from "../../hooks/useLoading"
+import { useNotification } from "../../hooks/useNotification"
 import api from "../../services/api"
+import {
+  validateEmail,
+  validatePHPhone,
+  validateShopName,
+  normalizePHPhone
+} from "../../utils/validators"
 
 const providerStore = useProviderStore()
 const { startLoading, stopLoading } = useLoading()
+const { notifySuccess, notifyError } = useNotification()
 
 const shop_name = ref("")
 const description = ref("")
@@ -16,6 +24,7 @@ const offers_home_service = ref(false)
 
 const loading = ref(false)
 const saved = ref(false)
+const fieldErrors = ref({ shop_name: "", phone: "", email: "" })
 
 const imageLoading = ref(false)
 const imagePreview = ref<string | null>(null)
@@ -77,7 +86,22 @@ const onFileChange = (e: Event) => {
   if (fileInput.value) fileInput.value.value = ""
 }
 
+const onPhoneBlur = () => {
+  const normalized = normalizePHPhone(phone.value)
+  if (normalized) phone.value = normalized
+  fieldErrors.value.phone = validatePHPhone(phone.value) || ""
+}
+
+const validateAll = (): boolean => {
+  fieldErrors.value.shop_name = validateShopName(shop_name.value) || ""
+  fieldErrors.value.phone = validatePHPhone(phone.value) || ""
+  fieldErrors.value.email = email.value?.trim() ? (validateEmail(email.value) || "") : ""
+  return !Object.values(fieldErrors.value).some(Boolean)
+}
+
 const save = async () => {
+  if (!validateAll()) return
+
   startLoading("Updating profile...")
   loading.value = true
   saved.value = false
@@ -101,8 +125,12 @@ const save = async () => {
       offers_home_service: offers_home_service.value
     })
 
+    notifySuccess("Saved", "Profile updated successfully!")
     saved.value = true
     setTimeout(() => (saved.value = false), 2500)
+  } catch (err: any) {
+    const msg = err.response?.data?.detail || "Failed to update profile."
+    notifyError("Error", msg)
   } finally {
     loading.value = false
     stopLoading()
@@ -161,17 +189,38 @@ const save = async () => {
 
       <div class="field-group">
         <label class="field-label">Shop Name</label>
-        <input v-model="shop_name" class="field" placeholder="e.g. Maria's Salon" />
+        <input
+          v-model="shop_name"
+          class="field"
+          :class="{ 'field-invalid': fieldErrors.shop_name }"
+          placeholder="e.g. Maria's Salon"
+          @blur="fieldErrors.shop_name = validateShopName(shop_name) || ''"
+        />
+        <span v-if="fieldErrors.shop_name" class="field-err">{{ fieldErrors.shop_name }}</span>
       </div>
 
       <div class="field-row">
         <div class="field-group">
           <label class="field-label">Phone</label>
-          <input v-model="phone" class="field" placeholder="+63 912 345 6789" />
+          <input
+            v-model="phone"
+            class="field"
+            :class="{ 'field-invalid': fieldErrors.phone }"
+            placeholder="+63 912 345 6789"
+            @blur="onPhoneBlur"
+          />
+          <span v-if="fieldErrors.phone" class="field-err">{{ fieldErrors.phone }}</span>
         </div>
         <div class="field-group">
           <label class="field-label">Email</label>
-          <input v-model="email" class="field" placeholder="shop@email.com" />
+          <input
+            v-model="email"
+            class="field"
+            :class="{ 'field-invalid': fieldErrors.email }"
+            placeholder="shop@email.com"
+            @blur="fieldErrors.email = email?.trim() ? (validateEmail(email) || '') : ''"
+          />
+          <span v-if="fieldErrors.email" class="field-err">{{ fieldErrors.email }}</span>
         </div>
       </div>
 
@@ -395,6 +444,15 @@ const save = async () => {
   border-color: rgba(167, 139, 250, 0.5);
 }
 
+.field-invalid {
+  border-color: rgba(248, 113, 113, 0.6) !important;
+}
+
+.field-err {
+  font-size: 11px;
+  color: #f87171;
+  margin-top: 2px;
+}
 .textarea {
   resize: vertical;
   min-height: 90px;

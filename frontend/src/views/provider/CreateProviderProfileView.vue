@@ -6,6 +6,12 @@ import LocationPickerMap from "../../components/LocationPickerMap.vue"
 import { useNotification } from "../../hooks/useNotification"
 import { useAuthStore } from "../../stores/authStore"
 import { useLoading } from "../../hooks/useLoading"
+import {
+  validateEmail,
+  validatePHPhone,
+  validateShopName,
+  normalizePHPhone
+} from "../../utils/validators"
 
 const router = useRouter()
 const auth = useAuthStore()
@@ -43,6 +49,9 @@ const profileImagePreview = ref<string | null>(null)
 const loading = ref(false)
 const error = ref("")
 
+// Per-field errors
+const fieldErrors = ref({ shop_name: "", phone: "", email: "" })
+
 function setLocation(data: any) {
   latitude.value = data.latitude
   longitude.value = data.longitude
@@ -55,28 +64,31 @@ function onImageChange(e: Event) {
   profileImagePreview.value = URL.createObjectURL(file)
 }
 
+const onPhoneBlur = () => {
+  const normalized = normalizePHPhone(phone.value)
+  if (normalized) phone.value = normalized
+  fieldErrors.value.phone = validatePHPhone(phone.value) || ""
+}
+
+const validateAll = (): boolean => {
+  fieldErrors.value.shop_name = validateShopName(shop_name.value) || ""
+  fieldErrors.value.phone = validatePHPhone(phone.value) || ""
+  fieldErrors.value.email = email.value.trim() ? (validateEmail(email.value) || "") : ""
+  return !Object.values(fieldErrors.value).some(Boolean)
+}
+
 const create = async () => {
   error.value = ""
+  if (!validateAll()) return
+
+  if (latitude.value === null || longitude.value === null) {
+    error.value = "Please select your shop location on the map"
+    return
+  }
+
   startLoading("Setting up your provider profile...")
 
   try {
-    if (!shop_name.value.trim()) { 
-      error.value = "Shop name is required"
-      return 
-    }
-    if (!phone.value.trim()) { 
-      error.value = "Phone is required"
-      return 
-    }
-    if (!email.value.trim()) { 
-      error.value = "Email is required"
-      return 
-    }
-    if (latitude.value === null || longitude.value === null) {
-      error.value = "Please select your shop location on the map"
-      return
-    }
-
     const provider = await createProvider({
       shop_name: shop_name.value,
       description: description.value,
@@ -163,18 +175,43 @@ const create = async () => {
             <div class="field-row">
               <div class="field">
                 <label for="shop-name">Shop Name</label>
-                <input id="shop-name" v-model="shop_name" class="input" placeholder="e.g. Juan's Plumbing" />
+                <input
+                  id="shop-name"
+                  v-model="shop_name"
+                  class="input"
+                  :class="{ 'input-error': fieldErrors.shop_name }"
+                  placeholder="e.g. Juan's Plumbing"
+                  @blur="fieldErrors.shop_name = validateShopName(shop_name) || ''"
+                />
+                <span v-if="fieldErrors.shop_name" class="inline-error">{{ fieldErrors.shop_name }}</span>
               </div>
               <div class="field">
                 <label for="shop-phone">Phone</label>
-                <input id="shop-phone" v-model="phone" class="input" placeholder="+63 9XX XXX XXXX" />
+                <input
+                  id="shop-phone"
+                  v-model="phone"
+                  class="input"
+                  :class="{ 'input-error': fieldErrors.phone }"
+                  placeholder="+63 9XX XXX XXXX"
+                  @blur="onPhoneBlur"
+                />
+                <span v-if="fieldErrors.phone" class="inline-error">{{ fieldErrors.phone }}</span>
               </div>
             </div>
 
             <div class="field-row">
               <div class="field">
                 <label for="shop-email">Email</label>
-                <input id="shop-email" v-model="email" class="input" type="email" placeholder="you@example.com" />
+                <input
+                  id="shop-email"
+                  v-model="email"
+                  class="input"
+                  :class="{ 'input-error': fieldErrors.email }"
+                  type="email"
+                  placeholder="you@example.com"
+                  @blur="fieldErrors.email = email.trim() ? (validateEmail(email) || '') : ''"
+                />
+                <span v-if="fieldErrors.email" class="inline-error">{{ fieldErrors.email }}</span>
               </div>
               <div class="field">
                 <label for="shop-address">Address</label>
