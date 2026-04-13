@@ -14,8 +14,7 @@ from app.routers import (
     appointments,
     provider_availability,
     ratings,
-    messages,
-    review
+    messages
 )
 from app.core.image_events import init_image_events
 
