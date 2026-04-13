@@ -18,7 +18,7 @@ from app.routers import (
 )
 
 app = FastAPI(
-    title="Kasaup API",
+    title="KasaUp API",
     version="1.0.0"
 )
 
@@ -55,4 +55,4 @@ app.include_router(messages.router, prefix="/messages", tags=["Messages"])
 
 @app.get("/")
 def root():
-    return {"message": "Kasaup API running"}
+    return {"message": "KasaUp API running"}
