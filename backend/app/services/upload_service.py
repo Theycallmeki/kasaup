@@ -40,3 +40,28 @@ def save_image(file: UploadFile) -> str:
 
 def save_multiple_images(files: List[UploadFile]) -> List[str]:
     return [save_image(file) for file in files]
+
+
+def delete_image_from_s3(url: str):
+    """Deletes an image from S3 given its full URL."""
+    if not url:
+        return
+    
+    try:
+        # Expected URL format: https://{BUCKET}.s3.{settings.AWS_REGION}.amazonaws.com/{filename}
+        # Extract filename (the key in S3)
+        parts = url.split("/")
+        if len(parts) < 4:
+            return
+            
+        filename = parts[-1]
+        
+        # Prevent attempting to delete local or external files that don't match our S3 pattern
+        if not url.startswith(f"https://{BUCKET}.s3.{settings.AWS_REGION}.amazonaws.com/"):
+            return
+
+        s3_client = get_s3_client()
+        s3_client.delete_object(Bucket=BUCKET, Key=filename)
+        print(f"Successfully deleted {filename} from S3")
+    except Exception as e:
+        print(f"Failed to delete {url} from S3: {e}")

@@ -14,8 +14,13 @@ from app.routers import (
     appointments,
     provider_availability,
     ratings,
-    messages
+    messages,
+    review
 )
+from app.core.image_events import init_image_events
+
+# Initialize image deletion listeners
+init_image_events()
 
 app = FastAPI(
     title="KasaUp API",
