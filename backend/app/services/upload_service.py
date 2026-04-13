@@ -48,15 +48,13 @@ def delete_image_from_s3(url: str):
         return
     
     try:
-        # Expected URL format: https://{BUCKET}.s3.{settings.AWS_REGION}.amazonaws.com/{filename}
-        # Extract filename (the key in S3)
+   
         parts = url.split("/")
         if len(parts) < 4:
             return
             
         filename = parts[-1]
         
-        # Prevent attempting to delete local or external files that don't match our S3 pattern
         if not url.startswith(f"https://{BUCKET}.s3.{settings.AWS_REGION}.amazonaws.com/"):
             return
 
