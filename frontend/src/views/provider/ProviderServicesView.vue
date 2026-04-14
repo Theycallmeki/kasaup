@@ -366,6 +366,9 @@ function getService(id: number) {
       </div>
     </div>
 
+    <!-- Bottom spacer for mobile navigation -->
+    <div class="bottom-spacer"></div>
+
     <!-- Gallery Viewer -->
     <Teleport to="body">
       <div v-if="viewingGallery" class="img-viewer-ov" @click.self="closeGallery">
@@ -405,8 +408,24 @@ function getService(id: number) {
 
 .page {
   min-height: 100%;
-  padding: 32px 28px 120px;
+  padding: 32px 28px 200px;
 }
+
+.bottom-spacer {
+  display: none;
+  height: 0;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding-bottom: 220px;
+  }
+  .bottom-spacer {
+    display: block;
+    height: 40px;
+  }
+}
+
 
 .page-header {
   display: flex;
