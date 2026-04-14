@@ -408,7 +408,7 @@ function getService(id: number) {
 
 .page {
   min-height: 100%;
-  padding: 32px 28px 240px;
+  padding: 32px 28px 120px;
 }
 
 .bottom-spacer {
@@ -418,11 +418,11 @@ function getService(id: number) {
 
 @media (max-width: 768px) {
   .page {
-    padding-bottom: 260px;
+    padding-bottom: 300px;
   }
   .bottom-spacer {
     display: block;
-    height: 60px;
+    height: 100px;
   }
 }
 
