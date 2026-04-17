@@ -380,8 +380,7 @@ function formatAmPm(timeStr: string): string {
 
 .field-row {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .field-label {
@@ -779,14 +778,80 @@ function formatAmPm(timeStr: string): string {
   color: #e5e7eb;
 }
 
+/* --- Responsiveness --- */
+
+/* Tablet & Smaller Desktop */
+@media (max-width: 1024px) {
+  .layout-grid {
+    gap: 20px;
+  }
+  
+  .months-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+}
+
+/* Mobile & Small Tablets */
 @media (max-width: 900px) {
-  .page { padding: 24px 16px 220px; }
+  .page { 
+    padding: 24px 16px 140px; 
+  }
+  
   .layout-grid {
     flex-direction: column;
   }
-  .schedule-card, .calendar-panel {
+  
+  .schedule-card, 
+  .calendar-panel {
     max-width: 100%;
     width: 100%;
+  }
+
+  .months-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+/* Phones */
+@media (max-width: 600px) {
+  .field-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .month-card {
+    padding: 14px 12px;
+  }
+
+  .days-grid {
+    gap: 2px;
+  }
+
+  .day-cell {
+    font-size: 10px;
+  }
+
+  .title {
+    font-size: 1.3rem;
+  }
+
+  .selected-date-panel {
+    padding: 16px;
+  }
+
+  .date-title {
+    font-size: 1rem;
+  }
+}
+
+/* Extra Small Phones */
+@media (max-width: 380px) {
+  .months-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .page {
+    padding: 20px 12px 120px;
   }
 }
 </style>

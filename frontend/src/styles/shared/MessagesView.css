@@ -8,7 +8,7 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
-  padding: 36px 32px 10px;
+  padding: 36px 32px 100px;
 }
 
 .page.full-height {
@@ -346,7 +346,7 @@
 .messages-area {
   flex: 1;
   overflow-y: auto;
-  padding: 20px 20px 8px;
+  padding: 20px 20px 40px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -985,7 +985,7 @@
 ───────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .page {
-    padding: 20px 14px 0;
+    padding: 20px 14px 120px;
     height: 100vh;
     overflow: hidden;
   }
@@ -1070,7 +1070,7 @@
   .messages-area {
     flex: 1;
     overflow-y: auto;
-    padding: 14px;
+    padding: 14px 14px 80px;
   }
 
   /* Slightly narrower images on small screens */
