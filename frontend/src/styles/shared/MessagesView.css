@@ -392,7 +392,8 @@
 }
 
 /* Image-only bubble: no background, no padding */
-.message-bubble.image-only {
+.message-bubble.image-only,
+.mine .message-bubble.image-only {
   padding: 0;
   background: none;
   border: none;
