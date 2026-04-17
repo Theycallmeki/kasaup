@@ -784,5 +784,8 @@ function formatAmPm(timeStr: string): string {
     max-width: 100%;
     width: 100%;
   }
+  .field-row {
+    flex-direction: column;
+  }
 }
 </style>
