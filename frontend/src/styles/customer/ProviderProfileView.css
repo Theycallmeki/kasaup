@@ -618,6 +618,17 @@
   cursor: not-allowed;
 }
 
+.bottom-spacer {
+  height: 120px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .bottom-spacer {
+    height: 80px;
+  }
+}
+
 @media (max-width: 900px) {
   .profile-layout {
     flex-direction: column;
@@ -626,7 +637,7 @@
 
 @media (max-width: 640px) {
   .page {
-    padding: 20px 14px 100px;
+    padding: 20px 14px 180px;
   }
 
   .provider-header {
@@ -788,8 +799,15 @@
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .custom-dialog-header {

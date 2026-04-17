@@ -506,13 +506,14 @@ const isPrevDisabled = computed(() => {
                   </div>
                 </div>
               </div>
+
+              <HomeServiceMapCard
+                v-if="activeServiceId === service.id"
+                :show="Boolean(selectedDate && serviceLocationType === 'home' && providerStore.providerProfile.provider.offers_home_service)"
+                :customerLat="customerLat" :customerLng="customerLng" @location-selected="setLocation" />
             </div>
           </div>
         </div>
-
-        <HomeServiceMapCard
-          :show="Boolean(selectedDate && serviceLocationType === 'home' && providerStore.providerProfile.provider.offers_home_service)"
-          :customerLat="customerLat" :customerLng="customerLng" @location-selected="setLocation" />
 
       </div>
     </template>
@@ -552,6 +553,9 @@ const isPrevDisabled = computed(() => {
         <button class="lightbox-close" @click="lightboxImg = null">✕</button>
       </div>
     </Teleport>
+
+    <!-- Bottom Spacer for mobile scroller -->
+    <div class="bottom-spacer" />
 
   </div>
 </template>
