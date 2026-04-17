@@ -8,7 +8,7 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
-  padding: 36px 32px 100px;
+  padding: 36px 32px 30px;
 }
 
 .page.full-height {
@@ -41,7 +41,8 @@
 ───────────────────────────────────────────────────────────── */
 .chat-container {
   flex: 1;
-  min-height: calc(100vh - 110px);
+  min-height: calc(97vh - 100px);
+  margin-bottom: 20px;
   display: flex;
   background: rgba(255, 255, 255, 0.025);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -280,8 +281,8 @@
 /* Smooth sidebar collapse on desktop */
 .chat-container .sidebar {
   transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-              opacity 0.25s ease,
-              min-width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.25s ease,
+    min-width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .chat-container.sidebar-hidden .sidebar {
@@ -985,7 +986,7 @@
 ───────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .page {
-    padding: 20px 14px 120px;
+    padding: 20px 14px 20px;
     height: 100vh;
     overflow: hidden;
   }
@@ -1000,8 +1001,10 @@
 
   .chat-container {
     flex: 1;
-    height: 100%;
-    border-radius: 8px;
+    height: auto;
+    min-height: calc(100vh - 160px);
+    margin-bottom: 70px;
+    border-radius: 12px;
     position: relative;
     overflow: hidden;
   }
@@ -1096,7 +1099,7 @@
 
   .chat-footer {
     position: sticky;
-    bottom: 70px;
+    bottom: 0;
     padding: 10px 12px;
     background: #0b0917;
   }
