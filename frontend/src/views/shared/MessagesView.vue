@@ -43,6 +43,9 @@ const imageLoaded = reactive<Record<number, boolean>>({});
 // Track error state per message id
 const imageError = reactive<Record<number, boolean>>({});
 
+const selectedImageFile = ref<File | null>(null);
+const imagePreviewUrl = ref<string | null>(null);
+
 const openViewer = (src: string) => {
   viewerSrc.value = src;
   viewerClosing.value = false;
@@ -77,7 +80,7 @@ const triggerImageUpload = () => {
   imageInput.value?.click();
 };
 
-const handleImageSelected = async (e: Event) => {
+const handleImageSelected = (e: Event) => {
   const target = e.target as HTMLInputElement;
   const file = target.files?.[0];
   if (!file) return;
@@ -94,16 +97,17 @@ const handleImageSelected = async (e: Event) => {
     return;
   }
 
-  uploadingImage.value = true;
-  try {
-    const imageUrl = await uploadMessageImage(file);
-    await sendMessageInternal(null, imageUrl);
-  } catch (err) {
-    alert('Failed to upload image. Please try again.');
-    console.error(err);
-  } finally {
-    uploadingImage.value = false;
-    if (imageInput.value) imageInput.value.value = '';
+  selectedImageFile.value = file;
+  if (imagePreviewUrl.value) URL.revokeObjectURL(imagePreviewUrl.value);
+  imagePreviewUrl.value = URL.createObjectURL(file);
+  if (imageInput.value) imageInput.value.value = '';
+};
+
+const clearSelectedImage = () => {
+  selectedImageFile.value = null;
+  if (imagePreviewUrl.value) {
+    URL.revokeObjectURL(imagePreviewUrl.value);
+    imagePreviewUrl.value = null;
   }
 };
 
@@ -193,8 +197,25 @@ const goBackToList = () => {
 };
 
 const sendMessage = async () => {
-  if (!newMessage.value.trim()) return;
-  await sendMessageInternal(newMessage.value.trim());
+  if (!newMessage.value.trim() && !selectedImageFile.value) return;
+  
+  let imageUrl: string | null = null;
+  
+  if (selectedImageFile.value) {
+    uploadingImage.value = true;
+    try {
+      imageUrl = await uploadMessageImage(selectedImageFile.value);
+      clearSelectedImage();
+    } catch (err) {
+      alert('Failed to upload image. Please try again.');
+      uploadingImage.value = false;
+      return;
+    } finally {
+      uploadingImage.value = false;
+    }
+  }
+
+  await sendMessageInternal(newMessage.value.trim() || null, imageUrl);
 };
 
 const confirmDelete = (conv: any) => {
@@ -445,6 +466,18 @@ const activeConversation = computed(() => {
           </div>
 
           <div class="chat-footer">
+            <!-- Image Preview Bar -->
+            <div v-if="imagePreviewUrl" class="image-preview-bar">
+              <div class="preview-item">
+                <img :src="imagePreviewUrl" alt="Preview" />
+                <button class="remove-preview" @click="clearSelectedImage" title="Remove image">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6 6 18M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
             <div class="input-wrapper">
               <input
                 type="file"
@@ -466,10 +499,13 @@ const activeConversation = computed(() => {
                 @keydown.enter.prevent="sendMessage"
                 placeholder="Type a message..."
               />
-              <button @click="sendMessage" :disabled="!newMessage.trim()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <button @click="sendMessage" :disabled="!newMessage.trim() && !selectedImageFile" :class="{ loading: uploadingImage }">
+                <svg v-if="!uploadingImage" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <line x1="22" y1="2" x2="11" y2="13" />
                   <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                </svg>
+                <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
+                  <path d="M21 12a9 9 0 1 1-6.219-8.56" />
                 </svg>
               </button>
             </div>
