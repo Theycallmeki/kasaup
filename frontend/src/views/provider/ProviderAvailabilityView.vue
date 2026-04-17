@@ -380,7 +380,8 @@ function formatAmPm(timeStr: string): string {
 
 .field-row {
   display: flex;
-  gap: 12px;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .field-label {
@@ -783,9 +784,6 @@ function formatAmPm(timeStr: string): string {
   .schedule-card, .calendar-panel {
     max-width: 100%;
     width: 100%;
-  }
-  .field-row {
-    flex-direction: column;
   }
 }
 </style>
