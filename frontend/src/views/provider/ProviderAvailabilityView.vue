@@ -396,7 +396,8 @@ function formatAmPm(timeStr: string): string {
   background: rgba(255, 255, 255, 0.05);
   border: 0.5px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  padding: 10px 14px;
+  padding: 0 14px;
+  height: 42px;
   font-size: 14px;
   color: #fff;
   font-family: 'DM Sans', sans-serif;
@@ -405,6 +406,8 @@ function formatAmPm(timeStr: string): string {
   box-sizing: border-box;
   color-scheme: dark;
   transition: border-color 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .field:focus {
