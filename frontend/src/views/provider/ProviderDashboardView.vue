@@ -233,4 +233,5 @@ function goProfile()      { router.push("/provider/profile") }
   }
   .cards { grid-template-columns: 1fr; }
 }
+
 </style>
