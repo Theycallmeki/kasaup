@@ -1,0 +1,213 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@700&family=DM+Sans:wght@400;500&display=swap');
+
+.page {
+  min-height: 100vh;
+  background: #0e0c1a;
+  padding: 36px 32px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.header-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(167, 139, 250, 0.6);
+  margin-bottom: 6px;
+}
+
+.title {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 6px;
+}
+
+.hint {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.add-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  padding: 9px 16px;
+  border-radius: 10px;
+  background: rgba(124, 58, 237, 0.35);
+  border: 1px solid rgba(124, 58, 237, 0.5);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.add-btn:hover {
+  background: rgba(124, 58, 237, 0.5);
+  transform: translateY(-1px);
+}
+
+.add-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  background: rgba(124, 58, 237, 0.08);
+  border: 1px dashed rgba(167, 139, 250, 0.4);
+  border-radius: 12px;
+  padding: 12px;
+  max-width: 600px;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.list-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 14px;
+  min-height: 140px;
+  backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.list-item:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+  border-color: rgba(167, 139, 250, 0.3);
+}
+
+.category-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(124, 58, 237, 0.2);
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  color: #a78bfa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  transition: transform 0.2s;
+}
+
+.list-item:hover .category-icon {
+  transform: scale(1.1);
+}
+
+.category-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.4;
+  margin-bottom: auto;
+}
+
+.item-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 12px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: all 0.2s ease;
+}
+
+.list-item:hover .item-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.field {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 8px;
+  color: #fff;
+  flex: 1;
+}
+
+.field:focus {
+  border-color: rgba(167, 139, 250, 0.5);
+}
+
+.action-btn {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+}
+
+.action-btn--save {
+  background: rgba(124, 58, 237, 0.4);
+  color: #fff;
+}
+
+.action-btn--cancel {
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.6);
+}
+
+.action-btn--danger {
+  background: rgba(248, 113, 113, 0.2);
+  color: #f87171;
+}
+
+.icon-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.icon-btn:hover {
+  color: #a78bfa;
+  background: rgba(167, 139, 250, 0.12);
+}
+
+.icon-btn--danger {
+  color: rgba(248, 113, 113, 0.5);
+}
+
+.icon-btn--danger:hover {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.12);
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: rgba(255,255,255,0.3);
+  padding: 40px 0;
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 24px 16px;
+  }
+}
