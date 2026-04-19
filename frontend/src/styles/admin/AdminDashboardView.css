@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@700&family=DM+Sans:wght@400;500&display=swap');
+
+.page {
+  min-height: 100vh;
+  background: #0e0c1a;
+  padding: 36px 32px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.page-header {
+  margin-bottom: 32px;
+}
+
+.header-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(167, 139, 250, 0.6);
+  margin-bottom: 6px;
+}
+
+.title {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.01em;
+  margin: 0 0 6px;
+}
+
+.hint {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.3);
+  margin: 0;
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 480px;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(167, 139, 250, 0.25);
+}
+
+.card-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(124, 58, 237, 0.2);
+  border: 0.5px solid rgba(124, 58, 237, 0.3);
+  color: #a78bfa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-icon--teal {
+  background: rgba(20, 184, 166, 0.15);
+  border-color: rgba(20, 184, 166, 0.3);
+  color: #2dd4bf;
+}
+
+.card-icon--pink {
+  background: rgba(236, 72, 153, 0.15);
+  border-color: rgba(236, 72, 153, 0.3);
+  color: #f472b6;
+}
+
+.card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  color: #fff;
+  margin: 0 0 3px;
+}
+
+.card-desc {
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  color: rgba(255, 255, 255, 0.35);
+  margin: 0;
+}
+
+.card-arrow {
+  color: rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+  transition: color 0.15s, transform 0.15s;
+}
+
+.card:hover .card-arrow {
+  color: rgba(167, 139, 250, 0.7);
+  transform: translateX(2px);
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 24px 16px;
+  }
+}
