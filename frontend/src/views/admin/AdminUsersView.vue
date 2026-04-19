@@ -299,4 +299,4 @@ async function handleReject() {
   </div>
 </template>
 
-<style scoped src="@/styles/admin/AdminUsersView.css"></style>
+<style scoped src="../../styles/admin/AdminUsersView.css"></style>

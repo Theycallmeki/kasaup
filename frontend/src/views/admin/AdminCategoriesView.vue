@@ -186,4 +186,4 @@ const submitDelete = async (id: number) => {
   </div>
 </template>
 
-<style scoped src="@/styles/admin/AdminCategoriesView.css"></style>
+<style scoped src="../../styles/admin/AdminCategoriesView.css"></style>

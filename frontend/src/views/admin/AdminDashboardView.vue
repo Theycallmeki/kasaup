@@ -90,4 +90,4 @@ function goCategories() {
   </div>
 </template>
 
-<style scoped src="@/styles/admin/AdminDashboardView.css"></style>
+<style scoped src="../../styles/admin/AdminDashboardView.css"></style>

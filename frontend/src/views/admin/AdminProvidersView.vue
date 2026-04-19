@@ -231,4 +231,4 @@ function resetForm() {
   </div>
 </template>
 
-<style scoped src="@/styles/admin/AdminProvidersView.css"></style>
+<style scoped src="../../styles/admin/AdminProvidersView.css"></style>
