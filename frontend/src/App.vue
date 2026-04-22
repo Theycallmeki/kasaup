@@ -60,7 +60,6 @@ onMounted(async () => {
 
 .content {
   flex: 1;
-  overflow-y: auto;
   background: #0e0c1a;
   display: flex;
   flex-direction: column;

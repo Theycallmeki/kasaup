@@ -410,6 +410,46 @@
 
 @media (max-width: 768px) {
   .page { padding: 16px 12px 120px; }
+  
+  .page-header {
+    margin-bottom: 20px;
+    gap: 8px;
+  }
+
+  .title {
+    font-size: 1.25rem;
+  }
+
+  .stats-row {
+    gap: 8px;
+    width: 100%;
+  }
+
+  .stat-pill {
+    padding: 8px 12px;
+    min-width: 70px;
+    flex: 1;
+  }
+
+  .tabs-container {
+    overflow-x: auto;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+  .tabs-container::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .tabs {
+    gap: 12px;
+    justify-content: space-between;
+  }
+
+  .tab-btn {
+    font-size: 0.8rem;
+    padding: 6px 0;
+  }
+
   .app-card { flex-direction: column; }
   .card-left-strip {
     width: 100%;
@@ -418,6 +458,42 @@
     padding: 10px 16px;
     border-right: none;
     border-bottom: 1px dashed rgba(255,255,255,0.05);
+  }
+
+  .card-body {
+    padding: 16px;
+  }
+
+  .svc-name {
+    font-size: 1rem;
+  }
+
+  .cb-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .cb-actions {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .abtn {
+    padding: 8px 12px;
+    font-size: 0.75rem;
+    flex: 1;
+    text-align: center;
+  }
+
+  .map-toggle-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 8px;
+    background: rgba(167, 139, 250, 0.05);
+    border-radius: 8px;
   }
 }
 
