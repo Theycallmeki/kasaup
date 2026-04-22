@@ -275,6 +275,10 @@
     padding: 24px 16px 220px;
   }
 
+  .form-card {
+    transform: none;
+  }
+
   .field-row {
     flex-direction: column;
   }
