@@ -101,7 +101,6 @@ const formatDateTime = (iso: string) => {
   <div class="page">
     <div class="page-header">
       <div>
-         <p class="eyebrow">Your Schedule</p>
          <h1 class="title">Appointments</h1>
       </div>
       <div class="stats-row">
