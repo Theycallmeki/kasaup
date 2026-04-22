@@ -3,7 +3,7 @@
 .page {
   min-height: auto;
   background: #0e0c1a;
-  padding: 24px 16px;
+  padding: 36px 32px;
   font-family: 'DM Sans', sans-serif;
   color: #fff;
 }
@@ -11,8 +11,8 @@
 .page-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 32px;
+  align-items: flex-start;
+  margin-bottom: 28px;
   flex-wrap: wrap;
   gap: 16px;
 }
@@ -30,7 +30,7 @@
   font-family: 'Sora', sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
-  margin: 15;
+  margin: 0 0 6px;
   letter-spacing: -0.02em;
 }
 
