@@ -301,11 +301,9 @@ const activeFilterCount = computed(() => {
 <template>
   <div class="providers-page">
 
-    <!-- Unified Search Bar -->
     <div class="search-bar-wrapper">
       <form class="search-bar" @submit.prevent="runSearch">
 
-        <!-- Search Input with Dropdown Toggle (Mobile) -->
         <div class="search-input-section search-with-filter">
           <div class="search-input-wrap">
             <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -317,14 +315,12 @@ const activeFilterCount = computed(() => {
               @focus="onSearchFocus" @blur="onSearchBlur" @input="onSearchInput" @keydown="onSearchKeydown" />
           </div>
 
-          <!-- FILTER ICON (moved here) -->
           <button type="button" class="filter-toggle filter-toggle--mobile" @click.prevent="showFilters = !showFilters">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
             </svg>
           </button>
 
-          <!-- Suggestion Dropdown -->
           <ul v-show="showSuggestionDropdown" class="suggest-dropdown" ref="suggestionScroll">
             <li v-for="(p, i) in suggestions" :key="String(p.id)" class="suggest-item"
               :class="{ active: i === highlightIndex }" @mousedown.prevent="selectSuggestion(p)">
@@ -335,7 +331,6 @@ const activeFilterCount = computed(() => {
           </ul>
         </div>
 
-        <!-- Filter Toggle Button (Mobile) / Category Dropdown (Desktop) -->
         <div class="filter-section">
           <select v-model="categoryFilter" class="category-select">
             <option value="">All Categories</option>
@@ -347,7 +342,6 @@ const activeFilterCount = computed(() => {
 
 
 
-        <!-- Action Buttons -->
         <div class="action-buttons">
           <button type="button" class="location-btn" @click="useMyLocation">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -368,7 +362,6 @@ const activeFilterCount = computed(() => {
         </div>
       </form>
 
-      <!-- Mobile Filter Dropdown Panel -->
       <div v-if="showFilters" class="mobile-filter-panel">
         <div class="filter-panel-content">
           <h3 class="filter-panel-title">Category</h3>
@@ -398,7 +391,6 @@ const activeFilterCount = computed(() => {
       </div>
     </div>
 
-    <!-- Error/Empty States -->
     <p v-if="categoryHasNoProviders" class="search-empty search-empty--muted">
       No providers in this category yet.
       <button type="button" class="link-clear" @click="clearSearch">clear filters</button>
@@ -409,7 +401,6 @@ const activeFilterCount = computed(() => {
       <button type="button" class="link-clear" @click="clearSearch">Clear search</button>
     </p>
 
-    <!-- Map -->
     <div v-if="providerStore.loading" class="map-loading">Loading providers…</div>
 
     <ProviderMap v-else :providers="filteredProviders" :userLat="userLat" :userLng="userLng"
