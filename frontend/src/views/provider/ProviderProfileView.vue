@@ -148,7 +148,7 @@ const save = async () => {
 
     <div class="form-card">
 
-      <!-- Profile Picture -->
+      
       <div class="avatar-section">
         <div class="avatar-wrapper" @click="triggerFileInput">
           <img v-if="displayImage" :src="displayImage" class="avatar-img" alt="Profile" />
