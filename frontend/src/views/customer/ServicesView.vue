@@ -271,7 +271,6 @@ const firstImage = (svc: any): string | null => {
     </header>
 
     <div class="marketplace-layout">
-      <!-- Main Content Grid -->
       <main class="content-area">
 
         <div class="top-bar">
@@ -296,7 +295,6 @@ const firstImage = (svc: any): string | null => {
             </div>
           </div>
 
-          <!-- Horizontal filter panel below the search bar -->
           <div v-show="showFilters" class="filter-panel">
             <div class="fp-sections">
               <div class="filter-group">
@@ -399,7 +397,6 @@ const firstImage = (svc: any): string | null => {
         <div v-else class="grid">
           <div v-for="svc in filtered" :key="svc.id" class="card" :style="{ '--a': accent(svc.category_id) }"
             @click="selectService(svc)">
-            <!-- Image top half -->
             <div class="thumb" :class="{ 'no-img': !firstImage(svc) }">
               <img v-if="firstImage(svc)" :src="firstImage(svc)!" :alt="svc.name" />
               <div v-else class="img-placeholder">
@@ -411,7 +408,6 @@ const firstImage = (svc: any): string | null => {
               </div>
             </div>
 
-            <!-- Details below -->
             <div class="c-body">
               <h3 class="ti" :title="svc.name">{{ svc.name }}</h3>
               <p class="by">{{ shopName(svc.provider_id) }}</p>
@@ -421,7 +417,6 @@ const firstImage = (svc: any): string | null => {
                 <span class="cat-pill">{{ catName(svc.category_id) }}</span>
               </div>
 
-              <!-- Price & Book row -->
               <div class="cf">
                 <span class="pr">{{ Number(svc.price).toLocaleString() }}</span>
                 <button class="bk" @click.stop="goBook(svc)">Book</button>
@@ -433,16 +428,13 @@ const firstImage = (svc: any): string | null => {
       </main>
     </div>
 
-    <!-- Modal for Preview -->
     <Teleport to="body">
   <div class="ov" :class="{ show: !!selected }" @click.self="selected = null">
     
     <div class="modal" v-if="selected" :style="{ '--a': accent(selected.category_id) }">
       
-      <!-- CLOSE BUTTON stays outside scroll -->
       <button class="mc" @click="selected = null">✕</button>
 
-      <!-- 🔥 SCROLL WRAPPER START -->
       <div class="modal-scroll">
 
         <div v-if="selected.images?.length" class="modal-carousel">
@@ -487,14 +479,13 @@ const firstImage = (svc: any): string | null => {
         </button>
 
       </div>
-      <!-- 🔥 SCROLL WRAPPER END -->
+     
 
     </div>
 
   </div>
 </Teleport>
 
-    <!-- Fullscreen Image Viewer -->
     <Teleport to="body">
       <div v-if="viewingImage" class="img-viewer-ov" @click="viewingImage = null">
         <button class="close-viewer">✕</button>
@@ -502,7 +493,7 @@ const firstImage = (svc: any): string | null => {
       </div>
     </Teleport>
 
-    <!-- Direct spacer to the bottom of the list -->
+   
     <div class="bottom-spacer"></div>
 
   </div>
