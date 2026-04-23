@@ -172,7 +172,7 @@ function getService(id: number) {
 <template>
   <div class="page" ref="pageScroll">
 
-    <!-- Header -->
+    
     <div class="page-header">
       <div class="header-left">
         <h1 class="title">My Services</h1>
@@ -188,7 +188,7 @@ function getService(id: number) {
       </router-link>
     </div>
 
-    <!-- Loading -->
+    
     <div v-if="serviceStore.loading" class="state-msg">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
         <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
@@ -196,7 +196,7 @@ function getService(id: number) {
       Loading services...
     </div>
 
-    <!-- Empty state -->
+   
     <div v-else-if="serviceStore.services.length === 0" class="empty-state">
       <div class="empty-icon">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -213,7 +213,7 @@ function getService(id: number) {
       </router-link>
     </div>
 
-    <!-- Cards -->
+    
     <div v-else class="cards">
       <div
         v-for="service in serviceStore.services"
@@ -222,7 +222,6 @@ function getService(id: number) {
         :class="{ 'is-editing': editingId === service.id }"
       >
 
-        <!-- VIEW MODE -->
         <template v-if="editingId !== service.id">
 
           <div class="card-banner">
@@ -292,7 +291,7 @@ function getService(id: number) {
 
         </template>
 
-        <!-- EDIT MODE -->
+        
         <template v-else>
           <div class="edit-header">
             <span class="edit-label">Editing service</span>
@@ -366,10 +365,8 @@ function getService(id: number) {
       </div>
     </div>
 
-    <!-- Bottom spacer for mobile navigation -->
     <div class="bottom-spacer"></div>
 
-    <!-- Gallery Viewer -->
     <Teleport to="body">
       <div v-if="viewingGallery" class="img-viewer-ov" @click.self="closeGallery">
         <button class="close-viewer" @click="closeGallery">
