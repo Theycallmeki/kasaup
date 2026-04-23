@@ -289,7 +289,7 @@ const activeConversation = computed(() => {
     </div>
 
     <div class="chat-container" :class="{ 'sidebar-hidden': sidebarCollapsed }">
-      <!-- Sidebar -->
+     
       <div class="sidebar">
         <div class="conversation-list">
           <div
@@ -314,7 +314,7 @@ const activeConversation = computed(() => {
                 <span class="time">{{ formatTime(conv.updated_at) }}</span>
               </div>
               <p class="last-msg">
-                <!-- Show image icon hint in sidebar if last message is an image -->
+               
                 <span v-if="conv.last_message_type === 'image'" class="last-msg-img-hint">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:3px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
                   Photo
@@ -338,7 +338,7 @@ const activeConversation = computed(() => {
         </div>
       </div>
 
-      <!-- Chat Window -->
+     
       <div class="chat-window">
         <template v-if="messageStore.activeConversationId">
           <div class="chat-header">
@@ -404,13 +404,13 @@ const activeConversation = computed(() => {
                 class="message-bubble"
                 :class="{ 'image-only': msg.image_url && !msg.content }"
               >
-                <!-- Image attachment -->
+                
                 <div
                   v-if="msg.image_url"
                   class="msg-image-wrap"
                   :class="{ 'has-text': !!msg.content }"
                 >
-                  <!-- Skeleton shown until loaded or on error -->
+                 
                   <div
                     v-if="!imageLoaded[msg.id] && !imageError[msg.id]"
                     class="img-skeleton"
@@ -418,7 +418,7 @@ const activeConversation = computed(() => {
                     <div class="img-shimmer" />
                   </div>
 
-                  <!-- Error fallback -->
+                  
                   <div v-if="imageError[msg.id]" class="img-error">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                       <path d="M3 3l18 18M10.5 10.67A2 2 0 0 0 8 12.5v.5H6l-3 3V5a2 2 0 0 1 2-2h10.5M21 15l-3-3-1.5 1.5M21 5a2 2 0 0 0-2-2h-7"/>
@@ -426,7 +426,7 @@ const activeConversation = computed(() => {
                     <span>Failed to load</span>
                   </div>
 
-                  <!-- Actual image -->
+                  
                   <div
                     v-show="imageLoaded[msg.id] && !imageError[msg.id]"
                     class="img-clickable"
@@ -443,7 +443,7 @@ const activeConversation = computed(() => {
                       @load="imageLoaded[msg.id] = true"
                       @error="imageError[msg.id] = true"
                     />
-                    <!-- Hover overlay -->
+                  
                     <div class="img-hover-overlay" aria-hidden="true">
                       <div class="img-expand-btn">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
@@ -451,22 +451,22 @@ const activeConversation = computed(() => {
                         </svg>
                       </div>
                     </div>
-                    <!-- Timestamp overlaid on image when no text -->
+                    
                     <span v-if="!msg.content" class="img-time-overlay">{{ formatTime(msg.created_at) }}</span>
                   </div>
                 </div>
 
-                <!-- Text content -->
+                
                 <p v-if="msg.content" class="text-content">{{ msg.content }}</p>
 
-                <!-- Timestamp shown below text (or below image if has text) -->
+                
                 <span v-if="msg.content || !msg.image_url" class="msg-time">{{ formatTime(msg.created_at) }}</span>
               </div>
             </div>
           </div>
 
           <div class="chat-footer">
-            <!-- Image Preview Bar -->
+           
             <div v-if="imagePreviewUrl" class="image-preview-bar">
               <div class="preview-item">
                 <img :src="imagePreviewUrl" alt="Preview" />
@@ -523,7 +523,7 @@ const activeConversation = computed(() => {
       </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
+    
     <div v-if="showDeleteConfirm" class="modal-overlay">
       <div class="modal-card">
         <h3>Delete Conversation</h3>
@@ -536,7 +536,7 @@ const activeConversation = computed(() => {
       </div>
     </div>
 
-    <!-- Full-screen Image Viewer -->
+    
     <Teleport to="body">
       <div
         v-if="viewerOpen"
