@@ -503,6 +503,14 @@
     padding: 10px 22px;
   }
 
+  .search-btn {
+    order: 1;
+  }
+
+  .location-btn {
+    order: 2;
+  }
+
   .category-select--desktop {
     display: flex;
   }
