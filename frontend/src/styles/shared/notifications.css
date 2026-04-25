@@ -2,6 +2,16 @@
   opacity: 1;
 }
 
+@media (max-width: 640px) {
+  .p-toast {
+    width: 90% !important;
+    min-width: 0 !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+  }
+}
+
 .p-toast-message {
   background: rgba(14, 12, 26, 0.85) !important;
   backdrop-filter: blur(16px) !important;
