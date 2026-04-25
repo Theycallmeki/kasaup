@@ -1,7 +1,14 @@
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed, ref } from "vue"
 
 type SortOption = "price_asc" | "price_desc" | "duration"
+
+const catDropdownOpen = ref(false)
+
+const activeCatName = computed(() => {
+  if (activeCatModel.value === 'all') return 'All Categories'
+  return props.categories.find(c => c.id === activeCatModel.value)?.name || 'All Categories'
+})
 
 const props = defineProps<{
   categories: any[]
@@ -59,16 +66,27 @@ const maxDistanceModel = computed({
     <div class="fp-sections">
       <div class="filter-group">
         <h4>Category</h4>
-        <div class="select-wrapper">
-          <select v-model="activeCatModel" class="custom-select">
-            <option value="all">All Categories</option>
-            <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+        <div class="custom-dropdown">
+          <div class="dropdown-header" @click="catDropdownOpen = !catDropdownOpen">
+            <span>{{ activeCatName }}</span>
+            <svg class="select-icon" :class="{ open: catDropdownOpen }" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+          <div class="dropdown-body" v-show="catDropdownOpen">
+            <div class="dropdown-item" :class="{ active: activeCatModel === 'all' }" @click="activeCatModel = 'all'; catDropdownOpen = false">
+              All Categories
+            </div>
+            <div
+              v-for="cat in categories"
+              :key="cat.id"
+              class="dropdown-item"
+              :class="{ active: activeCatModel === cat.id }"
+              @click="activeCatModel = cat.id; catDropdownOpen = false"
+            >
               {{ cat.name }}
-            </option>
-          </select>
-          <svg class="select-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="6 9 12 15 18 9"></polyline>
-          </svg>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -111,11 +129,11 @@ const maxDistanceModel = computed({
           <button
             v-for="r in [5, 4, 3, 2]"
             :key="r"
-            class="fp"
+            class="fp rating-pill"
             :class="{ active: minRatingModel === r }"
             @click="minRatingModel = r"
           >
-            {{ r }}* & Up
+            {{ r }} <i class="pi pi-star-fill"></i>
           </button>
         </div>
       </div>
@@ -176,7 +194,7 @@ const maxDistanceModel = computed({
   display: flex;
   flex-direction: column;
   gap: 24px;
-  max-height: 60vh;
+  max-height: 85vh;
   overflow-y: auto;
 }
 
@@ -238,6 +256,16 @@ const maxDistanceModel = computed({
   border-color: #a78bfa;
   color: #110e1b;
   font-weight: 600;
+}
+
+.rating-pill i {
+  color: #fbbf24;
+  font-size: 0.8rem;
+  margin-left: 4px;
+}
+
+.fp.active.rating-pill i {
+  color: #110e1b;
 }
 
 .filter-inputs {
@@ -385,33 +413,23 @@ const maxDistanceModel = computed({
   color: #110e1b;
 }
 
-.select-wrapper {
-  position: relative;
+.custom-dropdown {
   width: 100%;
-}
-
-.custom-select {
-  width: 100%;
-  appearance: none;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-header {
   padding: 10px 40px 10px 12px;
   color: #fff;
   font-family: "DM Sans", sans-serif;
   font-size: 0.9rem;
-  outline: none;
-  transition: all 0.2s;
   cursor: pointer;
-}
-
-.custom-select:focus {
-  border-color: #a78bfa;
-}
-
-.custom-select option {
-  background: #181628;
-  color: #fff;
+  position: relative;
+  user-select: none;
 }
 
 .select-icon {
@@ -422,7 +440,38 @@ const maxDistanceModel = computed({
   width: 16px;
   height: 16px;
   color: rgba(255, 255, 255, 0.5);
+  transition: transform 0.2s;
   pointer-events: none;
+}
+
+.select-icon.open {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.dropdown-body {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-item {
+  padding: 10px 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.dropdown-item.active {
+  background: rgba(167, 139, 250, 0.1);
+  color: #a78bfa;
+  font-weight: 600;
 }
 
 @media (max-width: 640px) {
