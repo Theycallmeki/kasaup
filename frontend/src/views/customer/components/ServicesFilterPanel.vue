@@ -59,19 +59,16 @@ const maxDistanceModel = computed({
     <div class="fp-sections">
       <div class="filter-group">
         <h4>Category</h4>
-        <div class="filter-pills">
-          <button class="fp" :class="{ active: activeCatModel === 'all' }" @click="activeCatModel = 'all'">
-            All Categories
-          </button>
-          <button
-            v-for="cat in categories"
-            :key="cat.id"
-            class="fp"
-            :class="{ active: activeCatModel === cat.id }"
-            @click="activeCatModel = cat.id"
-          >
-            {{ cat.name }}
-          </button>
+        <div class="select-wrapper">
+          <select v-model="activeCatModel" class="custom-select">
+            <option value="all">All Categories</option>
+            <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+              {{ cat.name }}
+            </option>
+          </select>
+          <svg class="select-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
         </div>
       </div>
 
@@ -386,6 +383,46 @@ const maxDistanceModel = computed({
   background: #a78bfa;
   border: none;
   color: #110e1b;
+}
+
+.select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.custom-select {
+  width: 100%;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px 40px 10px 12px;
+  color: #fff;
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.custom-select:focus {
+  border-color: #a78bfa;
+}
+
+.custom-select option {
+  background: #181628;
+  color: #fff;
+}
+
+.select-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
 }
 
 @media (max-width: 640px) {
