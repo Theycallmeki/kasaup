@@ -590,6 +590,18 @@
   background: rgba(255, 255, 255, 0.03);
   border: 0.5px solid rgba(255, 255, 255, 0.07);
   border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 48px;
+}
+
+.slot:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.slot.slot-active {
+  background: rgba(167, 139, 250, 0.05);
+  border-color: rgba(167, 139, 250, 0.3);
 }
 
 .slot-time {
@@ -616,6 +628,19 @@
 .confirm-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.slot-confirm-wrapper {
+  padding: 0 18px 18px;
+  display: flex;
+}
+
+.confirm-btn.full-width {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  text-align: center;
 }
 
 .bottom-spacer {

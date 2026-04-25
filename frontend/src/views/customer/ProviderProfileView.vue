@@ -31,6 +31,7 @@ const messageProvider = async () => {
 
 const activeServiceId = ref<number | null>(null)
 const selectedDate = ref<string>("")
+const selectedSlot = ref<string | null>(null)
 const serviceLocationType = ref<"shop" | "home">("shop")
 const customerLat = ref<number | null>(null)
 const customerLng = ref<number | null>(null)
@@ -76,6 +77,7 @@ onMounted(async () => {
 async function loadSlots(serviceId: number) {
   activeServiceId.value = serviceId
   selectedDate.value = ""
+  selectedSlot.value = null
   serviceLocationType.value = "shop"
   errorMsg.value = ""
   await loadAvailableDatesForMonth()
@@ -257,6 +259,7 @@ function isToday(dateStr: string) {
 function selectDay(dateStr: string) {
   if (isPast(dateStr)) return
   selectedDate.value = dateStr
+  selectedSlot.value = null
   fetchSlots()
 }
 
@@ -434,14 +437,17 @@ const isPrevDisabled = computed(() => {
                     </div>
 
                     <div class="slots">
-                      <div v-for="slot in appointmentStore.slots" :key="slot.start_time" class="slot">
-                        <span class="slot-time">{{ formatSlot(slot.start_time) }} - {{ formatTimeOnly(slot.end_time)
-                          }}</span>
-                        <button class="confirm-btn" :disabled="bookingLoading"
-                          @click="book(service.id, slot.start_time)">
-                          {{ bookingLoading ? "Booking..." : "Confirm" }}
-                        </button>
+                      <div v-for="slot in appointmentStore.slots" :key="slot.start_time" class="slot"
+                        :class="{ 'slot-active': selectedSlot === slot.start_time }"
+                        @click="selectedSlot = slot.start_time">
+                        <span class="slot-time">{{ formatSlot(slot.start_time) }} - {{ formatTimeOnly(slot.end_time) }}</span>
                       </div>
+                    </div>
+                    <div v-if="selectedSlot" class="slot-confirm-wrapper">
+                      <button class="confirm-btn full-width" :disabled="bookingLoading"
+                        @click="book(service.id, selectedSlot)">
+                        {{ bookingLoading ? "Booking..." : "Confirm Booking" }}
+                      </button>
                     </div>
                   </template>
                 </div>
