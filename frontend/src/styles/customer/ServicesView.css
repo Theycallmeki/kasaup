@@ -767,15 +767,35 @@
 .modal {
   background: #1a1730;
   border: 0.5px solid rgba(130, 90, 255, .25);
-  border-radius: 20px;
-  max-width: calc(100% - 32px);
-  width: 100%;
+  border-radius: 28px;
+  max-width: 420px;
+  width: calc(100% - 32px);
   position: relative;
   margin: auto;
   max-height: 85vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+.modal-scroll {
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 36px 24px 28px 24px;
+}
+
+.modal-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-scroll::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 20px 0;
+}
+
+.modal-scroll::-webkit-scrollbar-thumb {
+  background: rgba(167, 139, 250, 0.6);
+  border-radius: 10px;
 }
 
 .ov.show .modal {
@@ -934,9 +954,13 @@
 
 .mst {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-bottom: 22px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.mst>div:last-child {
+  grid-column: span 2;
 }
 
 .mst>div {
