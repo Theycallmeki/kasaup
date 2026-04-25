@@ -1107,8 +1107,8 @@
   }
 
   .grid {
-    grid-template-columns: 1fr !important;
-    gap: 20px;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px;
   }
 
   .card:hover {
@@ -1116,43 +1116,49 @@
   }
 
   .thumb {
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 4 / 3;
   }
 
   .c-body {
-    padding: 20px;
+    padding: 10px;
   }
 
   .ti {
-    font-size: 1.25rem;
-    height: auto;
+    font-size: 0.85rem;
+    height: 2.6em;
     -webkit-line-clamp: 2;
     line-clamp: 2;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
 
   .by {
-    font-size: 0.85rem;
-    margin-bottom: 16px;
+    font-size: 0.65rem;
+    margin-bottom: 10px;
   }
 
   .tags {
-    margin-bottom: 20px;
+    margin-bottom: 12px;
+    gap: 4px;
   }
 
   .cat-pill {
     max-width: none;
-    font-size: 9px;
-    padding: 3px 8px;
+    font-size: 7px;
+    padding: 3px 5px;
   }
 
   .dur {
-    font-size: 12px;
-    padding: 4px 10px;
+    font-size: 8.5px;
+    padding: 3px 6px;
   }
 
   .pr {
-    font-size: 1.75rem;
+    font-size: 1.15rem;
+  }
+  
+  .bk {
+    padding: 6px 12px;
+    font-size: 0.75rem;
   }
 
   /* Modal/Filter panel mobile refinement */
