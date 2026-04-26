@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
+import { ref, onMounted, watch } from "vue"
 import { useRouter } from "vue-router"
 import { createProvider, uploadProviderImage, getMyProvider } from "../../services/providers"
 import LocationPickerMap from "../../components/LocationPickerMap.vue"
@@ -36,6 +36,12 @@ const shop_name = ref("")
 const description = ref("")
 const phone = ref("")
 const email = ref("")
+watch(() => auth.user, (user) => {
+  if (user?.email) {
+    email.value = user.email
+  }
+}, { immediate: true })
+
 const address = ref("")
 
 const latitude = ref<number | null>(null)
@@ -50,7 +56,7 @@ const loading = ref(false)
 const error = ref("")
 
 // Per-field errors
-const fieldErrors = ref({ shop_name: "", phone: "", email: "" })
+const fieldErrors = ref({ shop_name: "", phone: "" })
 
 function setLocation(data: any) {
   latitude.value = data.latitude
@@ -73,7 +79,6 @@ const onPhoneBlur = () => {
 const validateAll = (): boolean => {
   fieldErrors.value.shop_name = validateShopName(shop_name.value) || ""
   fieldErrors.value.phone = validatePHPhone(phone.value) || ""
-  fieldErrors.value.email = email.value.trim() ? (validateEmail(email.value) || "") : ""
   return !Object.values(fieldErrors.value).some(Boolean)
 }
 
@@ -205,13 +210,11 @@ const create = async () => {
                 <input
                   id="shop-email"
                   v-model="email"
-                  class="input"
-                  :class="{ 'input-error': fieldErrors.email }"
+                  class="input input-readonly"
+                  readonly
                   type="email"
                   placeholder="you@example.com"
-                  @blur="fieldErrors.email = email.trim() ? (validateEmail(email) || '') : ''"
                 />
-                <span v-if="fieldErrors.email" class="inline-error">{{ fieldErrors.email }}</span>
               </div>
               <div class="field">
                 <label for="shop-address">Address</label>

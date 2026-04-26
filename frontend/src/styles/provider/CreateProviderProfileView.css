@@ -141,6 +141,18 @@ label {
   margin-top: 2px;
 }
 
+.input-readonly {
+  background: rgba(255, 255, 255, 0.02);
+  color: rgba(255, 255, 255, 0.4);
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.input-readonly:focus {
+  border-color: rgba(255, 255, 255, 0.05) !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+
 textarea.input {
   resize: vertical;
   min-height: 90px;
