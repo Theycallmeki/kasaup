@@ -24,7 +24,7 @@ const offers_home_service = ref(false)
 
 const loading = ref(false)
 const saved = ref(false)
-const fieldErrors = ref({ shop_name: "", phone: "", email: "" })
+const fieldErrors = ref({ shop_name: "", phone: "" })
 
 const imageLoading = ref(false)
 const imagePreview = ref<string | null>(null)
@@ -95,7 +95,6 @@ const onPhoneBlur = () => {
 const validateAll = (): boolean => {
   fieldErrors.value.shop_name = validateShopName(shop_name.value) || ""
   fieldErrors.value.phone = validatePHPhone(phone.value) || ""
-  fieldErrors.value.email = email.value?.trim() ? (validateEmail(email.value) || "") : ""
   return !Object.values(fieldErrors.value).some(Boolean)
 }
 
@@ -120,7 +119,6 @@ const save = async () => {
       shop_name: shop_name.value,
       description: description.value,
       phone: phone.value,
-      email: email.value,
       address: address.value,
       offers_home_service: offers_home_service.value
     })
@@ -215,12 +213,10 @@ const save = async () => {
           <label class="field-label">Email</label>
           <input
             v-model="email"
-            class="field"
-            :class="{ 'field-invalid': fieldErrors.email }"
+            class="field field-readonly"
+            readonly
             placeholder="shop@email.com"
-            @blur="fieldErrors.email = email?.trim() ? (validateEmail(email) || '') : ''"
           />
-          <span v-if="fieldErrors.email" class="field-err">{{ fieldErrors.email }}</span>
         </div>
       </div>
 

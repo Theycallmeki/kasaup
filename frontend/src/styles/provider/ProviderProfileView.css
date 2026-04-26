@@ -187,6 +187,17 @@
   border-color: rgba(248, 113, 113, 0.6) !important;
 }
 
+.field-readonly {
+  background: rgba(255, 255, 255, 0.02);
+  color: rgba(255, 255, 255, 0.4);
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.field-readonly:focus {
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
 .field-err {
   font-size: 11px;
   color: #f87171;
