@@ -202,6 +202,13 @@ const firstImage = (svc: any): string | null => {
                   <polyline points="21 15 16 10 5 21" />
                 </svg>
               </div>
+              <div v-if="svc.images && svc.images.length > 1" class="multi-img-badge" title="Multiple images">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="14" height="14" rx="2" ry="2"></rect>
+                  <path d="M21 7v12a2 2 0 0 1-2 2H7"></path>
+                </svg>
+                <span>{{ svc.images.length }}</span>
+              </div>
             </div>
 
             <div class="c-body">

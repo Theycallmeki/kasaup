@@ -624,6 +624,31 @@
   height: 48px;
 }
 
+.multi-img-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(15, 13, 25, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.multi-img-badge svg {
+  color: rgba(255, 255, 255, 0.9);
+}
+
 .c-body {
   display: flex;
   flex-direction: column;
