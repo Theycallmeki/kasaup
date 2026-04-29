@@ -24,7 +24,7 @@
 .hd {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: flex-start;
   margin-bottom: 28px;
   gap: 16px;
   flex-wrap: wrap;

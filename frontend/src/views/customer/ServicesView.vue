@@ -118,7 +118,6 @@ const firstImage = (svc: any): string | null => {
 
     <header class="hd">
       <div>
-        <p class="ey">Marketplace</p>
         <h1 class="ht">Discover Services</h1>
       </div>
       <div class="hd-r">
