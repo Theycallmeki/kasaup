@@ -219,7 +219,7 @@ const goGithub = () => {
   font-family: 'DM Sans', sans-serif;
   scrollbar-width: thin;
   scrollbar-color: rgba(167, 139, 250, 0.2) transparent;
-  padding: 80px 0 40px;
+  padding: 40px 0 40px;
 }
 
 .register-page::-webkit-scrollbar {
