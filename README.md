@@ -72,18 +72,7 @@ npm install
 npm run dev
 ```
 
----
 
-## 📈 Development Status
-
-- ✅ Authentication (Email & GitHub)
-- ✅ Customer Discovery & Provider Map
-- ✅ Provider Dashboard & Service Management
-- ✅ Appointment Booking & Tracking
-- ✅ Real-time Messaging System
-- ✅ Tutorial Guides (Customer/Provider)
-- ✅ Admin Management Dashboard
-- 🔄 Notification System (In Progress)
 
 ---
 
