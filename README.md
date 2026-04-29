@@ -31,6 +31,12 @@ KasaUp is a premium **full-stack service marketplace** designed to connect local
 - **ORM**: [SQLAlchemy](https://www.sqlalchemy.org/)
 - **Security**: JWT tokens, bcrypt hashing, and HTTP-only cookies.
 
+### **Cloud & Deployment**
+- **Hosting**: DigitalOcean (Backend), Vercel (Frontend)
+- **Containerization**: Docker
+- **CI/CD Pipeline**: GitHub Actions
+- **Storage**: AWS S3
+
 ---
 
 ##  Project Structure

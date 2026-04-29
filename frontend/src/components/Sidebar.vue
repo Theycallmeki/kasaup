@@ -94,6 +94,7 @@ const icons: Record<string, string> = {
   >
     <div class="top">
       <div v-if="!collapsed" class="logo">Kasa<span class="accent">Up</span></div>
+      <img v-else src="/kasaup.png" alt="KasaUp" class="collapsed-logo" />
       <button
         class="toggle"
         type="button"
@@ -225,6 +226,14 @@ const icons: Record<string, string> = {
 
 .sidebar.collapsed .top {
   justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.collapsed-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
 }
 
 .sidebar.collapsed .link {
