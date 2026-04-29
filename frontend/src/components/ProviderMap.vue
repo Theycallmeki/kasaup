@@ -325,6 +325,21 @@ watch(
 @media (max-width: 600px) {
   .cancel-directions-bar {
     top: 130px;
+    width: calc(100% - 32px);
+  }
+  .cancel-directions-inner {
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: space-between;
+  }
+  .cancel-info {
+    min-width: 0;
+  }
+  .cancel-info span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
   }
 }
 
