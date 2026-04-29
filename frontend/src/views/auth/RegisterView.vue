@@ -446,7 +446,7 @@ form {
   padding: 13px 20px;
   cursor: pointer;
   border: none;
-  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  background: #a78bfa;
   color: #fff;
   transition: transform 0.18s ease, opacity 0.18s ease;
   margin-top: 4px;
