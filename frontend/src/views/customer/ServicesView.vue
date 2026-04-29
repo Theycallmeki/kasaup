@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from "vue"
+import { ref, computed, onMounted, onUnmounted, watch } from "vue"
 import { useServiceStore } from "../../stores/serviceStore"
 import { useProviderStore } from "../../stores/providerStore"
 import { useCategoryStore } from "../../stores/categoryStore"
@@ -74,6 +74,10 @@ watch([selected, showFilters], ([s, f]) => {
   } else {
     document.body.style.overflow = ""
   }
+})
+
+onUnmounted(() => {
+  document.body.style.overflow = ""
 })
 
 function goBook(svc: any) {
