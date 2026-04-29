@@ -8,6 +8,8 @@
   font-family: 'DM Sans', sans-serif;
   display: flex;
   flex-direction: column;
+  flex: 1;
+  overflow-x: hidden;
 }
 
 .bottom-spacer {
