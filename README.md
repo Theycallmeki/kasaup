@@ -8,10 +8,11 @@ KasaUp is a premium **full-stack service marketplace** designed to connect local
 
 - **Advanced Authentication**: Secure JWT session management with **GitHub OAuth** integration.
 - **Role-Based Portals**: Tailored experiences for Customers, Service Providers, and Administrators.
-- **Interactive Tutorials**: Comprehensive step-by-step guides for both Customers and Providers to get started quickly.
+
 - **Map-Based Discovery**: Intuitive provider discovery using interactive maps and location services.
 - **Built-in Chat**: Direct real-time communication between customers and providers.
-- **Premium Design System**: A high-end "Glassmorphism" aesthetic featuring dynamic background orbs, smooth micro-animations, and a responsive dark theme.
+- **Automated CI/CD Pipeline**: Streamlined and reliable deployments powered by **GitHub Actions**.
+
 
 ---
 

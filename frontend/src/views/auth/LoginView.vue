@@ -158,21 +158,18 @@ const githubLogin = () => {
 }
 
 .login-page {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 0;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   background: #0e0c1a;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   font-family: 'DM Sans', sans-serif;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(99, 60, 220, 0.2) transparent;
-  padding: 80px 0 40px;
+  padding: 0;
 }
 
 .login-page::-webkit-scrollbar {
@@ -192,10 +189,6 @@ const githubLogin = () => {
 /* ── Responsive overrides ── */
 @media (max-width: 480px) {
   .login-page {
-    position: relative;
-    min-height: 100svh;
-    overflow-y: auto;
-    align-items: flex-start;
     padding: 32px 0 40px;
   }
 }
@@ -231,6 +224,7 @@ const githubLogin = () => {
   text-align: center;
   backdrop-filter: blur(12px);
   animation: rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  margin: auto;
 }
 
 @media (max-width: 480px) {
