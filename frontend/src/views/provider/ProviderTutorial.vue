@@ -32,7 +32,7 @@ const modules = [
   <div class="page tutorial-page" ref="pageScroll">
     <header class="section-header">
       <div class="eyebrow">Provider Guide</div>
-      <h1 class="title">Growing with Kasa<span class="accent">Up</span></h1>
+      <h1 class="title">How to use Kasa<span class="accent">Up</span></h1>
       <p class="subtitle">Learn how to manage your business efficiently and reach more local customers.</p>
     </header>
 
