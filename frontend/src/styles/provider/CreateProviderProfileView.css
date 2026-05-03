@@ -229,11 +229,21 @@ textarea.input {
   justify-content: center;
   gap: 4px;
   color: rgba(255, 255, 255, 0.15);
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.image-placeholder svg {
+  flex-shrink: 0;
+  display: block;
 }
 
 .image-placeholder span {
   font-size: 9px;
   text-align: center;
+  line-height: 1.2;
+  display: block;
 }
 
 .image-btn {
