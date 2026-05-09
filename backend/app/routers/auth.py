@@ -46,7 +46,7 @@ async def google_callback(code: str, state: str = "customer", db: Session = Depe
             full_name=full_name,
             profile_image=profile_image,
             role=state,
-            is_approved=True if state == "customer" else False
+            is_approved=False
         )
         db.add(user)
         db.commit()
@@ -63,7 +63,7 @@ async def google_callback(code: str, state: str = "customer", db: Session = Depe
     elif user.role == "admin":
         target_path = "/admin/dashboard"
 
-    if user.role == "provider" and not user.is_approved:
+    if user.role in ["provider", "customer"] and not user.is_approved:
         return RedirectResponse(url=f"{settings.FRONTEND_URL}/login?error=pending_approval")
 
     access_token = create_access_token({"user_id": user.id})
@@ -114,7 +114,7 @@ async def github_callback(code: str, state: str = "customer", db: Session = Depe
             full_name=full_name,
             profile_image=profile_image,
             role=state,
-            is_approved=True if state == "customer" else False
+            is_approved=False
         )
         db.add(user)
         db.commit()
@@ -131,7 +131,7 @@ async def github_callback(code: str, state: str = "customer", db: Session = Depe
     elif user.role == "admin":
         target_path = "/admin/dashboard"
 
-    if user.role == "provider" and not user.is_approved:
+    if user.role in ["provider", "customer"] and not user.is_approved:
         return RedirectResponse(url=f"{settings.FRONTEND_URL}/login?error=pending_approval")
 
     access_token = create_access_token({"user_id": user.id})
@@ -168,10 +168,10 @@ def login(data: LoginRequest, response: Response, db: Session = Depends(get_db))
             detail="Invalid email or password"
         )
 
-    if user.role == "provider" and not user.is_approved:
+    if user.role in ["provider", "customer"] and not user.is_approved:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Your provider account is pending admin approval."
+            detail=f"Your {user.role} account is pending admin approval."
         )
 
     access_token = create_access_token({"user_id": user.id})

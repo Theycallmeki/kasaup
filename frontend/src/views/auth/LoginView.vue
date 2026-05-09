@@ -35,7 +35,7 @@ const login = async () => {
     if (auth.user?.role === "admin") router.push("/admin/dashboard")
   } catch (err: any) {
     if (err.response?.status === 403) {
-      error.value = err.response.data.detail || "Your provider account is pending admin approval."
+      error.value = err.response.data.detail || "Your account is pending admin approval."
       isPending.value = true
     } else {
       error.value = "Invalid email or password"
@@ -48,7 +48,7 @@ const login = async () => {
 
 onMounted(() => {
   if (route.query.error === "pending_approval") {
-    error.value = "Your provider account is pending admin approval."
+    error.value = "Your account is pending admin approval."
     isPending.value = true
   } else if (route.query.error === "google_auth_failed") {
     error.value = "Google authentication failed. Please try again."

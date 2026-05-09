@@ -28,13 +28,13 @@ async function fetchUsers() {
 
 const filteredUsers = computed(() => {
   if (activeTab.value === "pending") {
-    return users.value.filter(u => u.role === "provider" && !u.is_approved)
+    return users.value.filter(u => !u.is_approved)
   }
   return users.value
 })
 
 const pendingCount = computed(() => {
-  return users.value.filter(u => u.role === "provider" && !u.is_approved).length
+  return users.value.filter(u => !u.is_approved).length
 })
 
 function openUser(user: any) {
@@ -138,7 +138,7 @@ async function handleReject() {
         </svg>
       </div>
       <h3 class="empty-text">{{ activeTab === 'pending' ? 'No pending approvals' : 'No users found' }}</h3>
-      <p class="empty-sub">{{ activeTab === 'pending' ? 'All provider applications have been reviewed.' : 'Registered users will appear here.' }}</p>
+      <p class="empty-sub">{{ activeTab === 'pending' ? 'All user applications have been reviewed.' : 'Registered users will appear here.' }}</p>
     </div>
 
     <!-- Grid -->
@@ -147,14 +147,14 @@ async function handleReject() {
         v-for="user in filteredUsers"
         :key="user.id"
         class="user-card"
-        :class="{ 'pending-card': user.role === 'provider' && !user.is_approved }"
+        :class="{ 'pending-card': !user.is_approved }"
         @click="openUser(user)"
       >
         <div class="card-top">
           <div class="avatar">{{ (user.full_name || user.email || '?').charAt(0).toUpperCase() }}</div>
           <div class="badge-row">
             <span 
-              v-if="user.role === 'provider' && !user.is_approved" 
+              v-if="!user.is_approved" 
               class="status-badge pending"
             >
               <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
@@ -178,7 +178,7 @@ async function handleReject() {
         </div>
 
         <!-- Approval Actions (inline, only for pending) -->
-        <div v-if="user.role === 'provider' && !user.is_approved" class="approval-actions" @click.stop>
+        <div v-if="!user.is_approved" class="approval-actions" @click.stop>
           <button 
             class="action-inline action-approve" 
             :disabled="actionLoading === user.id"
@@ -214,7 +214,7 @@ async function handleReject() {
             <div class="modal-header-text">
               <div class="badge-row">
                 <span 
-                  v-if="selectedUser?.role === 'provider' && !selectedUser?.is_approved" 
+                  v-if="!selectedUser?.is_approved" 
                   class="status-badge pending"
                 >Pending</span>
                 <span class="role-badge" :class="selectedUser?.role">{{ selectedUser?.role }}</span>
@@ -237,7 +237,7 @@ async function handleReject() {
 
           <div class="modal-actions">
             <button 
-              v-if="selectedUser?.role === 'provider' && !selectedUser?.is_approved"
+              v-if="!selectedUser?.is_approved"
               class="btn btn-approve" 
               @click="approveUser(selectedUser); closeModal()"
             >
@@ -276,7 +276,7 @@ async function handleReject() {
               </svg>
             </div>
             <div class="modal-header-text">
-              <h3 class="modal-email">Reject Provider?</h3>
+              <h3 class="modal-email">Reject User?</h3>
               <p class="modal-name">{{ rejectingUser?.full_name || rejectingUser?.email }}</p>
             </div>
           </div>

@@ -22,7 +22,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     user_data = user.dict()
     user_data["password"] = hash_password(user.password)
 
-    if user_data.get("role") == "provider":
+    if user_data.get("role") in ["provider", "customer"]:
         user_data["is_approved"] = False
 
     new_user = User(**user_data)
@@ -151,7 +151,7 @@ def approve_user(user_id: int, background_tasks: BackgroundTasks, db: Session = 
     db.commit()
     db.refresh(user)
 
-    background_tasks.add_task(send_approval_email, user.email, user.full_name)
+    background_tasks.add_task(send_approval_email, user.email, user.full_name, user.role)
 
     return user
 
@@ -168,6 +168,6 @@ def reject_user(user_id: int, background_tasks: BackgroundTasks, db: Session = D
     db.delete(user)
     db.commit()
 
-    background_tasks.add_task(send_rejection_email, email, name)
+    background_tasks.add_task(send_rejection_email, email, name, user.role)
 
     return {"message": "User rejected and deleted"}

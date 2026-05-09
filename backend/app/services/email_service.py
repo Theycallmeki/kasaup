@@ -115,9 +115,15 @@ def _send_email(to_email: str, subject: str, html_body: str):
 
 
 
-def send_approval_email(to_email: str, full_name: str | None):
-    name = full_name or "Provider"
-    subject = "KasaUp — Your Provider Account is Approved!"
+def send_approval_email(to_email: str, full_name: str | None, role: str = "provider"):
+    name = full_name or "User"
+    role_display = "Provider" if role == "provider" else "Customer"
+    subject = f"KasaUp — Your {role_display} Account is Approved!"
+    
+    body_text = "You can now log in and start exploring services and booking appointments."
+    if role == "provider":
+        body_text = "You can now log in and start setting up your shop profile, adding services, and receiving bookings."
+
     html = f"""
     <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 520px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 40px 32px; color: #334155;">
         <h1 style="margin: 0 0 8px; font-size: 28px; color: #000000;">
@@ -131,8 +137,8 @@ def send_approval_email(to_email: str, full_name: str | None):
         
         <p style="color: #000000; font-size: 16px; margin: 0 0 12px;">Hi {name},</p>
         <p style="color: #475569; font-size: 14px; line-height: 1.7; margin: 0 0 24px;">
-            Great news! Your provider account on <strong style="color: #000000;">Kasa<span style="color: #7c3aed;">Up</span></strong> has been reviewed and approved by our team. 
-            You can now log in and start setting up your shop profile, adding services, and receiving bookings.
+            Great news! Your {role_display.lower()} account on <strong style="color: #000000;">Kasa<span style="color: #7c3aed;">Up</span></strong> has been reviewed and approved by our team. 
+            {body_text}
         </p>
         
         <p style="color: #94a3b8; font-size: 12px; margin: 24px 0 0; text-align: center;">
@@ -144,9 +150,10 @@ def send_approval_email(to_email: str, full_name: str | None):
 
 
 
-def send_rejection_email(to_email: str, full_name: str | None):
+def send_rejection_email(to_email: str, full_name: str | None, role: str = "provider"):
     name = full_name or "Applicant"
-    subject = "KasaUp — Provider Application Update"
+    role_display = "Provider" if role == "provider" else "Customer"
+    subject = f"KasaUp — {role_display} Application Update"
     html = f"""
     <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 520px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 40px 32px; color: #334155;">
         <h1 style="margin: 0 0 8px; font-size: 28px; color: #000000;">
@@ -160,7 +167,7 @@ def send_rejection_email(to_email: str, full_name: str | None):
         
         <p style="color: #000000; font-size: 16px; margin: 0 0 12px;">Hi {name},</p>
         <p style="color: #475569; font-size: 14px; line-height: 1.7; margin: 0 0 24px;">
-            Thank you for your interest in becoming a provider on <strong style="color: #000000;">Kasa<span style="color: #7c3aed;">Up</span></strong>. 
+            Thank you for your interest in becoming a {role_display.lower()} on <strong style="color: #000000;">Kasa<span style="color: #7c3aed;">Up</span></strong>. 
             After reviewing your application, we were unable to approve your account at this time.
             Your account has been removed from our system. You are welcome to re-apply in the future.
         </p>
