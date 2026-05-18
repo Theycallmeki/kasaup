@@ -7,7 +7,6 @@
       <div class="nav-links">
         <a href="#features" class="nav-link" @click.prevent="scrollTo('#features')">Features</a>
         <a href="#how-it-works" class="nav-link" @click.prevent="scrollTo('#how-it-works')">How it Works</a>
-        <a href="#stats" class="nav-link" @click.prevent="scrollTo('#stats')">Impact</a>
       </div>
       <div class="nav-actions">
         <button class="btn btn-outline" @click="goAuth">Login</button>
@@ -57,7 +56,7 @@
               <h4>Active Providers</h4>
               <p>Ready to help</p>
             </div>
-            <div class="info-value">{{ stats.active_providers }}+</div>
+            <div class="info-value">12.5k+</div>
           </div>
           <div class="info-item">
             <div class="info-icon">
@@ -69,7 +68,7 @@
               <h4>Average Rating</h4>
               <p>Across all services</p>
             </div>
-            <div class="info-value">{{ stats.average_rating }}/5</div>
+            <div class="info-value">4.9/5</div>
           </div>
           <div class="info-item">
             <div class="info-icon">
@@ -83,30 +82,8 @@
               <h4>Jobs Completed</h4>
               <p>Successfully delivered</p>
             </div>
-            <div class="info-value">{{ stats.jobs_completed }}</div>
+            <div class="info-value">850k+</div>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Stats Section -->
-    <section id="stats" class="stats">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-number">{{ stats.categories_count }}+</div>
-          <div class="stat-label">Service Categories</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">98%</div>
-          <div class="stat-label">Satisfaction Rate</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">24/7</div>
-          <div class="stat-label">Support Available</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">10x</div>
-          <div class="stat-label">Faster Booking</div>
         </div>
       </div>
     </section>
@@ -217,27 +194,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
 import { useRouter } from "vue-router"
-import api from "../../services/api"
 
 const router = useRouter()
-
-const stats = ref({
-  active_providers: 0,
-  average_rating: 0,
-  jobs_completed: 0,
-  categories_count: 0
-})
-
-onMounted(async () => {
-  try {
-    const res = await api.get('/stats/landing')
-    stats.value = res.data
-  } catch (error) {
-    console.error("Failed to fetch landing stats", error)
-  }
-})
 
 const goProviders = () => router.push("/providers")
 const goAuth = () => router.push("/auth")
