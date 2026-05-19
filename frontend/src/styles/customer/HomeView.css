@@ -80,6 +80,8 @@ h1, h2, h3, h4, h5, h6 {
   background: rgba(9, 9, 11, 0.7);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .nav-brand {
@@ -208,6 +210,7 @@ section {
   grid-template-columns: 1fr 1fr;
   gap: 40px;
   align-items: center;
+  isolation: isolate;
 }
 
 .hero-content {
@@ -610,12 +613,15 @@ section {
 @media (max-width: 768px) {
   /* --- Navbar --- */
   .navbar {
-    padding: 0 20px;
+    padding: 0 16px;
     height: 64px;
+    overflow: hidden;
+    gap: 8px;
   }
 
   .nav-brand {
     font-size: 1.2rem;
+    flex-shrink: 0;
   }
 
   .nav-links {
@@ -624,25 +630,31 @@ section {
 
   .nav-actions {
     gap: 8px;
+    flex-shrink: 0;
+    flex-wrap: nowrap;
   }
 
   .nav-actions .btn {
-    padding: 8px 14px;
-    font-size: 0.82rem;
+    padding: 8px 12px;
+    font-size: 0.8rem;
     white-space: nowrap;
     border-radius: 10px;
+    flex-shrink: 0;
   }
 
   /* --- Hero --- */
   .hero {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    min-height: auto;
     padding-top: 100px;
     padding-bottom: 60px;
     padding-left: 20px;
     padding-right: 20px;
-    row-gap: 48px;
+    gap: 40px;
     text-align: center;
-    align-items: start;
+    align-items: center;
+    isolation: isolate;
   }
 
   .hero-content {
@@ -674,17 +686,21 @@ section {
   /* Hero visual — flat card, no 3D tilt on mobile */
   .hero-visual {
     width: 100%;
+    position: relative;
   }
 
   .infographic-orb {
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
   }
 
   .infographic-card {
     max-width: 100%;
-    padding: 24px 20px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px 16px;
     transform: none; /* remove 3D tilt */
+    position: relative;
   }
 
   .hero-visual:hover .infographic-card {
