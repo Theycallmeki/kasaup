@@ -63,7 +63,8 @@ async def get_github_user(code: str):
                         
         if not email:
             raise Exception("GitHub account must have a primary verified email.")
-            
+
+        assert isinstance(email, str)
         return {
             "email": email,
             "name": user_data.get("name") or user_data.get("login"),

@@ -245,5 +245,5 @@ def logout(response: Response):
 
 @router.get("/me/", response_model=UserOut, dependencies=[Depends(get_current_user)])
 def get_me(current_user: User = Depends(get_current_user)):
-    current_user.has_profile = True if current_user.provided_shop else False
+    setattr(current_user, "has_profile", True if current_user.provided_shop else False)
     return current_user

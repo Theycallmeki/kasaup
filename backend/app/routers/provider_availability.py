@@ -32,7 +32,7 @@ def create_availability(
     if availability.start_time >= availability.end_time:
         raise HTTPException(status_code=400, detail="start_time must be before end_time")
 
-    new_availability = ProviderAvailability(**availability.dict())
+    new_availability = ProviderAvailability(**availability.model_dump())
 
     db.add(new_availability)
     db.commit()
@@ -74,7 +74,7 @@ def update_availability(
     if provider.owner_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized")
 
-    update_data = availability.dict(exclude_unset=True)
+    update_data = availability.model_dump(exclude_unset=True)
 
     if "start_time" in update_data and "end_time" in update_data:
         if update_data["start_time"] >= update_data["end_time"]:
