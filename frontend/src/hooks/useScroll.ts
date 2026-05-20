@@ -6,12 +6,10 @@ export interface ScrollOptions {
   top?: number;
 }
 
-
 export function useScroll() {
   const scrollRef = ref<HTMLElement | null>(null);
 
-
-  const scrollToBottom = (smooth = true) => {
+const scrollToBottom = (smooth = true) => {
     nextTick(() => {
       if (scrollRef.value) {
         scrollRef.value.scrollTo({
@@ -22,8 +20,7 @@ export function useScroll() {
     });
   };
 
-
-  const scrollToTop = (smooth = true) => {
+const scrollToTop = (smooth = true) => {
     nextTick(() => {
       if (scrollRef.value) {
         scrollRef.value.scrollTo({
@@ -34,8 +31,7 @@ export function useScroll() {
     });
   };
 
-
-  const scrollTo = (options: ScrollOptions) => {
+const scrollTo = (options: ScrollOptions) => {
     nextTick(() => {
       if (scrollRef.value) {
         scrollRef.value.scrollTo(options);

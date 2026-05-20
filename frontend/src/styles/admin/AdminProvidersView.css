@@ -8,7 +8,6 @@
   color: #fff;
 }
 
-/* Header */
 .page-header {
   display: flex;
   align-items: flex-start;
@@ -63,7 +62,6 @@
   border-color: rgba(124, 58, 237, 0.7);
 }
 
-/* Form */
 .provider-form {
   margin-bottom: 28px;
   background: rgba(124, 58, 237, 0.05);
@@ -137,7 +135,6 @@
   gap: 8px;
 }
 
-/* Action buttons (form) */
 .action-btn {
   display: flex;
   align-items: center;
@@ -171,7 +168,6 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
-/* States */
 .state-msg {
   display: flex;
   align-items: center;
@@ -207,14 +203,12 @@
   animation: spin 0.8s linear infinite;
 }
 
-/* Grid */
 .provider-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
   gap: 14px;
 }
 
-/* Card */
 .provider-card {
   background: rgba(255, 255, 255, 0.025);
   border: 0.5px solid rgba(255, 255, 255, 0.08);
@@ -295,7 +289,6 @@
 }
 .meta-row svg { color: rgba(167, 139, 250, 0.5); flex-shrink: 0; }
 
-/* Card action buttons */
 .card-actions {
   display: flex;
   gap: 6px;

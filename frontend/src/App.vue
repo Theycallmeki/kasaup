@@ -67,7 +67,7 @@ onMounted(async () => {
 
 @media (max-width: 768px){
   .content{
-    /* Global padding removed to support full-screen pages like the Map */
+    
   }
 }
 

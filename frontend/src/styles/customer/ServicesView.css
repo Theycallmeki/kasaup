@@ -87,7 +87,6 @@
   color: #c4b5fd;
 }
 
-
 .marketplace-layout {
   display: block;
 }
@@ -377,7 +376,6 @@
   margin-left: 2px;
 }
 
-
 .cd-input::-webkit-outer-spin-button,
 .cd-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -575,9 +573,6 @@
   background: rgba(99, 60, 220, .4);
 }
 
-
-/* Grid styles merged above */
-
 .card {
   position: relative;
   background: #13111f;
@@ -672,7 +667,7 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   height: 2.6em;
-  /* Ensure consistent alignment */
+  
 }
 
 .by {
@@ -697,7 +692,7 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  /* Prevent overlap by wrapping */
+  
   gap: 6px;
   margin-bottom: 12px;
   margin-top: auto;
@@ -769,7 +764,6 @@
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(130, 90, 255, 0.4);
 }
-
 
 .ov {
   position: fixed;
@@ -1033,7 +1027,6 @@
   box-shadow: 0 6px 24px rgba(99, 60, 220, .45);
 }
 
-
 .img-viewer-ov {
   position: fixed;
   inset: 0;
@@ -1134,7 +1127,7 @@
 
   .srch-row {
     flex-direction: row;
-    /* Restore row layout */
+    
     align-items: center;
     gap: 10px;
   }
@@ -1146,7 +1139,7 @@
 
   .filter-btn {
     width: 48px;
-    /* Fixed width for icon-only button */
+    
     padding: 0;
     justify-content: center;
     height: 48px;
@@ -1212,8 +1205,7 @@
     font-size: 0.75rem;
   }
 
-  /* Modal/Filter panel mobile refinement */
-  .filter-panel {
+.filter-panel {
     border-radius: 16px;
     padding: 20px;
   }
@@ -1232,17 +1224,15 @@
   margin: auto;
   background: #1a1730;
 
-  overflow: hidden; /* 🔥 important */
+  overflow: hidden; 
 }
 
-/* inner scroll container */
 .modal-scroll {
   max-height: 85vh;
   overflow-y: auto;
   padding: 36px 24px 28px 24px;
 }
 
-/* Scrollbar */
 .modal-scroll::-webkit-scrollbar {
   width: 6px;
 }

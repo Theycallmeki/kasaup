@@ -94,7 +94,7 @@ export const useMessageStore = defineStore("messages", {
       if (baseUrl.startsWith("http")) {
         wsUrl = `${baseUrl.replace("http", "ws")}/messages/ws`;
       } else {
-        // Handle relative paths (like /api)
+
         const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
         const host = window.location.host;
         wsUrl = `${protocol}//${host}${baseUrl}/messages/ws`;

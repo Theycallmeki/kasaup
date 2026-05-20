@@ -329,7 +329,6 @@
   gap: 20px;
 }
 
-/* ✅ FIX: increased horizontal padding so Saturday dates don't hug the border */
 .month-card {
   background: rgba(255, 255, 255, 0.02);
   border: 0.5px solid rgba(255, 255, 255, 0.05);
@@ -475,9 +474,6 @@
   color: #e5e7eb;
 }
 
-/* --- Responsiveness --- */
-
-/* Tablet & Smaller Desktop */
 @media (max-width: 1024px) {
   .layout-grid {
     gap: 20px;
@@ -488,7 +484,6 @@
   }
 }
 
-/* Mobile & Small Tablets */
 @media (max-width: 900px) {
   .page { 
     padding: 24px 16px 140px; 
@@ -509,7 +504,6 @@
   }
 }
 
-/* Phones */
 @media (max-width: 600px) {
   .field-row {
     flex-direction: column;
@@ -541,7 +535,6 @@
   }
 }
 
-/* Extra Small Phones */
 @media (max-width: 380px) {
   .months-grid {
     grid-template-columns: 1fr;

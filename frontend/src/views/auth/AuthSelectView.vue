@@ -95,26 +95,6 @@ const goProvider = () => router.push("/register?role=provider")
   }
 }
 
-/* .bg-orb {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-.orb1 {
-  width: 420px;
-  height: 420px;
-  top: -80px;
-  left: -100px;
-  background: radial-gradient(circle, rgba(99, 60, 220, 0.35) 0%, transparent 70%);
-}
-.orb2 {
-  width: 360px;
-  height: 360px;
-  bottom: -60px;
-  right: -80px;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.25) 0%, transparent 70%);
-} */
-
 .auth-card {
   position: relative;
   background: rgba(255, 255, 255, 0.035);
@@ -178,8 +158,7 @@ const goProvider = () => router.push("/register?role=provider")
 @media (max-width: 480px) {
   .title { font-size: 2rem; }
   .subtitle { margin-bottom: 24px; }
-  /* .orb1 { width: 260px; height: 260px; }
-  .orb2 { width: 220px; height: 220px; } */
+  
   .btn { font-size: 0.9rem; padding: 12px 16px; }
 }
 

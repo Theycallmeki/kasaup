@@ -799,7 +799,6 @@
   background: rgba(255, 255, 255, 0.15);
 }
 
-/* Custom Confirm Dialog */
 .custom-dialog-overlay {
   position: fixed;
   inset: 0;

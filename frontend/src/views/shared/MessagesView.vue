@@ -21,10 +21,8 @@ const pendingShopName = ref<string | null>(null);
 const showDeleteConfirm = ref(false);
 const conversationToDelete = ref<any>(null);
 
-// Mobile panel state: 'list' | 'chat'
 const mobilePanel = ref<'list' | 'chat'>('list');
 
-// Desktop sidebar collapsed state
 const sidebarCollapsed = ref(false);
 const toggleSidebar = () => {
   sidebarCollapsed.value = !sidebarCollapsed.value;
@@ -33,14 +31,12 @@ const toggleSidebar = () => {
 const uploadingImage = ref(false);
 const imageInput = ref<HTMLInputElement | null>(null);
 
-// Full-screen image viewer state
 const viewerOpen = ref(false);
 const viewerSrc = ref('');
 const viewerClosing = ref(false);
 
-// Track loaded state per message id
 const imageLoaded = reactive<Record<number, boolean>>({});
-// Track error state per message id
+
 const imageError = reactive<Record<number, boolean>>({});
 
 const selectedImageFile = ref<File | null>(null);
@@ -85,13 +81,11 @@ const handleImageSelected = (e: Event) => {
   const file = target.files?.[0];
   if (!file) return;
 
-  // Validate file type
   if (!file.type.startsWith('image/')) {
     alert('Please select an image file.');
     return;
   }
 
-  // Validate file size (max 10MB)
   if (file.size > 10 * 1024 * 1024) {
     alert('Image must be smaller than 10MB.');
     return;
@@ -238,7 +232,6 @@ watch(() => messageStore.activeMessages.length, () => {
   scrollToBottom();
 });
 
-// Close viewer on Escape key
 const handleKeyDown = (e: KeyboardEvent) => {
   if (e.key === 'Escape' && viewerOpen.value) closeViewer();
 };
@@ -338,8 +331,7 @@ const activeConversation = computed(() => {
         </div>
       </div>
 
-     
-      <div class="chat-window">
+<div class="chat-window">
         <template v-if="messageStore.activeConversationId">
           <div class="chat-header">
             <button class="back-btn" @click="goBackToList" aria-label="Back to conversations">
@@ -418,16 +410,14 @@ const activeConversation = computed(() => {
                     <div class="img-shimmer" />
                   </div>
 
-                  
-                  <div v-if="imageError[msg.id]" class="img-error">
+<div v-if="imageError[msg.id]" class="img-error">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                       <path d="M3 3l18 18M10.5 10.67A2 2 0 0 0 8 12.5v.5H6l-3 3V5a2 2 0 0 1 2-2h10.5M21 15l-3-3-1.5 1.5M21 5a2 2 0 0 0-2-2h-7"/>
                     </svg>
                     <span>Failed to load</span>
                   </div>
 
-                  
-                  <div
+<div
                     v-show="imageLoaded[msg.id] && !imageError[msg.id]"
                     class="img-clickable"
                     @click="openViewer(imgUrl(msg.image_url))"
@@ -456,11 +446,9 @@ const activeConversation = computed(() => {
                   </div>
                 </div>
 
-                
-                <p v-if="msg.content" class="text-content">{{ msg.content }}</p>
+<p v-if="msg.content" class="text-content">{{ msg.content }}</p>
 
-                
-                <span v-if="msg.content || !msg.image_url" class="msg-time">{{ formatTime(msg.created_at) }}</span>
+<span v-if="msg.content || !msg.image_url" class="msg-time">{{ formatTime(msg.created_at) }}</span>
               </div>
             </div>
           </div>
@@ -523,8 +511,7 @@ const activeConversation = computed(() => {
       </div>
     </div>
 
-    
-    <div v-if="showDeleteConfirm" class="modal-overlay">
+<div v-if="showDeleteConfirm" class="modal-overlay">
       <div class="modal-card">
         <h3>Delete Conversation</h3>
         <p>Do you want to delete your conversation with <strong>{{ getDisplayName(conversationToDelete) }}</strong>?</p>
@@ -536,8 +523,7 @@ const activeConversation = computed(() => {
       </div>
     </div>
 
-    
-    <Teleport to="body">
+<Teleport to="body">
       <div
         v-if="viewerOpen"
         class="img-viewer-overlay"

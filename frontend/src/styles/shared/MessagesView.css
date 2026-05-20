@@ -1,8 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@700&family=DM+Sans:wght@400;500&display=swap');
 
-/* ─────────────────────────────────────────────────────────────
-   PAGE SHELL
-───────────────────────────────────────────────────────────── */
 .page {
   flex: 1;
   min-height: 0;
@@ -36,9 +33,6 @@
   margin: 0;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   CHAT LAYOUT
-───────────────────────────────────────────────────────────── */
 .chat-container {
   flex: 1;
   min-height: calc(97vh - 100px);
@@ -51,9 +45,6 @@
   backdrop-filter: blur(20px);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   SIDEBAR
-───────────────────────────────────────────────────────────── */
 .sidebar {
   width: 280px;
   flex-shrink: 0;
@@ -134,9 +125,6 @@
   transform: scale(1.05);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   AVATAR
-───────────────────────────────────────────────────────────── */
 .avatar {
   width: 46px;
   height: 46px;
@@ -166,9 +154,6 @@
   object-fit: cover;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   CONVERSATION INFO
-───────────────────────────────────────────────────────────── */
 .conv-info {
   flex: 1;
   min-width: 0;
@@ -213,9 +198,6 @@
   color: rgba(167, 139, 250, 0.6);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   CHAT WINDOW
-───────────────────────────────────────────────────────────── */
 .chat-window {
   flex: 1;
   min-width: 0;
@@ -255,7 +237,6 @@
   color: #fff;
 }
 
-/* Desktop sidebar toggle button */
 .sidebar-toggle-btn {
   display: flex;
   align-items: center;
@@ -278,7 +259,6 @@
   transform: scale(1.05);
 }
 
-/* Smooth sidebar collapse on desktop */
 .chat-container .sidebar {
   transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.25s ease,
@@ -341,9 +321,6 @@
   opacity: 0.8;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   MESSAGES AREA
-───────────────────────────────────────────────────────────── */
 .messages-area {
   flex: 1;
   overflow-y: auto;
@@ -372,9 +349,6 @@
   background: rgba(167, 139, 250, 0.25);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   MESSAGE BUBBLE
-───────────────────────────────────────────────────────────── */
 .message-wrapper {
   display: flex;
   flex-direction: column;
@@ -391,7 +365,6 @@
   line-height: 1.5;
 }
 
-/* Image-only bubble: no background, no padding */
 .message-bubble.image-only,
 .mine .message-bubble.image-only {
   padding: 0;
@@ -428,24 +401,18 @@
   text-align: right;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   IMAGE MESSAGES — improved
-───────────────────────────────────────────────────────────── */
-
-/* Wrapper that handles spacing when image has accompanying text */
 .msg-image-wrap {
   display: block;
-  /* constrain width — images will never stretch the bubble wider than this */
+  
   max-width: 260px;
   width: 100%;
 }
 
 .msg-image-wrap.has-text {
-  /* when there's also text below, add bottom gap */
+  
   margin-bottom: 8px;
 }
 
-/* ── Skeleton / shimmer ── */
 .img-skeleton {
   width: 220px;
   height: 160px;
@@ -476,7 +443,6 @@
   }
 }
 
-/* ── Error state ── */
 .img-error {
   width: 220px;
   height: 120px;
@@ -491,23 +457,21 @@
   font-size: 11px;
 }
 
-/* ── Clickable image container ── */
 .img-clickable {
   position: relative;
   display: inline-block;
   cursor: zoom-in;
   border-radius: 14px;
   overflow: hidden;
-  /* subtle ring so image edges don't bleed into bg */
+  
   outline: 1px solid rgba(255, 255, 255, 0.06);
   line-height: 0;
-  /* remove inline gap below img */
+  
 }
 
-/* The actual <img> */
 .msg-img {
   display: block;
-  /* constrained max; preserves natural aspect ratio */
+  
   max-width: 260px;
   max-height: 320px;
   width: auto;
@@ -521,7 +485,6 @@
   transform: scale(1.015);
 }
 
-/* ── Hover overlay with expand icon ── */
 .img-hover-overlay {
   position: absolute;
   inset: 0;
@@ -557,7 +520,6 @@
   transform: scale(1);
 }
 
-/* ── Timestamp overlaid on image-only messages ── */
 .img-time-overlay {
   position: absolute;
   bottom: 8px;
@@ -573,9 +535,6 @@
   line-height: 1.2;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   FULL-SCREEN IMAGE VIEWER
-───────────────────────────────────────────────────────────── */
 .img-viewer-overlay {
   position: fixed;
   inset: 0;
@@ -663,7 +622,6 @@
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
 }
 
-/* Close button — top-right of the inner container */
 .viewer-close-btn {
   position: absolute;
   top: -14px;
@@ -689,7 +647,6 @@
   transform: scale(1.08);
 }
 
-/* Action buttons below image */
 .viewer-actions {
   display: flex;
   gap: 8px;
@@ -717,9 +674,6 @@
   color: #fff;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   CHAT FOOTER / INPUT
-───────────────────────────────────────────────────────────── */
 .chat-footer {
   padding: 14px 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.07);
@@ -814,7 +768,6 @@
   filter: grayscale(0.6);
 }
 
-/* ── Image Preview Bar ── */
 .image-preview-bar {
   padding: 10px 14px;
   background: rgba(255, 255, 255, 0.03);
@@ -864,7 +817,6 @@
   transform: scale(1.1);
 }
 
-/* Spinner animation for upload state */
 .spin {
   animation: spin 0.9s linear infinite;
 }
@@ -879,9 +831,6 @@
   }
 }
 
-/* ─────────────────────────────────────────────────────────────
-   EMPTY STATES
-───────────────────────────────────────────────────────────── */
 .chat-empty {
   flex: 1;
   display: flex;
@@ -922,9 +871,6 @@
   margin: 0;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   DELETE MODAL
-───────────────────────────────────────────────────────────── */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -1007,9 +953,6 @@
   transform: translateY(-1px);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   ANIMATIONS
-───────────────────────────────────────────────────────────── */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -1032,9 +975,6 @@
   }
 }
 
-/* ─────────────────────────────────────────────────────────────
-   MOBILE
-───────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .page {
     padding: 20px 14px 20px;
@@ -1127,8 +1067,7 @@
     padding: 14px 14px 80px;
   }
 
-  /* Slightly narrower images on small screens */
-  .msg-img {
+.msg-img {
     max-width: 220px;
     max-height: 260px;
   }
@@ -1138,8 +1077,7 @@
     height: 130px;
   }
 
-  /* Give expand icon a lower threshold on touch screens */
-  .img-expand-btn {
+.img-expand-btn {
     opacity: 0.7;
     transform: scale(0.9);
   }
@@ -1155,8 +1093,7 @@
     background: #0b0917;
   }
 
-  /* Full-screen viewer on mobile */
-  .viewer-img {
+.viewer-img {
     max-width: 96vw;
     max-height: 70vh;
     border-radius: 10px;

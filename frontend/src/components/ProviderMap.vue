@@ -441,7 +441,6 @@ watch(
   display: none !important;
 }
 
-/* Popup layout */
 .kasaup-popup {
   padding: 18px;
   font-family: 'DM Sans', sans-serif;

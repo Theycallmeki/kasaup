@@ -144,9 +144,9 @@ const displayImageUrl = computed(() => {
     </div>
 
     <div class="profile-grid">
-      <!-- Left: Avatar + Form -->
+      
       <div class="profile-card info-section">
-        <!-- Avatar Upload -->
+        
         <div class="avatar-section">
           <div class="avatar-wrapper" @click="triggerUpload">
             <img v-if="displayImageUrl" :src="displayImageUrl" alt="Profile" class="avatar-img" />
@@ -222,8 +222,7 @@ const displayImageUrl = computed(() => {
         </form>
       </div>
 
-      <!-- Right: Location -->
-      <div class="profile-card location-section">
+<div class="profile-card location-section">
         <div class="loc-head">
            <h2 class="section-title">Service Location</h2>
            <p class="loc-desc">This is used to calculate distance to nearby services.</p>

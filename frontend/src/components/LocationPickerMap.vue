@@ -93,9 +93,7 @@ onMounted(() => {
     } else {
       marker = L.marker(e.latlng, { icon: customPin }).addTo(map)
     }
-  })
-
-  // Resize handling
+  })
   const resizeObserver = new ResizeObserver(() => {
     map?.invalidateSize()
   })
@@ -159,7 +157,6 @@ onMounted(() => {
   background: rgba(124, 58, 237, 0.55);
 }
 
-/* Leaflet target — height comes from flex parent; CreateServiceView may override :deep */
 .picker-map-el {
   flex: 1;
   min-height: 240px;

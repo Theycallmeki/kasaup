@@ -55,7 +55,6 @@ const profileImagePreview = ref<string | null>(null)
 const loading = ref(false)
 const error = ref("")
 
-// Per-field errors
 const fieldErrors = ref({ shop_name: "", phone: "" })
 
 function setLocation(data: any) {
@@ -150,11 +149,9 @@ const handleLogout = async () => {
 
       <div class="layout">
 
-        <!-- Left: Form -->
-        <div class="form-col">
+<div class="form-col">
 
-          <!-- Profile Image -->
-          <div class="section-card">
+<div class="section-card">
             <h2 class="section-title">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
@@ -183,8 +180,7 @@ const handleLogout = async () => {
             </div>
           </div>
 
-          <!-- Shop Details -->
-          <div class="section-card">
+<div class="section-card">
             <h2 class="section-title">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
@@ -243,8 +239,7 @@ const handleLogout = async () => {
             </div>
           </div>
 
-          <!-- Home Service Toggle -->
-          <label class="checkbox-row">
+<label class="checkbox-row">
             <div class="checkbox-wrap">
               <input type="checkbox" v-model="offers_home_service" class="checkbox-input" />
               <div class="checkbox-box">
@@ -259,8 +254,7 @@ const handleLogout = async () => {
             </div>
           </label>
 
-          <!-- Error -->
-          <p v-if="error" class="error-msg">
+<p v-if="error" class="error-msg">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
             </svg>
@@ -269,8 +263,7 @@ const handleLogout = async () => {
 
         </div>
 
-        <!-- Right: Map Card -->
-        <div class="map-col">
+<div class="map-col">
           <div class="map-card">
             <div class="map-card-header">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="map-pin-icon">
@@ -301,8 +294,7 @@ const handleLogout = async () => {
           </div>
         </div>
 
-        <!-- Submit Section (Now inside layout) -->
-        <div class="actions-row">
+<div class="actions-row">
           <button class="submit-btn" :disabled="loading" @click="create">
             <svg v-if="!loading" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>

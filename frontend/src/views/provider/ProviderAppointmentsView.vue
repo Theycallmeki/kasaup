@@ -113,8 +113,7 @@ const formatDateTime = (iso: string) => {
       </div>
     </div>
 
-    <!-- Navigation Tabs -->
-    <div class="tabs-container">
+<div class="tabs-container">
       <div class="tabs">
         <button class="tab-btn" :class="{active: activeTab==='pending'}" @click="activeTab='pending'">
           Pending Requests
@@ -152,15 +151,13 @@ const formatDateTime = (iso: string) => {
             class="app-card"
             :class="{ 'app-card-selected': selectedApp?.id === app.id }"
           >
-            
-            <!-- Left Strip for Timing -->
-            <div class="card-left-strip">
+
+<div class="card-left-strip">
               <div class="cd-date">{{ formatDateTime(app.appointment_time).date }}</div>
               <div class="cd-time">{{ formatDateTime(app.appointment_time).time }}</div>
             </div>
 
-            <!-- Main Content Body -->
-            <div class="card-body">
+<div class="card-body">
               <div class="cb-top">
                 <h3 class="svc-name">{{ app.service_name }}</h3>
                 <div class="cb-badges">
@@ -187,8 +184,7 @@ const formatDateTime = (iso: string) => {
                  </div>
               </div>
 
-              <!-- Actions row -->
-              <div class="cb-bottom">
+<div class="cb-bottom">
                 <div class="cb-actions">
                   <button v-if="app.status === 'pending'" class="abtn abtn-green" @click="approve(app.id)">Approve</button>
                   <button v-if="app.status === 'approved' || app.status === 'confirmed'" class="abtn abtn-blue" @click="complete(app.id)">Complete</button>
@@ -219,8 +215,7 @@ const formatDateTime = (iso: string) => {
         </div>
       </div>
 
-      <!-- Customer Location Map Card (right sidebar) -->
-      <CustomerLocationMapCard
+<CustomerLocationMapCard
         :show="Boolean(selectedApp)"
         :lat="selectedApp?.customer_latitude ?? null"
         :lng="selectedApp?.customer_longitude ?? null"

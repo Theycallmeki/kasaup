@@ -12,7 +12,6 @@ import BookingHistoryView from "../views/customer/BookingHistoryView.vue"
 import ServicesView from '../views/customer/ServicesView.vue'
 import CustomerProfileView from "../views/customer/CustomerProfileView.vue"
 
-
 import ProviderDashboardView from "../views/provider/ProviderDashboardView.vue"
 import ProviderServicesView from "../views/provider/ProviderServicesView.vue"
 import ProviderAvailabilityView from "../views/provider/ProviderAvailabilityView.vue"
@@ -205,18 +204,13 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
-  const auth = useAuthStore()
-
-  // 1. Ensure user is loaded if possible
+  const auth = useAuthStore()
   if (!auth.user) {
     try {
       await auth.fetchUser()
-    } catch {
-      // Not logged in
+    } catch {
     }
-  }
-
-  // 2. Redirect logged-in users away from landing/auth pages
+  }
   const publicPages = ["/", "/login", "/register", "/auth"]
   if (auth.user && publicPages.includes(to.path)) {
     if (auth.user.role === "customer") return { path: "/services" }
@@ -224,23 +218,18 @@ router.beforeEach(async (to) => {
       return auth.user.has_profile ? { path: "/provider/dashboard" } : { path: "/provider/create-profile" }
     }
     if (auth.user.role === "admin") return { path: "/admin/dashboard" }
-  }
-
-  // 3. Handle Protected Routes
+  }
   if (to.meta.requiresAuth) {
     if (!auth.user) {
       return { path: "/login" }
     }
 
     const allowedRoles = to.meta.roles as string[]
-    if (allowedRoles && !allowedRoles.includes(auth.user.role)) {
-      // Role mismatch fallback
+    if (allowedRoles && !allowedRoles.includes(auth.user.role)) {
       if (auth.user.role === "provider") return { path: "/provider/dashboard" }
       if (auth.user.role === "admin") return { path: "/admin/dashboard" }
       if (auth.user.role === "customer") return { path: "/services" }
-    }
-
-    // Provider profile enforcement
+    }
     if (auth.user.role === "provider") {
       if (!auth.user.has_profile && to.name !== "createProviderProfile") {
         return { name: "createProviderProfile" }

@@ -1,6 +1,5 @@
 import { useToast } from 'primevue/usetoast';
 
-
 export function useNotification() {
   const toast = useToast();
 

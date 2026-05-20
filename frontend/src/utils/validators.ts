@@ -1,11 +1,7 @@
-/**
- * Shared form validation utilities for KasaUp
- */
 
-/** PH phone: +63 followed by 10 digits (9xxxxxxxxx), spaces/dashes allowed */
+
 const PH_PHONE_RE = /^\+63[\s-]?9\d{2}[\s-]?\d{3}[\s-]?\d{4}$/
 
-/** Basic email regex */
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export const validateEmail = (email: string): string | null => {
@@ -14,21 +10,13 @@ export const validateEmail = (email: string): string | null => {
   return null
 }
 
-/**
- * Validates a Philippine mobile number.
- * Accepts: +639XXXXXXXXX, +63 9XX XXX XXXX, 09XXXXXXXXX (auto-converts)
- * Returns the normalized +63 form, or null if invalid.
- */
 export const normalizePHPhone = (raw: string): string | null => {
   const stripped = raw.replace(/[\s\-()]/g, '')
 
-  // Already in +63 format
   if (/^\+639\d{9}$/.test(stripped)) return stripped
 
-  // Starts with 09 → convert to +63
   if (/^09\d{9}$/.test(stripped)) return '+63' + stripped.slice(1)
 
-  // Starts with 639 (no +) → add +
   if (/^639\d{9}$/.test(stripped)) return '+' + stripped
 
   return null

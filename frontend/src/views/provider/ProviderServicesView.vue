@@ -15,9 +15,7 @@ const providerId = ref<number | null>(null)
 const editingId = ref<number | null>(null)
 const imageFiles = ref<File[]>([])
 const imagePreviews = ref<string[]>([])
-const deleteConfirmId = ref<number | null>(null)
-
-// Gallery viewer
+const deleteConfirmId = ref<number | null>(null)
 const galleryImages = ref<string[]>([])
 const galleryIndex = ref(0)
 const viewingGallery = computed(() => galleryImages.value.length > 0)
@@ -172,8 +170,7 @@ function getService(id: number) {
 <template>
   <div class="page" ref="pageScroll">
 
-    
-    <div class="page-header">
+<div class="page-header">
       <div class="header-left">
         <h1 class="title">My Services</h1>
         <span class="service-count" v-if="serviceStore.services.length">
@@ -188,16 +185,14 @@ function getService(id: number) {
       </router-link>
     </div>
 
-    
-    <div v-if="serviceStore.loading" class="state-msg">
+<div v-if="serviceStore.loading" class="state-msg">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
         <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
       </svg>
       Loading services...
     </div>
 
-   
-    <div v-else-if="serviceStore.services.length === 0" class="empty-state">
+<div v-else-if="serviceStore.services.length === 0" class="empty-state">
       <div class="empty-icon">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
@@ -213,8 +208,7 @@ function getService(id: number) {
       </router-link>
     </div>
 
-    
-    <div v-else class="cards">
+<div v-else class="cards">
       <div
         v-for="service in serviceStore.services"
         :key="service.id"
@@ -291,8 +285,7 @@ function getService(id: number) {
 
         </template>
 
-        
-        <template v-else>
+<template v-else>
           <div class="edit-header">
             <span class="edit-label">Editing service</span>
             <button class="icon-btn" @click="cancelEdit">

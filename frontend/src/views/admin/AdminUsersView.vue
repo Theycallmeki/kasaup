@@ -98,8 +98,7 @@ async function handleReject() {
       </div>
     </div>
 
-    <!-- Tabs -->
-    <div class="tabs">
+<div class="tabs">
       <button 
         class="tab" 
         :class="{ active: activeTab === 'all' }" 
@@ -117,14 +116,12 @@ async function handleReject() {
       </button>
     </div>
 
-    <!-- Loading -->
-    <div v-if="loading" class="state-msg">
+<div v-if="loading" class="state-msg">
       <span class="spinner"></span>
       <p>Loading users...</p>
     </div>
 
-    <!-- Empty -->
-    <div v-else-if="!filteredUsers.length" class="state-msg empty">
+<div v-else-if="!filteredUsers.length" class="state-msg empty">
       <div class="empty-icon">
         <svg v-if="activeTab === 'pending'" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <circle cx="12" cy="12" r="10"/>
@@ -141,8 +138,7 @@ async function handleReject() {
       <p class="empty-sub">{{ activeTab === 'pending' ? 'All user applications have been reviewed.' : 'Registered users will appear here.' }}</p>
     </div>
 
-    <!-- Grid -->
-    <div v-else class="user-grid">
+<div v-else class="user-grid">
       <div
         v-for="user in filteredUsers"
         :key="user.id"
@@ -177,8 +173,7 @@ async function handleReject() {
           {{ user.phone || 'No phone' }}
         </div>
 
-        <!-- Approval Actions (inline, only for pending) -->
-        <div v-if="!user.is_approved" class="approval-actions" @click.stop>
+<div v-if="!user.is_approved" class="approval-actions" @click.stop>
           <button 
             class="action-inline action-approve" 
             :disabled="actionLoading === user.id"
@@ -203,8 +198,7 @@ async function handleReject() {
       </div>
     </div>
 
-    <!-- User Detail Modal -->
-    <Teleport to="body">
+<Teleport to="body">
       <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
         <div class="modal">
           <div class="modal-header">
@@ -263,8 +257,7 @@ async function handleReject() {
       </div>
     </Teleport>
 
-    <!-- Reject Confirmation Modal -->
-    <Teleport to="body">
+<Teleport to="body">
       <div v-if="showRejectConfirm" class="modal-overlay" @click.self="showRejectConfirm = false">
         <div class="modal">
           <div class="modal-header" style="margin-bottom: 12px;">

@@ -84,9 +84,7 @@ const icons: Record<string, string> = {
 </script>
 
 <template>
-  <!-- ═══════════════════════════════════
-       DESKTOP: vertical sidebar
-  ═══════════════════════════════════ -->
+  
   <aside
     class="sidebar"
     :class="{ collapsed }"
@@ -141,10 +139,7 @@ const icons: Record<string, string> = {
     </nav>
   </aside>
 
-  <!-- ═══════════════════════════════════
-       MOBILE: bottom navigation bar
-  ═══════════════════════════════════ -->
-  <nav class="mobile-bottom-nav" aria-label="Mobile navigation">
+<nav class="mobile-bottom-nav" aria-label="Mobile navigation">
     <router-link
       v-for="item in menuItems.filter(i => i.label !== 'Tutorial')"
       :key="item.path"
@@ -161,8 +156,7 @@ const icons: Record<string, string> = {
       <span v-if="false" class="mob-label">{{ item.label }}</span>
     </router-link>
 
-    <!-- More / Logout button -->
-    <button class="mob-link mob-logout" @click="toggleMobileDrawer" aria-label="More options">
+<button class="mob-link mob-logout" @click="toggleMobileDrawer" aria-label="More options">
       <svg class="mob-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path :d="mobileDrawerOpen ? icons.close : icons.menu" />
       </svg>
@@ -170,8 +164,7 @@ const icons: Record<string, string> = {
     </button>
   </nav>
 
-  <!-- Mobile drawer overlay -->
-  <Transition name="drawer-fade">
+<Transition name="drawer-fade">
     <div v-if="mobileDrawerOpen" class="mob-overlay" @click="closeMobileDrawer">
       <div class="mob-drawer" @click.stop>
         <div class="mob-drawer-header">
@@ -226,8 +219,6 @@ const icons: Record<string, string> = {
 .sidebar.collapsed .top {
   justify-content: center;
 }
-
-
 
 .sidebar.collapsed .link {
   padding-left: 0;
@@ -407,13 +398,10 @@ const icons: Record<string, string> = {
 }
 
 @media (max-width: 768px) {
-  /* Hide desktop sidebar on mobile */
+  
   .sidebar { display: none; }
 }
 
-/* ════════════════════════════════════════
-   MOBILE BOTTOM NAV BAR
-════════════════════════════════════════ */
 .mobile-bottom-nav {
   display: none;
 }
@@ -494,9 +482,6 @@ const icons: Record<string, string> = {
   .mob-link.mob-logout:hover { color: #fff !important; background: rgba(255,255,255,0.05) !important; }
 }
 
-/* ════════════════════════════════════════
-   MOBILE DRAWER (More panel)
-════════════════════════════════════════ */
 .mob-overlay {
   display: none;
 }
@@ -571,9 +556,6 @@ const icons: Record<string, string> = {
   .mob-drawer-link svg { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.7; }
 }
 
-/* ════════════════════════════════════════
-   DRAWER TRANSITION
-════════════════════════════════════════ */
 .drawer-fade-enter-active,
 .drawer-fade-leave-active {
   transition: opacity 0.2s ease;

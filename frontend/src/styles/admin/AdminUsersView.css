@@ -34,7 +34,6 @@
   margin: 0;
 }
 
-/* Tabs */
 .tabs {
   display: flex;
   gap: 4px;
@@ -86,7 +85,6 @@
   padding: 0 5px;
 }
 
-/* States */
 .state-msg {
   display: flex;
   align-items: center;
@@ -122,14 +120,12 @@
   animation: spin 0.8s linear infinite;
 }
 
-/* Grid */
 .user-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 14px;
 }
 
-/* Card */
 .user-card {
   cursor: pointer;
   background: rgba(255, 255, 255, 0.025);
@@ -246,7 +242,6 @@
   margin-top: 2px;
 }
 
-/* Inline Approval Actions */
 .approval-actions {
   display: flex;
   gap: 6px;
@@ -296,7 +291,6 @@
   cursor: not-allowed;
 }
 
-/* Modal */
 @keyframes pop {
   from { transform: scale(0.94) translateY(8px); opacity: 0; }
   to   { transform: scale(1) translateY(0); opacity: 1; }

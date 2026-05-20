@@ -340,9 +340,7 @@ const activeFilterCount = computed(() => {
           </select>
         </div>
 
-
-
-        <div class="action-buttons">
+<div class="action-buttons">
           <button type="button" class="location-btn" @click="useMyLocation">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="3" />

@@ -87,8 +87,7 @@ const submitDelete = async (id: number) => {
       </button>
     </div>
 
-    <!-- Add row -->
-    <div v-if="adding" class="add-row">
+<div v-if="adding" class="add-row">
       <input
         v-model="newName"
         class="field"
@@ -101,8 +100,7 @@ const submitDelete = async (id: number) => {
       <button class="action-btn action-btn--cancel" @click="cancelAdd">Cancel</button>
     </div>
 
-    <!-- List -->
-    <div class="list">
+<div class="list">
 
       <div v-if="categoryStore.loading" class="empty-state">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
@@ -120,15 +118,14 @@ const submitDelete = async (id: number) => {
         :key="category.id"
         class="list-item"
       >
-        <!-- Delete confirm overlay -->
+        
         <div v-if="deletingId === category.id" class="delete-confirm">
           <span class="delete-confirm-text">Delete <strong>{{ category.name }}</strong>?</span>
           <button class="action-btn action-btn--danger" @click="submitDelete(category.id)">Delete</button>
           <button class="action-btn action-btn--cancel" @click="cancelDelete">Cancel</button>
         </div>
 
-        <!-- Edit mode -->
-        <template v-else-if="editingId === category.id">
+<template v-else-if="editingId === category.id">
           <div class="category-icon">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
@@ -153,8 +150,7 @@ const submitDelete = async (id: number) => {
           </div>
         </template>
 
-        <!-- Default view -->
-        <template v-else>
+<template v-else>
           <div class="category-icon">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>

@@ -91,8 +91,7 @@ function resetForm() {
       </button>
     </div>
 
-    <!-- Form -->
-    <form v-if="showForm" @submit.prevent="submit" class="provider-form">
+<form v-if="showForm" @submit.prevent="submit" class="provider-form">
       <div class="form-label-row">
         <span class="form-label-tag">{{ editingId ? 'Edit Provider' : 'New Provider' }}</span>
       </div>
@@ -146,14 +145,12 @@ function resetForm() {
       </div>
     </form>
 
-    <!-- Loading -->
-    <div v-if="providerStore.loading" class="state-msg">
+<div v-if="providerStore.loading" class="state-msg">
       <span class="spinner"></span>
       <p>Loading providers...</p>
     </div>
 
-    <!-- Empty -->
-    <div v-else-if="!providerStore.providers.length && !showForm" class="state-msg empty">
+<div v-else-if="!providerStore.providers.length && !showForm" class="state-msg empty">
       <div class="empty-icon">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
@@ -164,8 +161,7 @@ function resetForm() {
       <p class="empty-sub">Add your first provider to get started.</p>
     </div>
 
-    <!-- Grid -->
-    <div v-else class="provider-grid">
+<div v-else class="provider-grid">
 
       <div
         v-for="provider in providerStore.providers"

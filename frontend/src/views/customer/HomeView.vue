@@ -1,8 +1,7 @@
 <template>
   <div class="home-page">
-    
-    <!-- Navbar (Optional if App.vue has one, but creating a beautiful sticky nav for landing) -->
-    <nav class="navbar animate-fade-in">
+
+<nav class="navbar animate-fade-in">
       <div class="nav-brand">Kasa<span>Up</span></div>
       <div class="nav-links">
         <a href="#features" class="nav-link" @click.prevent="scrollTo('#features')">Features</a>
@@ -14,8 +13,7 @@
       </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
+<section class="hero">
       <div class="hero-content animate-fade-in delay-1">
         <span class="section-tag">Manpower Services</span>
         <h1 class="hero-title">
@@ -88,8 +86,7 @@
       </div>
     </section>
 
-    <!-- Features Section -->
-    <section id="features" class="features">
+<section id="features" class="features">
       <span class="section-tag">Why Choose Us</span>
       <h2 class="section-title">Everything you need <br/> to get the job done</h2>
       <p class="section-subtitle">
@@ -131,8 +128,7 @@
       </div>
     </section>
 
-    <!-- Workflow Section -->
-    <section id="how-it-works" class="how-it-works">
+<section id="how-it-works" class="how-it-works">
       <span class="section-tag">Process</span>
       <h2 class="section-title">How it works</h2>
       <p class="section-subtitle">
@@ -164,8 +160,7 @@
       </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="cta-section">
+<section class="cta-section">
       <div class="cta-box">
         <div class="cta-content">
           <h2 class="cta-title">Ready to elevate your experience?</h2>
@@ -180,8 +175,7 @@
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
+<footer class="footer">
       <div class="footer-brand">
         <strong>KasaUp</strong> &copy; 2026. All rights reserved.
       </div>

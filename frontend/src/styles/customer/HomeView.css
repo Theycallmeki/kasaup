@@ -31,7 +31,6 @@ h1, h2, h3, h4, h5, h6 {
   overflow-x: hidden;
 }
 
-/* Animations */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -65,7 +64,6 @@ h1, h2, h3, h4, h5, h6 {
 .delay-3 { animation-delay: 0.3s; }
 .delay-4 { animation-delay: 0.4s; }
 
-/* Navbar */
 .navbar {
   position: fixed;
   top: 0;
@@ -118,7 +116,6 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
 }
 
-/* Common Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -161,7 +158,6 @@ h1, h2, h3, h4, h5, h6 {
   border-color: rgba(255, 255, 255, 0.4);
 }
 
-/* Sections General */
 section {
   padding: 100px 5%;
   display: flex;
@@ -202,7 +198,6 @@ section {
   line-height: 1.6;
 }
 
-/* Hero Section */
 .hero {
   min-height: 100vh;
   padding-top: 150px;
@@ -330,7 +325,6 @@ section {
   color: #a855f7;
 }
 
-/* Stats Section */
 .stats {
   padding: 60px 5%;
   background: rgba(255, 255, 255, 0.02);
@@ -369,7 +363,6 @@ section {
   font-weight: 500;
 }
 
-/* Features Section */
 .features-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -441,7 +434,6 @@ section {
   z-index: 1;
 }
 
-/* Workflow Section (Infographic timeline) */
 .workflow {
   position: relative;
   max-width: 1000px;
@@ -512,7 +504,6 @@ section {
   margin: 0;
 }
 
-/* CTA Section */
 .cta-section {
   padding: 120px 5%;
   position: relative;
@@ -570,7 +561,6 @@ section {
   margin-right: auto;
 }
 
-/* Footer */
 .footer {
   padding: 40px 5%;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
@@ -581,12 +571,6 @@ section {
   font-size: 0.9rem;
 }
 
-/* ===========================
-   RESPONSIVE (Mobile Only)
-   Desktop styles above are UNTOUCHED
-   =========================== */
-
-/* Tablet */
 @media (max-width: 1024px) {
   .hero {
     grid-template-columns: 1fr;
@@ -609,9 +593,8 @@ section {
   }
 }
 
-/* Mobile */
 @media (max-width: 768px) {
-  /* --- Navbar --- */
+  
   .navbar {
     padding: 0 16px;
     height: 64px;
@@ -642,8 +625,7 @@ section {
     flex-shrink: 0;
   }
 
-  /* --- Hero --- */
-  .hero {
+.hero {
     display: flex;
     flex-direction: column;
     min-height: auto;
@@ -683,8 +665,7 @@ section {
     justify-content: center;
   }
 
-  /* Hero visual — flat card, no 3D tilt on mobile */
-  .hero-visual {
+.hero-visual {
     width: 100%;
     position: relative;
   }
@@ -699,7 +680,7 @@ section {
     width: 100%;
     box-sizing: border-box;
     padding: 20px 16px;
-    transform: none; /* remove 3D tilt */
+    transform: none; 
     position: relative;
   }
 
@@ -707,8 +688,7 @@ section {
     transform: none;
   }
 
-  /* --- Sections general --- */
-  section {
+section {
     padding: 70px 20px;
   }
 
@@ -721,8 +701,7 @@ section {
     margin-bottom: 40px;
   }
 
-  /* --- Features --- */
-  .features-grid {
+.features-grid {
     grid-template-columns: 1fr;
     gap: 20px;
   }
@@ -731,8 +710,7 @@ section {
     padding: 30px 24px;
   }
 
-  /* --- Workflow --- */
-  .workflow::before {
+.workflow::before {
     left: 20px;
     transform: none;
   }
@@ -761,8 +739,7 @@ section {
     padding: 24px 20px;
   }
 
-  /* --- CTA --- */
-  .cta-section {
+.cta-section {
     padding: 60px 20px;
   }
 
@@ -792,8 +769,7 @@ section {
     max-width: 320px;
   }
 
-  /* --- Footer --- */
-  .footer {
+.footer {
     flex-direction: column;
     gap: 12px;
     text-align: center;
@@ -801,7 +777,6 @@ section {
   }
 }
 
-/* Small phones */
 @media (max-width: 420px) {
   .hero-title {
     font-size: 2.1rem;

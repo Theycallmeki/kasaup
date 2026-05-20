@@ -445,8 +445,7 @@
     width: 100%;
   }
 
-  /* Divider */
-  .search-input-section::after {
+.search-input-section::after {
     content: '';
     position: absolute;
     right: 0;

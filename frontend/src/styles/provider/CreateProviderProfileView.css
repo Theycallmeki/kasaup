@@ -77,7 +77,6 @@
   word-break: break-word;
 }
 
-/* Layout - side by side on desktop */
 .layout {
   display: grid;
   grid-template-columns: 1fr 460px;
@@ -99,7 +98,6 @@
   flex-direction: column;
 }
 
-/* Section Cards */
 .section-card {
   background: rgba(255, 255, 255, 0.025);
   border: 0.5px solid rgba(255, 255, 255, 0.08);
@@ -383,7 +381,7 @@ textarea.input {
 
 .actions-row {
   grid-column: 1;
-  /* Stay under the form column on desktop */
+  
   margin-top: 24px;
   padding-bottom: 20px;
   width: 100%;
@@ -459,7 +457,7 @@ textarea.input {
   box-sizing: border-box;
   flex-shrink: 0;
   display: flex;
-  /* Added to ensure child fills height */
+  
   flex-direction: column;
 }
 
@@ -497,7 +495,6 @@ textarea.input {
   animation: spin 1s linear infinite;
 }
 
-/* Tablet and below: Stack everything vertically */
 @media (max-width: 1024px) {
   .page {
     padding: 28px 24px 100px;
@@ -512,7 +509,6 @@ textarea.input {
   }
 }
 
-/* Small Tablet: 541px - 768px */
 @media (max-width: 768px) {
   .page {
     padding: 24px 16px 100px;
@@ -536,7 +532,6 @@ textarea.input {
   }
 }
 
-/* Mobile: 540px and below */
 @media (max-width: 540px) {
   .page {
     padding: 20px 12px 100px;
@@ -673,11 +668,10 @@ textarea.input {
   .actions-row {
     margin-top: 40px;
     margin-bottom: 100px;
-    /* Increased for better mobile clearance */
+    
   }
 }
 
-/* Extra Small: 320px and below */
 @media (max-width: 320px) {
   .page {
     padding: 16px 8px 100px;

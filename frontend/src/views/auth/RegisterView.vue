@@ -21,14 +21,11 @@ const password = ref("")
 const full_name = ref("")
 const loading = ref(false)
 const error = ref("")
-const showPassword = ref(false)
-
-// Per-field errors
+const showPassword = ref(false)
 const fieldErrors = ref({ email: "", password: "", full_name: "" })
 
 const role = computed(() => (route.query.role as string) || "customer")
 const showPendingMessage = ref(false)
-
 
 const validateAll = (): boolean => {
   fieldErrors.value.full_name = validateFullName(full_name.value) || ""
@@ -83,8 +80,7 @@ const goGithub = () => {
       <span class="eyebrow">Create account</span>
       <h1 class="title">Kasa<span class="accent">Up</span></h1>
 
-      <!-- Pending Approval State -->
-      <template v-if="showPendingMessage">
+<template v-if="showPendingMessage">
         <div class="pending-box">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <circle cx="12" cy="12" r="10"/>
@@ -98,8 +94,7 @@ const goGithub = () => {
         </div>
       </template>
 
-      <!-- Registration Form -->
-      <template v-else>
+<template v-else>
         <p class="subtitle">Registering as a <span class="role-label">{{ role }}</span></p>
 
         <button type="button" class="btn google-btn" @click="goGoogle">
@@ -246,26 +241,6 @@ const goGithub = () => {
   }
 }
 
-/* .bg-orb {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-.orb1 {
-  width: 420px;
-  height: 420px;
-  top: -80px;
-  left: -100px;
-  background: radial-gradient(circle, rgba(99, 60, 220, 0.35) 0%, transparent 70%);
-}
-.orb2 {
-  width: 360px;
-  height: 360px;
-  bottom: -60px;
-  right: -80px;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.25) 0%, transparent 70%);
-} */
-
 .register-card {
   position: relative;
   background: rgba(255, 255, 255, 0.035);
@@ -334,11 +309,9 @@ const goGithub = () => {
   .title { font-size: 2rem; }
   .subtitle { margin-bottom: 18px; }
   .eyebrow { margin-bottom: 14px; }
-  /* .orb1 { width: 260px; height: 260px; }
-  .orb2 { width: 220px; height: 220px; } */
+  
 }
 
-/* Landscape mobile: reduce gaps so form fits without scrolling if possible */
 @media (max-height: 600px) and (max-width: 900px) {
   .register-page {
     position: relative;

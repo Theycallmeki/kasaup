@@ -35,9 +35,7 @@ const selectedSlot = ref<string | null>(null)
 const serviceLocationType = ref<"shop" | "home">("shop")
 const customerLat = ref<number | null>(null)
 const customerLng = ref<number | null>(null)
-const lightboxImg = ref<string | null>(null)
-
-// Custom confirm dialog state
+const lightboxImg = ref<string | null>(null)
 const confirmDialog = ref(false)
 const pendingBooking = ref<{ serviceId: number; slot: string } | null>(null)
 
@@ -524,8 +522,7 @@ const isPrevDisabled = computed(() => {
       </div>
     </template>
 
-    <!-- Custom Confirm Dialog -->
-    <Teleport to="body">
+<Teleport to="body">
       <div v-if="confirmDialog" class="custom-dialog-overlay" @click.self="cancelBooking">
         <div class="custom-dialog">
           <div class="custom-dialog-header">
@@ -552,16 +549,14 @@ const isPrevDisabled = computed(() => {
       </div>
     </Teleport>
 
-    <!-- Lightbox -->
-    <Teleport to="body">
+<Teleport to="body">
       <div v-if="lightboxImg" class="lightbox-overlay" @click="lightboxImg = null">
         <img :src="lightboxImg" class="lightbox-img" @click.stop />
         <button class="lightbox-close" @click="lightboxImg = null">✕</button>
       </div>
     </Teleport>
 
-    <!-- Bottom Spacer for mobile scroller -->
-    <div class="bottom-spacer" />
+<div class="bottom-spacer" />
 
   </div>
 </template>

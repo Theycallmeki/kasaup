@@ -65,9 +65,7 @@ const {
   providerMap,
   startLoading,
   stopLoading,
-})
-
-// Lock body scroll when modal or filters are open
+})
 watch([selected, showFilters], ([s, f]) => {
   if (s || f) {
     document.body.style.overflow = "hidden"
@@ -286,9 +284,8 @@ const firstImage = (svc: any): string | null => {
         </button>
 
       </div>
-     
 
-    </div>
+</div>
 
   </div>
 </Teleport>
@@ -300,8 +297,7 @@ const firstImage = (svc: any): string | null => {
       </div>
     </Teleport>
 
-   
-    <div class="bottom-spacer"></div>
+<div class="bottom-spacer"></div>
 
   </div>
 </template>

@@ -153,9 +153,8 @@ function formatAmPm(timeStr: string): string {
     </div>
 
     <div class="layout-grid">
-      
-      <!-- Left Column: Weekly Schedule -->
-      <div class="card schedule-card">
+
+<div class="card schedule-card">
         <h2 class="section-title">Weekly Schedule</h2>
         
         <form class="schedule-form" @submit.prevent="submit">
@@ -233,8 +232,7 @@ function formatAmPm(timeStr: string): string {
         </div>
       </div>
 
-      <!-- Right Column: Calendar Overview -->
-      <div class="calendar-panel">
+<div class="calendar-panel">
         <div class="panel-header">
           <div class="ph-left">
             <h2 class="section-title">Yearly Overview</h2>
@@ -250,12 +248,10 @@ function formatAmPm(timeStr: string): string {
             <div class="month-name">{{ new Date(year, month).toLocaleString("default", { month: "long" }) }}</div>
             <div class="days-grid">
               <div v-for="d in dayShort" :key="'label-'+d" class="day-label cell-shared">{{ d }}</div>
-              
-              <!-- Empty cells for alignment -->
-              <div v-for="empty in getFirstDayOfMonth(month)" :key="'empty-'+empty" class="day-cell empty cell-shared"></div>
-              
-              <!-- Real day cells -->
-              <div
+
+<div v-for="empty in getFirstDayOfMonth(month)" :key="'empty-'+empty" class="day-cell empty cell-shared"></div>
+
+<div
                 v-for="day in getDaysInMonth(month)"
                 :key="day"
                 class="day-cell cell-shared"
