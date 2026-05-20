@@ -43,11 +43,11 @@ onMounted(async () => {
 
 function onImagesChange(e: Event) {
   const files = Array.from((e.target as HTMLInputElement).files || [])
-imageFiles.value = [...imageFiles.value, ...files]
-imagePreviews.value = [
-  ...imagePreviews.value,
-  ...files.map(f => URL.createObjectURL(f))
-]
+  imageFiles.value = [...imageFiles.value, ...files]
+  imagePreviews.value = [
+    ...imagePreviews.value,
+    ...files.map(f => URL.createObjectURL(f))
+  ]
 }
 
 function removeImage(index: number) {
@@ -84,7 +84,7 @@ const createService = async () => {
   <div class="page">
 
     <div class="left-panel full">
-      
+
       <div class="page-header">
         <p class="eyebrow">Service Management</p>
         <h1 class="title">Create Service</h1>
@@ -95,54 +95,28 @@ const createService = async () => {
 
         <div class="field">
           <label for="svc-name">Service Name</label>
-          <input
-            id="svc-name"
-            v-model="name"
-            class="input"
-            placeholder="e.g. Aircon Cleaning"
-          />
+          <input id="svc-name" v-model="name" class="input" placeholder="e.g. Aircon Cleaning" />
         </div>
 
         <div class="field">
           <label for="svc-desc">Description</label>
-          <textarea
-            id="svc-desc"
-            v-model="description"
-            class="input"
-            placeholder="Describe what's included..."
-          />
+          <textarea id="svc-desc" v-model="description" class="input" placeholder="Describe what's included..." />
         </div>
 
         <div class="field">
           <label for="svc-price">Price (₱)</label>
-          <input
-            id="svc-price"
-            v-model.number="price"
-            class="input"
-            type="number"
-            placeholder="0"
-          />
+          <input id="svc-price" v-model.number="price" class="input" type="number" placeholder="0" />
         </div>
 
         <div class="field">
           <label for="svc-duration">Duration (minutes)</label>
-          <input
-            id="svc-duration"
-            v-model.number="duration_minutes"
-            class="input"
-            type="number"
-            placeholder="60"
-          />
+          <input id="svc-duration" v-model.number="duration_minutes" class="input" type="number" placeholder="60" />
         </div>
 
         <div class="field">
           <label for="svc-category">Category</label>
-          <select
-            id="svc-category"
-            v-model.number="category_id"
-            class="input"
-            :disabled="categoriesLoading || categories.length === 0"
-          >
+          <select id="svc-category" v-model.number="category_id" class="input"
+            :disabled="categoriesLoading || categories.length === 0">
             <option v-if="categoriesLoading" disabled value="">Loading categories…</option>
             <option v-else-if="categories.length === 0" disabled value="">No categories available</option>
             <option v-for="c in categories" :key="c.id" :value="c.id">
@@ -155,45 +129,34 @@ const createService = async () => {
           <label>Service Images</label>
           <div class="images-wrap">
             <div v-if="imagePreviews.length" class="previews">
-              <div
-                v-for="(src, i) in imagePreviews"
-                :key="i"
-                class="preview-item"
-              >
+              <div v-for="(src, i) in imagePreviews" :key="i" class="preview-item">
                 <img :src="src" alt="preview" />
                 <button class="remove-btn" type="button" @click="removeImage(i)">
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
                   </svg>
                 </button>
               </div>
             </div>
             <label class="image-btn" for="svc-images-input">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
               </svg>
               {{ imageFiles.length ? `${imageFiles.length} file(s) selected` : "Upload Images" }}
             </label>
-            <input
-              id="svc-images-input"
-              type="file"
-              accept="image/*"
-              multiple
-              class="hidden-input"
-              @change="onImagesChange"
-            />
+            <input id="svc-images-input" type="file" accept="image/*" multiple class="hidden-input"
+              @change="onImagesChange" />
           </div>
         </div>
 
-        <button
-          class="submit-btn"
-          type="button"
-          :disabled="category_id == null || categories.length === 0"
-          @click="createService"
-        >
+        <button class="submit-btn" type="button" :disabled="category_id == null || categories.length === 0"
+          @click="createService">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
           Create Service
         </button>

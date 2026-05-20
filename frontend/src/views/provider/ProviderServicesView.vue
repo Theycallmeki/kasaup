@@ -15,7 +15,8 @@ const providerId = ref<number | null>(null)
 const editingId = ref<number | null>(null)
 const imageFiles = ref<File[]>([])
 const imagePreviews = ref<string[]>([])
-const deleteConfirmId = ref<number | null>(null)
+const deleteConfirmId = ref<number | null>(null)
+
 const galleryImages = ref<string[]>([])
 const galleryIndex = ref(0)
 const viewingGallery = computed(() => galleryImages.value.length > 0)
@@ -170,7 +171,7 @@ function getService(id: number) {
 <template>
   <div class="page" ref="pageScroll">
 
-<div class="page-header">
+    <div class="page-header">
       <div class="header-left">
         <h1 class="title">My Services</h1>
         <span class="service-count" v-if="serviceStore.services.length">
@@ -179,58 +180,49 @@ function getService(id: number) {
       </div>
       <router-link :to="{ name: 'createService' }" class="create-btn">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
         </svg>
         New Service
       </router-link>
     </div>
 
-<div v-if="serviceStore.loading" class="state-msg">
+    <div v-if="serviceStore.loading" class="state-msg">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
-        <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+        <path d="M21 12a9 9 0 1 1-6.219-8.56" />
       </svg>
       Loading services...
     </div>
 
-<div v-else-if="serviceStore.services.length === 0" class="empty-state">
+    <div v-else-if="serviceStore.services.length === 0" class="empty-state">
       <div class="empty-icon">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+          <path
+            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
         </svg>
       </div>
       <p class="empty-title">No services yet</p>
       <p class="empty-sub">Add your first service to start accepting bookings.</p>
       <router-link :to="{ name: 'createService' }" class="create-btn">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
         </svg>
         Create Service
       </router-link>
     </div>
 
-<div v-else class="cards">
-      <div
-        v-for="service in serviceStore.services"
-        :key="service.id"
-        class="card"
-        :class="{ 'is-editing': editingId === service.id }"
-      >
+    <div v-else class="cards">
+      <div v-for="service in serviceStore.services" :key="service.id" class="card"
+        :class="{ 'is-editing': editingId === service.id }">
 
         <template v-if="editingId !== service.id">
 
           <div class="card-banner">
             <template v-if="service.images?.length">
-              <img
-                :src="imgUrl(service.images[0].image_url)"
-                class="banner-img"
-                style="cursor: zoom-in;"
-                @click="openGallery(service.images, 0)"
-              />
-              <div
-                v-if="service.images.length > 1"
-                class="banner-peek"
-                @click="openGallery(service.images, 1)"
-              >
+              <img :src="imgUrl(service.images[0].image_url)" class="banner-img" style="cursor: zoom-in;"
+                @click="openGallery(service.images, 0)" />
+              <div v-if="service.images.length > 1" class="banner-peek" @click="openGallery(service.images, 1)">
                 <img :src="imgUrl(service.images[1].image_url)" class="peek-img" />
                 <div v-if="service.images.length > 2" class="peek-more">
                   +{{ service.images.length - 2 }}
@@ -239,8 +231,9 @@ function getService(id: number) {
             </template>
             <div v-else class="banner-placeholder">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
-                <polyline points="21 15 16 10 5 21"/>
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
               </svg>
             </div>
           </div>
@@ -252,7 +245,8 @@ function getService(id: number) {
               <span class="pill pill-price">₱{{ service.price.toLocaleString() }}</span>
               <span class="pill pill-dur">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
                 </svg>
                 {{ service.duration_minutes }} min
               </span>
@@ -262,8 +256,8 @@ function getService(id: number) {
           <div class="card-footer">
             <button class="btn btn-edit" @click="startEdit(service)">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/>
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z" />
               </svg>
               Edit
             </button>
@@ -275,9 +269,11 @@ function getService(id: number) {
             </template>
             <button v-else class="btn btn-del" @click="deleteConfirmId = service.id">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="3 6 5 6 21 6"/>
-                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                <path d="M10 11v6" />
+                <path d="M14 11v6" />
+                <path d="M9 6V4h6v2" />
               </svg>
               Delete
             </button>
@@ -285,12 +281,13 @@ function getService(id: number) {
 
         </template>
 
-<template v-else>
+        <template v-else>
           <div class="edit-header">
             <span class="edit-label">Editing service</span>
             <button class="icon-btn" @click="cancelEdit">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
           </div>
@@ -303,7 +300,8 @@ function getService(id: number) {
 
             <div class="field">
               <label>Description</label>
-              <textarea v-model="form.description" class="inp inp-textarea" placeholder="Describe what's included..." rows="2" />
+              <textarea v-model="form.description" class="inp inp-textarea" placeholder="Describe what's included..."
+                rows="2" />
             </div>
 
             <div class="field-row">
@@ -317,7 +315,8 @@ function getService(id: number) {
               <div class="field">
                 <label>Duration</label>
                 <div class="inp-suffix-wrap">
-                  <input v-model.number="form.duration_minutes" class="inp inp-suffixed" type="number" placeholder="60" />
+                  <input v-model.number="form.duration_minutes" class="inp inp-suffixed" type="number"
+                    placeholder="60" />
                   <span class="inp-suffix">min</span>
                 </div>
               </div>
@@ -336,7 +335,8 @@ function getService(id: number) {
                 </div>
                 <label class="ph-add">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
                   </svg>
                   <input type="file" accept="image/*" multiple class="file-input" @change="onImageChange" />
                 </label>
@@ -347,7 +347,7 @@ function getService(id: number) {
               <button class="btn btn-cancel" @click="cancelEdit">Cancel</button>
               <button class="btn btn-save" @click="saveEdit">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="20 6 9 17 4 12"/>
+                  <polyline points="20 6 9 17 4 12" />
                 </svg>
                 Save changes
               </button>
@@ -364,28 +364,24 @@ function getService(id: number) {
       <div v-if="viewingGallery" class="img-viewer-ov" @click.self="closeGallery">
         <button class="close-viewer" @click="closeGallery">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         </button>
         <button v-if="galleryImages.length > 1" class="gallery-nav gallery-prev" @click="galleryPrev">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 18 9 12 15 6"/>
+            <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
         <img :src="galleryImages[galleryIndex]" class="gallery-img" />
         <button v-if="galleryImages.length > 1" class="gallery-nav gallery-next" @click="galleryNext">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="9 18 15 12 9 6"/>
+            <polyline points="9 18 15 12 9 6" />
           </svg>
         </button>
         <div v-if="galleryImages.length > 1" class="gallery-dots">
-          <button
-            v-for="(_, i) in galleryImages"
-            :key="i"
-            class="gallery-dot"
-            :class="{ active: i === galleryIndex }"
-            @click="galleryIndex = i"
-          />
+          <button v-for="(_, i) in galleryImages" :key="i" class="gallery-dot" :class="{ active: i === galleryIndex }"
+            @click="galleryIndex = i" />
         </div>
       </div>
     </Teleport>

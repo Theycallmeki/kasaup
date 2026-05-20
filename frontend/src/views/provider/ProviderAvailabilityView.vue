@@ -154,25 +154,24 @@ function formatAmPm(timeStr: string): string {
 
     <div class="layout-grid">
 
-<div class="card schedule-card">
+      <div class="card schedule-card">
         <h2 class="section-title">Weekly Schedule</h2>
-        
+
         <form class="schedule-form" @submit.prevent="submit">
           <div class="field-group">
             <label class="field-label">Day of Week</label>
             <div class="custom-select-wrapper" tabindex="0" @blur="showDropdown = false">
               <div class="field custom-select" @click="showDropdown = !showDropdown">
                 <span>{{ days[form.day_of_week] }}</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" :class="{ rotated: showDropdown }">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  :class="{ rotated: showDropdown }">
                   <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
               </div>
               <Transition name="dropdown">
                 <div v-show="showDropdown" class="custom-select-options">
-                  <div v-for="(day,i) in days" :key="i" 
-                       @click="form.day_of_week = i; showDropdown = false" 
-                       class="custom-select-option" 
-                       :class="{ active: form.day_of_week === i }">
+                  <div v-for="(day, i) in days" :key="i" @click="form.day_of_week = i; showDropdown = false"
+                    class="custom-select-option" :class="{ active: form.day_of_week === i }">
                     {{ day }}
                   </div>
                 </div>
@@ -208,7 +207,7 @@ function formatAmPm(timeStr: string): string {
             </svg>
             No slots set up yet.
           </div>
-          
+
           <div v-for="slot in availability" :key="slot.id" class="slot-item">
             <div class="slot-info">
               <div class="slot-day">{{ days[slot.day_of_week] }}</div>
@@ -232,36 +231,32 @@ function formatAmPm(timeStr: string): string {
         </div>
       </div>
 
-<div class="calendar-panel">
+      <div class="calendar-panel">
         <div class="panel-header">
           <div class="ph-left">
             <h2 class="section-title">Yearly Overview</h2>
             <div class="year-badge">{{ year }}</div>
           </div>
-          <button class="today-btn" @click="selectedDate = formatDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())">
+          <button class="today-btn"
+            @click="selectedDate = formatDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())">
             Go to Today
           </button>
         </div>
-        
+
         <div class="months-grid" ref="calendarScroll">
           <div v-for="month in months" :key="month" class="month-card">
             <div class="month-name">{{ new Date(year, month).toLocaleString("default", { month: "long" }) }}</div>
             <div class="days-grid">
-              <div v-for="d in dayShort" :key="'label-'+d" class="day-label cell-shared">{{ d }}</div>
+              <div v-for="d in dayShort" :key="'label-' + d" class="day-label cell-shared">{{ d }}</div>
 
-<div v-for="empty in getFirstDayOfMonth(month)" :key="'empty-'+empty" class="day-cell empty cell-shared"></div>
+              <div v-for="empty in getFirstDayOfMonth(month)" :key="'empty-' + empty" class="day-cell empty cell-shared">
+              </div>
 
-<div
-                v-for="day in getDaysInMonth(month)"
-                :key="day"
-                class="day-cell cell-shared"
-                :class="{
-                  'has-slot': hasAvailability(year, month, day),
-                  'selected': selectedDate === formatDate(year, month, day),
-                  'is-today': formatDate(year, month, day) === formatDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
-                }"
-                @click="selectedDate = formatDate(year, month, day)"
-              >
+              <div v-for="day in getDaysInMonth(month)" :key="day" class="day-cell cell-shared" :class="{
+                'has-slot': hasAvailability(year, month, day),
+                'selected': selectedDate === formatDate(year, month, day),
+                'is-today': formatDate(year, month, day) === formatDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
+              }" @click="selectedDate = formatDate(year, month, day)">
                 {{ day }}
               </div>
             </div>
@@ -270,17 +265,20 @@ function formatAmPm(timeStr: string): string {
 
         <div v-if="selectedDate" class="selected-date-panel">
           <div class="selected-date-header">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #a78bfa;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              style="color: #a78bfa;">
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
               <line x1="16" y1="2" x2="16" y2="6"></line>
               <line x1="8" y1="2" x2="8" y2="6"></line>
               <line x1="3" y1="10" x2="21" y2="10"></line>
             </svg>
             <h3 class="date-title">
-              {{ new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) }}
+              {{ new Date(selectedDate).toLocaleDateString('en-US', {
+                weekday: 'long', month: 'long', day: 'numeric',
+                year: 'numeric' }) }}
             </h3>
           </div>
-          
+
           <div v-if="!slotsForSelectedDate.length" class="empty-state mini">
             No availability for this date based on your weekly schedule.
           </div>

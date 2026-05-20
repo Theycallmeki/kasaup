@@ -146,7 +146,7 @@ const save = async () => {
 
     <div class="form-card">
 
-<div class="avatar-section">
+      <div class="avatar-section">
         <div class="avatar-wrapper" @click="triggerFileInput">
           <img v-if="displayImage" :src="displayImage" class="avatar-img" alt="Profile" />
           <div v-else class="avatar-placeholder">
@@ -154,12 +154,14 @@ const save = async () => {
           </div>
 
           <div class="avatar-overlay" :class="{ uploading: imageLoading }">
-            <svg v-if="!imageLoading" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg v-if="!imageLoading" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
               <polyline points="17 8 12 3 7 8" />
               <line x1="12" y1="3" x2="12" y2="15" />
             </svg>
-            <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
+            <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              class="spin">
               <path d="M21 12a9 9 0 1 1-6.219-8.56" />
             </svg>
           </div>
@@ -173,49 +175,28 @@ const save = async () => {
           <span class="avatar-hint">JPG or PNG, max 5MB</span>
         </div>
 
-        <input
-          ref="fileInput"
-          type="file"
-          accept="image/jpeg,image/png"
-          style="display: none"
-          @change="onFileChange"
-        />
+        <input ref="fileInput" type="file" accept="image/jpeg,image/png" style="display: none" @change="onFileChange" />
       </div>
 
       <div class="card-divider" />
 
       <div class="field-group">
         <label class="field-label">Shop Name</label>
-        <input
-          v-model="shop_name"
-          class="field"
-          :class="{ 'field-invalid': fieldErrors.shop_name }"
-          placeholder="e.g. Maria's Salon"
-          @blur="fieldErrors.shop_name = validateShopName(shop_name) || ''"
-        />
+        <input v-model="shop_name" class="field" :class="{ 'field-invalid': fieldErrors.shop_name }"
+          placeholder="e.g. Maria's Salon" @blur="fieldErrors.shop_name = validateShopName(shop_name) || ''" />
         <span v-if="fieldErrors.shop_name" class="field-err">{{ fieldErrors.shop_name }}</span>
       </div>
 
       <div class="field-row">
         <div class="field-group">
           <label class="field-label">Phone</label>
-          <input
-            v-model="phone"
-            class="field"
-            :class="{ 'field-invalid': fieldErrors.phone }"
-            placeholder="+63 912 345 6789"
-            @blur="onPhoneBlur"
-          />
+          <input v-model="phone" class="field" :class="{ 'field-invalid': fieldErrors.phone }"
+            placeholder="+63 912 345 6789" @blur="onPhoneBlur" />
           <span v-if="fieldErrors.phone" class="field-err">{{ fieldErrors.phone }}</span>
         </div>
         <div class="field-group">
           <label class="field-label">Email</label>
-          <input
-            v-model="email"
-            class="field field-readonly"
-            readonly
-            placeholder="shop@email.com"
-          />
+          <input v-model="email" class="field field-readonly" readonly placeholder="shop@email.com" />
         </div>
       </div>
 
@@ -232,8 +213,10 @@ const save = async () => {
       <div class="card-divider" />
 
       <label class="checkbox-row">
-        <div class="checkbox-box" :class="{ checked: offers_home_service }" @click="offers_home_service = !offers_home_service">
-          <svg v-if="offers_home_service" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5">
+        <div class="checkbox-box" :class="{ checked: offers_home_service }"
+          @click="offers_home_service = !offers_home_service">
+          <svg v-if="offers_home_service" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor"
+            stroke-width="2.5">
             <polyline points="2 6 5 9 10 3" />
           </svg>
         </div>
@@ -241,10 +224,12 @@ const save = async () => {
       </label>
 
       <button class="save-btn" @click="save" :disabled="loading">
-        <svg v-if="loading" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
+        <svg v-if="loading" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" class="spin">
           <path d="M21 12a9 9 0 1 1-6.219-8.56" />
         </svg>
-        <svg v-else-if="saved" width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5">
+        <svg v-else-if="saved" width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="currentColor"
+          stroke-width="2.5">
           <polyline points="2 6 5 9 10 3" />
         </svg>
         {{ loading ? "Saving..." : saved ? "Saved!" : "Save Changes" }}

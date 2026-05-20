@@ -3,12 +3,12 @@ import { useRouter } from "vue-router"
 
 const router = useRouter()
 
-function goServices()     { router.push("/provider/services") }
+function goServices() { router.push("/provider/services") }
 function goAppointments() { router.push("/provider/appointments") }
 function goAvailability() { router.push("/provider/availability") }
-function goMessages()     { router.push("/messages") }
-function goTutorial()     { router.push("/provider/tutorial") }
-function goProfile()      { router.push("/provider/profile") }
+function goMessages() { router.push("/messages") }
+function goTutorial() { router.push("/provider/tutorial") }
+function goProfile() { router.push("/provider/profile") }
 </script>
 
 <template>
@@ -24,7 +24,8 @@ function goProfile()      { router.push("/provider/profile") }
       <div class="card">
         <div class="card-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            <path
+              d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
           </svg>
         </div>
         <h3 class="card-title">My Services</h3>
@@ -32,7 +33,7 @@ function goProfile()      { router.push("/provider/profile") }
         <button class="card-btn" @click="goServices">
           Manage Services
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="9 18 15 12 9 6"/>
+            <polyline points="9 18 15 12 9 6" />
           </svg>
         </button>
       </div>
@@ -40,10 +41,10 @@ function goProfile()      { router.push("/provider/profile") }
       <div class="card">
         <div class="card-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2"/>
-            <line x1="16" y1="2" x2="16" y2="6"/>
-            <line x1="8" y1="2" x2="8" y2="6"/>
-            <line x1="3" y1="10" x2="21" y2="10"/>
+            <rect x="3" y="4" width="18" height="18" rx="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
           </svg>
         </div>
         <h3 class="card-title">Appointments</h3>
@@ -51,7 +52,7 @@ function goProfile()      { router.push("/provider/profile") }
         <button class="card-btn" @click="goAppointments">
           View Appointments
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="9 18 15 12 9 6"/>
+            <polyline points="9 18 15 12 9 6" />
           </svg>
         </button>
       </div>
@@ -59,8 +60,8 @@ function goProfile()      { router.push("/provider/profile") }
       <div class="card">
         <div class="card-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <polyline points="12 6 12 12 16 14"/>
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
           </svg>
         </div>
         <h3 class="card-title">Availability</h3>
@@ -68,7 +69,7 @@ function goProfile()      { router.push("/provider/profile") }
         <button class="card-btn" @click="goAvailability">
           Manage Availability
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="9 18 15 12 9 6"/>
+            <polyline points="9 18 15 12 9 6" />
           </svg>
         </button>
       </div>
@@ -76,7 +77,7 @@ function goProfile()      { router.push("/provider/profile") }
       <div class="card">
         <div class="card-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
         </div>
         <h3 class="card-title">Messages</h3>
@@ -84,7 +85,7 @@ function goProfile()      { router.push("/provider/profile") }
         <button class="card-btn" @click="goMessages">
           Open Chats
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="9 18 15 12 9 6"/>
+            <polyline points="9 18 15 12 9 6" />
           </svg>
         </button>
       </div>
@@ -92,7 +93,8 @@ function goProfile()      { router.push("/provider/profile") }
       <div class="card">
         <div class="card-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+            <path
+              d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
           </svg>
         </div>
         <h3 class="card-title">My Profile</h3>
@@ -100,7 +102,7 @@ function goProfile()      { router.push("/provider/profile") }
         <button class="card-btn" @click="goProfile">
           View Profile
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="9 18 15 12 9 6"/>
+            <polyline points="9 18 15 12 9 6" />
           </svg>
         </button>
       </div>
@@ -108,7 +110,7 @@ function goProfile()      { router.push("/provider/profile") }
       <div class="card">
         <div class="card-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
           </svg>
         </div>
         <h3 class="card-title">Tutorial Guide</h3>
@@ -116,7 +118,7 @@ function goProfile()      { router.push("/provider/profile") }
         <button class="card-btn" @click="goTutorial">
           View Guide
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="9 18 15 12 9 6"/>
+            <polyline points="9 18 15 12 9 6" />
           </svg>
         </button>
       </div>
@@ -172,6 +174,7 @@ function goProfile()      { router.push("/provider/profile") }
   gap: 10px;
   transition: border-color 0.2s;
 }
+
 .card:hover {
   border-color: rgba(167, 139, 250, 0.25);
 }
@@ -220,6 +223,7 @@ function goProfile()      { router.push("/provider/profile") }
   transition: background 0.15s, color 0.15s;
   margin-top: 4px;
 }
+
 .card-btn:hover {
   background: rgba(99, 60, 220, 0.2);
   border-color: rgba(130, 90, 255, 0.3);
@@ -231,7 +235,9 @@ function goProfile()      { router.push("/provider/profile") }
     padding: 24px 16px;
     padding-bottom: 180px;
   }
-  .cards { grid-template-columns: 1fr; }
-}
 
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
