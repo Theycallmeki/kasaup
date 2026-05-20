@@ -81,9 +81,9 @@ const saveProfile = async () => {
   } catch (err: any) {
     const errorText = err.response?.data?.detail || "Failed to update profile."
     notifyError("Error", errorText)
-    message.value = { 
-      text: errorText, 
-      type: "error" 
+    message.value = {
+      text: errorText,
+      type: "error"
     }
   } finally {
     loading.value = false
@@ -129,7 +129,7 @@ const displayImageUrl = computed(() => {
   const path = profileImageUrl.value;
   if (!path || path === 'null' || path.trim() === '') return null;
   if (path.startsWith("http") || path.startsWith("data:")) return path;
-  
+
   const base = api.defaults.baseURL?.replace(/\/$/, '') || '';
   const safePath = path.startsWith('/') ? path : `/${path}`;
   return `${base}${safePath}`;
@@ -144,9 +144,9 @@ const displayImageUrl = computed(() => {
     </div>
 
     <div class="profile-grid">
-      
+
       <div class="profile-card info-section">
-        
+
         <div class="avatar-section">
           <div class="avatar-wrapper" @click="triggerUpload">
             <img v-if="displayImageUrl" :src="displayImageUrl" alt="Profile" class="avatar-img" />
@@ -157,25 +157,20 @@ const displayImageUrl = computed(() => {
               </svg>
             </div>
             <div class="avatar-overlay" :class="{ uploading: uploadingImage }">
-              <svg v-if="!uploadingImage" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                <circle cx="12" cy="13" r="4"/>
+              <svg v-if="!uploadingImage" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                <circle cx="12" cy="13" r="4" />
               </svg>
               <span v-else class="spin" />
             </div>
           </div>
-          <input 
-            ref="fileInput" 
-            type="file" 
-            accept="image/*" 
-            class="hidden-input" 
-            @change="handleImageUpload"
-          />
+          <input ref="fileInput" type="file" accept="image/*" class="hidden-input" @change="handleImageUpload" />
           <p class="avatar-hint">Click to change photo</p>
         </div>
 
         <h2 class="section-title">Personal Settings</h2>
-        
+
         <form @submit.prevent="saveProfile" class="form-stack">
           <div class="input-group">
             <label>Full Name</label>
@@ -184,25 +179,16 @@ const displayImageUrl = computed(() => {
 
           <div class="input-group">
             <label>Email Address</label>
-            <input
-              v-model="form.email"
-              type="email"
-              placeholder="email@example.com"
+            <input v-model="form.email" type="email" placeholder="email@example.com"
               :class="{ 'input-invalid': fieldErrors.email }"
-              @blur="fieldErrors.email = validateEmail(form.email) || ''"
-            />
+              @blur="fieldErrors.email = validateEmail(form.email) || ''" />
             <span v-if="fieldErrors.email" class="field-err">{{ fieldErrors.email }}</span>
           </div>
 
           <div class="input-group">
             <label>Phone Number</label>
-            <input
-              v-model="form.phone"
-              type="tel"
-              placeholder="+63 9XX XXX XXXX (optional)"
-              :class="{ 'input-invalid': fieldErrors.phone }"
-              @blur="onPhoneBlur"
-            />
+            <input v-model="form.phone" type="tel" placeholder="+63 9XX XXX XXXX (optional)"
+              :class="{ 'input-invalid': fieldErrors.phone }" @blur="onPhoneBlur" />
             <span v-if="fieldErrors.phone" class="field-err">{{ fieldErrors.phone }}</span>
           </div>
 
@@ -222,12 +208,12 @@ const displayImageUrl = computed(() => {
         </form>
       </div>
 
-<div class="profile-card location-section">
+      <div class="profile-card location-section">
         <div class="loc-head">
-           <h2 class="section-title">Service Location</h2>
-           <p class="loc-desc">This is used to calculate distance to nearby services.</p>
+          <h2 class="section-title">Service Location</h2>
+          <p class="loc-desc">This is used to calculate distance to nearby services.</p>
         </div>
-        
+
         <div class="map-container">
           <LocationPickerMap @location-selected="onLocationSelected" />
         </div>
@@ -242,8 +228,8 @@ const displayImageUrl = computed(() => {
           <span class="coord-text">{{ form.latitude.toFixed(5) }}, {{ form.longitude?.toFixed(5) }}</span>
         </div>
         <div class="loc-status warning" v-else>
-           <div class="status-badge">!</div>
-           Location not set. You won't be able to filter by distance.
+          <div class="status-badge">!</div>
+          Location not set. You won't be able to filter by distance.
         </div>
       </div>
     </div>

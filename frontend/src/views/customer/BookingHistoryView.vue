@@ -183,11 +183,11 @@ watch(totalPages, (tp) => {
             <div v-if="appointment.user_rating" class="rated-stars">
               <span class="rated-label">Your Rating:</span>
               <div class="stars-display">
-                <svg v-for="i in 5" :key="i" width="14" height="14" viewBox="0 0 24 24" 
-                     :fill="i <= appointment.user_rating ? '#fbbf24' : 'none'" 
-                     :stroke="i <= appointment.user_rating ? '#fbbf24' : 'currentColor'" 
-                     stroke-width="2">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                <svg v-for="i in 5" :key="i" width="14" height="14" viewBox="0 0 24 24"
+                  :fill="i <= appointment.user_rating ? '#fbbf24' : 'none'"
+                  :stroke="i <= appointment.user_rating ? '#fbbf24' : 'currentColor'" stroke-width="2">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                 </svg>
               </div>
             </div>
@@ -201,12 +201,8 @@ watch(totalPages, (tp) => {
         </div>
       </div>
 
-      <RatingModal 
-        :is-open="ratingModalOpen" 
-        :appointment-id="selectedAppointmentId || 0"
-        @close="ratingModalOpen = false"
-        @success="onRatingSuccess"
-      />
+      <RatingModal :is-open="ratingModalOpen" :appointment-id="selectedAppointmentId || 0"
+        @close="ratingModalOpen = false" @success="onRatingSuccess" />
 
       <nav v-if="totalPages > 1" class="pagination">
         <button class="page-nav-btn" :disabled="currentPage <= 1" @click="goToPage(currentPage - 1)">

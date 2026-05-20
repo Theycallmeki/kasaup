@@ -69,21 +69,19 @@ const maxDistanceModel = computed({
         <div class="custom-dropdown">
           <div class="dropdown-header" @click="catDropdownOpen = !catDropdownOpen">
             <span>{{ activeCatName }}</span>
-            <svg class="select-icon" :class="{ open: catDropdownOpen }" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="select-icon" :class="{ open: catDropdownOpen }" xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </div>
           <div class="dropdown-body" v-show="catDropdownOpen">
-            <div class="dropdown-item" :class="{ active: activeCatModel === 'all' }" @click="activeCatModel = 'all'; catDropdownOpen = false">
+            <div class="dropdown-item" :class="{ active: activeCatModel === 'all' }"
+              @click="activeCatModel = 'all'; catDropdownOpen = false">
               All Categories
             </div>
-            <div
-              v-for="cat in categories"
-              :key="cat.id"
-              class="dropdown-item"
-              :class="{ active: activeCatModel === cat.id }"
-              @click="activeCatModel = cat.id; catDropdownOpen = false"
-            >
+            <div v-for="cat in categories" :key="cat.id" class="dropdown-item"
+              :class="{ active: activeCatModel === cat.id }" @click="activeCatModel = cat.id; catDropdownOpen = false">
               {{ cat.name }}
             </div>
           </div>
@@ -126,13 +124,8 @@ const maxDistanceModel = computed({
           <button class="fp" :class="{ active: minRatingModel === 0 }" @click="minRatingModel = 0">
             Any Rating
           </button>
-          <button
-            v-for="r in [5, 4, 3, 2]"
-            :key="r"
-            class="fp rating-pill"
-            :class="{ active: minRatingModel === r }"
-            @click="minRatingModel = r"
-          >
+          <button v-for="r in [5, 4, 3, 2]" :key="r" class="fp rating-pill" :class="{ active: minRatingModel === r }"
+            @click="minRatingModel = r">
             {{ r }} <i class="pi pi-star-fill"></i>
           </button>
         </div>
@@ -141,13 +134,8 @@ const maxDistanceModel = computed({
       <div class="filter-group">
         <div class="fg-head">
           <h4>Distance Range</h4>
-          <button
-            class="toggle-switch"
-            :class="{ on: tempUseLocation, loading: locLoading }"
-            type="button"
-            :disabled="locLoading"
-            @click="emit('toggleLocation')"
-          >
+          <button class="toggle-switch" :class="{ on: tempUseLocation, loading: locLoading }" type="button"
+            :disabled="locLoading" @click="emit('toggleLocation')">
             <span class="switch-ball"></span>
           </button>
         </div>

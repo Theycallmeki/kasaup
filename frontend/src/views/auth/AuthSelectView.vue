@@ -21,14 +21,16 @@ const goProvider = () => router.push("/register?role=provider")
 
       <button class="btn btn-outline" @click="goCustomer">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
         </svg>
         Create Customer Account
       </button>
- 
+
       <button class="btn btn-outline" @click="goProvider">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+          <path
+            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
         </svg>
         Become a Service Provider
       </button>
@@ -74,13 +76,16 @@ const goProvider = () => router.push("/register?role=provider")
 .auth-page::-webkit-scrollbar {
   width: 6px;
 }
+
 .auth-page::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .auth-page::-webkit-scrollbar-thumb {
   background: rgba(99, 60, 220, 0.2);
   border-radius: 10px;
 }
+
 .auth-page::-webkit-scrollbar-thumb:hover {
   background: rgba(99, 60, 220, 0.4);
 }
@@ -145,6 +150,7 @@ const goProvider = () => router.push("/register?role=provider")
   letter-spacing: -0.02em;
   margin-bottom: 8px;
 }
+
 .accent {
   color: #a78bfa;
 }
@@ -156,10 +162,18 @@ const goProvider = () => router.push("/register?role=provider")
 }
 
 @media (max-width: 480px) {
-  .title { font-size: 2rem; }
-  .subtitle { margin-bottom: 24px; }
-  
-  .btn { font-size: 0.9rem; padding: 12px 16px; }
+  .title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    margin-bottom: 24px;
+  }
+
+  .btn {
+    font-size: 0.9rem;
+    padding: 12px 16px;
+  }
 }
 
 .btn {
@@ -178,14 +192,17 @@ const goProvider = () => router.push("/register?role=provider")
   transition: transform 0.18s ease, opacity 0.18s ease;
   margin-bottom: 10px;
 }
+
 .btn:hover {
   transform: translateY(-2px);
   opacity: 0.9;
 }
+
 .btn-primary {
   background: linear-gradient(135deg, #7c3aed, #a855f7);
   color: #fff;
 }
+
 .btn-outline {
   background: rgba(255, 255, 255, 0.06);
   border: 0.5px solid rgba(255, 255, 255, 0.15);
@@ -199,6 +216,7 @@ const goProvider = () => router.push("/register?role=provider")
   gap: 12px;
   margin-bottom: 24px;
 }
+
 .btn-google:hover {
   background: rgba(255, 255, 255, 0.08);
 }
@@ -211,6 +229,7 @@ const goProvider = () => router.push("/register?role=provider")
   font-size: 0.9rem;
   margin-top: -4px;
 }
+
 .btn-google-alt:hover {
   background: rgba(255, 255, 255, 0.05);
   color: #fff;
@@ -221,17 +240,26 @@ const goProvider = () => router.push("/register?role=provider")
   font-size: 13px;
   color: rgba(255, 255, 255, 0.3);
 }
+
 .footer a {
   color: rgba(167, 139, 250, 0.8);
   text-decoration: none;
   margin-left: 4px;
 }
+
 .footer a:hover {
   color: #a78bfa;
 }
 
 @keyframes rise {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

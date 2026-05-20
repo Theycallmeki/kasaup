@@ -192,9 +192,9 @@ const goBackToList = () => {
 
 const sendMessage = async () => {
   if (!newMessage.value.trim() && !selectedImageFile.value) return;
-  
+
   let imageUrl: string | null = null;
-  
+
   if (selectedImageFile.value) {
     uploadingImage.value = true;
     try {
@@ -282,16 +282,11 @@ const activeConversation = computed(() => {
     </div>
 
     <div class="chat-container" :class="{ 'sidebar-hidden': sidebarCollapsed }">
-     
+
       <div class="sidebar">
         <div class="conversation-list">
-          <div
-            v-for="conv in messageStore.conversations"
-            :key="conv.id"
-            class="conversation-item"
-            :class="{ active: conv.id === messageStore.activeConversationId }"
-            @click="selectConversation(conv.id)"
-          >
+          <div v-for="conv in messageStore.conversations" :key="conv.id" class="conversation-item"
+            :class="{ active: conv.id === messageStore.activeConversationId }" @click="selectConversation(conv.id)">
             <div class="avatar profile-img" v-if="authStore.user?.id === conv.user_id && conv.provider_profile_image">
               <img :src="imgUrl(conv.provider_profile_image)" alt="Profile" />
             </div>
@@ -307,9 +302,14 @@ const activeConversation = computed(() => {
                 <span class="time">{{ formatTime(conv.updated_at) }}</span>
               </div>
               <p class="last-msg">
-               
+
                 <span v-if="conv.last_message_type === 'image'" class="last-msg-img-hint">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:3px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    style="display:inline;vertical-align:middle;margin-right:3px">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <path d="M21 15l-5-5L5 21" />
+                  </svg>
                   Photo
                 </span>
                 <span v-else>{{ conv.last_message || 'No messages yet' }}</span>
@@ -331,7 +331,7 @@ const activeConversation = computed(() => {
         </div>
       </div>
 
-<div class="chat-window">
+      <div class="chat-window">
         <template v-if="messageStore.activeConversationId">
           <div class="chat-header">
             <button class="back-btn" @click="goBackToList" aria-label="Back to conversations">
@@ -339,8 +339,11 @@ const activeConversation = computed(() => {
                 <path d="M19 12H5M12 5l-7 7 7 7" />
               </svg>
             </button>
-            <button class="sidebar-toggle-btn" @click="toggleSidebar" :aria-label="sidebarCollapsed ? 'Show conversations' : 'Hide conversations'" :title="sidebarCollapsed ? 'Show conversations' : 'Hide conversations'">
-              <svg v-if="!sidebarCollapsed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <button class="sidebar-toggle-btn" @click="toggleSidebar"
+              :aria-label="sidebarCollapsed ? 'Show conversations' : 'Hide conversations'"
+              :title="sidebarCollapsed ? 'Show conversations' : 'Hide conversations'">
+              <svg v-if="!sidebarCollapsed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
                 <rect x="3" y="3" width="18" height="18" rx="2" />
                 <path d="M9 3v18" />
               </svg>
@@ -359,10 +362,12 @@ const activeConversation = computed(() => {
                 </div>
               </template>
               <template v-else-if="activeConversation">
-                <div class="avatar sm profile-img" v-if="authStore.user?.id === activeConversation.user_id && activeConversation.provider_profile_image">
+                <div class="avatar sm profile-img"
+                  v-if="authStore.user?.id === activeConversation.user_id && activeConversation.provider_profile_image">
                   <img :src="imgUrl(activeConversation.provider_profile_image)" alt="Profile" />
                 </div>
-                <div class="avatar sm profile-img" v-else-if="authStore.user?.id !== activeConversation.user_id && activeConversation.user_profile_image">
+                <div class="avatar sm profile-img"
+                  v-else-if="authStore.user?.id !== activeConversation.user_id && activeConversation.user_profile_image">
                   <img :src="imgUrl(activeConversation.user_profile_image)" alt="Profile" />
                 </div>
                 <div class="avatar sm" v-else>
@@ -370,11 +375,8 @@ const activeConversation = computed(() => {
                 </div>
                 <div class="header-details">
                   <h3>{{ getDisplayName(activeConversation) }}</h3>
-                  <router-link
-                    v-if="authStore.user?.id === activeConversation.user_id"
-                    :to="`/providers/${activeConversation.provider_id}`"
-                    class="view-profile-btn"
-                  >
+                  <router-link v-if="authStore.user?.id === activeConversation.user_id"
+                    :to="`/providers/${activeConversation.provider_id}`" class="view-profile-btn">
                     View Profile
                   </router-link>
                 </div>
@@ -383,57 +385,33 @@ const activeConversation = computed(() => {
           </div>
 
           <div class="messages-area" ref="messagesDropdown">
-            <div
-              v-for="msg in messageStore.activeMessages"
-              :key="msg.id"
-              class="message-wrapper"
-              :class="{
-                'mine': msg.sender_id === authStore.user?.id,
-                'is-image-only': msg.image_url && !msg.content,
-              }"
-            >
-              <div
-                class="message-bubble"
-                :class="{ 'image-only': msg.image_url && !msg.content }"
-              >
-                
-                <div
-                  v-if="msg.image_url"
-                  class="msg-image-wrap"
-                  :class="{ 'has-text': !!msg.content }"
-                >
-                 
-                  <div
-                    v-if="!imageLoaded[msg.id] && !imageError[msg.id]"
-                    class="img-skeleton"
-                  >
+            <div v-for="msg in messageStore.activeMessages" :key="msg.id" class="message-wrapper" :class="{
+              'mine': msg.sender_id === authStore.user?.id,
+              'is-image-only': msg.image_url && !msg.content,
+            }">
+              <div class="message-bubble" :class="{ 'image-only': msg.image_url && !msg.content }">
+
+                <div v-if="msg.image_url" class="msg-image-wrap" :class="{ 'has-text': !!msg.content }">
+
+                  <div v-if="!imageLoaded[msg.id] && !imageError[msg.id]" class="img-skeleton">
                     <div class="img-shimmer" />
                   </div>
 
-<div v-if="imageError[msg.id]" class="img-error">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                      <path d="M3 3l18 18M10.5 10.67A2 2 0 0 0 8 12.5v.5H6l-3 3V5a2 2 0 0 1 2-2h10.5M21 15l-3-3-1.5 1.5M21 5a2 2 0 0 0-2-2h-7"/>
+                  <div v-if="imageError[msg.id]" class="img-error">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="1.5">
+                      <path
+                        d="M3 3l18 18M10.5 10.67A2 2 0 0 0 8 12.5v.5H6l-3 3V5a2 2 0 0 1 2-2h10.5M21 15l-3-3-1.5 1.5M21 5a2 2 0 0 0-2-2h-7" />
                     </svg>
                     <span>Failed to load</span>
                   </div>
 
-<div
-                    v-show="imageLoaded[msg.id] && !imageError[msg.id]"
-                    class="img-clickable"
-                    @click="openViewer(imgUrl(msg.image_url))"
-                    role="button"
-                    tabindex="0"
-                    @keydown.enter="openViewer(imgUrl(msg.image_url))"
-                    aria-label="View full size image"
-                  >
-                    <img
-                      :src="imgUrl(msg.image_url)"
-                      alt="Attachment"
-                      class="msg-img"
-                      @load="imageLoaded[msg.id] = true"
-                      @error="imageError[msg.id] = true"
-                    />
-                  
+                  <div v-show="imageLoaded[msg.id] && !imageError[msg.id]" class="img-clickable"
+                    @click="openViewer(imgUrl(msg.image_url))" role="button" tabindex="0"
+                    @keydown.enter="openViewer(imgUrl(msg.image_url))" aria-label="View full size image">
+                    <img :src="imgUrl(msg.image_url)" alt="Attachment" class="msg-img"
+                      @load="imageLoaded[msg.id] = true" @error="imageError[msg.id] = true" />
+
                     <div class="img-hover-overlay" aria-hidden="true">
                       <div class="img-expand-btn">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
@@ -441,20 +419,20 @@ const activeConversation = computed(() => {
                         </svg>
                       </div>
                     </div>
-                    
+
                     <span v-if="!msg.content" class="img-time-overlay">{{ formatTime(msg.created_at) }}</span>
                   </div>
                 </div>
 
-<p v-if="msg.content" class="text-content">{{ msg.content }}</p>
+                <p v-if="msg.content" class="text-content">{{ msg.content }}</p>
 
-<span v-if="msg.content || !msg.image_url" class="msg-time">{{ formatTime(msg.created_at) }}</span>
+                <span v-if="msg.content || !msg.image_url" class="msg-time">{{ formatTime(msg.created_at) }}</span>
               </div>
             </div>
           </div>
 
           <div class="chat-footer">
-           
+
             <div v-if="imagePreviewUrl" class="image-preview-bar">
               <div class="preview-item">
                 <img :src="imagePreviewUrl" alt="Preview" />
@@ -467,32 +445,29 @@ const activeConversation = computed(() => {
             </div>
 
             <div class="input-wrapper">
-              <input
-                type="file"
-                accept="image/*"
-                ref="imageInput"
-                @change="handleImageSelected"
-                style="display: none;"
-              />
+              <input type="file" accept="image/*" ref="imageInput" @change="handleImageSelected"
+                style="display: none;" />
               <button class="attach-btn" @click="triggerImageUpload" :disabled="uploadingImage" title="Attach Image">
-                <svg v-if="!uploadingImage" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+                <svg v-if="!uploadingImage" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2">
+                  <path
+                    d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
                 </svg>
-                <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
+                <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" class="spin">
                   <path d="M21 12a9 9 0 1 1-6.219-8.56" />
                 </svg>
               </button>
-              <input
-                v-model="newMessage"
-                @keydown.enter.prevent="sendMessage"
-                placeholder="Type a message..."
-              />
-              <button @click="sendMessage" :disabled="!newMessage.trim() && !selectedImageFile" :class="{ loading: uploadingImage }">
-                <svg v-if="!uploadingImage" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <input v-model="newMessage" @keydown.enter.prevent="sendMessage" placeholder="Type a message..." />
+              <button @click="sendMessage" :disabled="!newMessage.trim() && !selectedImageFile"
+                :class="{ loading: uploadingImage }">
+                <svg v-if="!uploadingImage" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2">
                   <line x1="22" y1="2" x2="11" y2="13" />
                   <polygon points="22 2 15 22 11 13 2 9 22 2" />
                 </svg>
-                <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
+                <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" class="spin">
                   <path d="M21 12a9 9 0 1 1-6.219-8.56" />
                 </svg>
               </button>
@@ -511,7 +486,7 @@ const activeConversation = computed(() => {
       </div>
     </div>
 
-<div v-if="showDeleteConfirm" class="modal-overlay">
+    <div v-if="showDeleteConfirm" class="modal-overlay">
       <div class="modal-card">
         <h3>Delete Conversation</h3>
         <p>Do you want to delete your conversation with <strong>{{ getDisplayName(conversationToDelete) }}</strong>?</p>
@@ -523,13 +498,8 @@ const activeConversation = computed(() => {
       </div>
     </div>
 
-<Teleport to="body">
-      <div
-        v-if="viewerOpen"
-        class="img-viewer-overlay"
-        :class="{ closing: viewerClosing }"
-        @click.self="closeViewer"
-      >
+    <Teleport to="body">
+      <div v-if="viewerOpen" class="img-viewer-overlay" :class="{ closing: viewerClosing }" @click.self="closeViewer">
         <div class="img-viewer-inner" :class="{ closing: viewerClosing }">
           <button class="viewer-close-btn" @click="closeViewer" aria-label="Close image viewer">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">

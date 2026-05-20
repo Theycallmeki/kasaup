@@ -7,7 +7,7 @@ import HomeServiceMapCard from "../../components/HomeServiceMapCard.vue"
 import api from "../../services/api"
 import { useNotification } from "../../hooks/useNotification"
 import { useLoading } from "../../hooks/useLoading"
- 
+
 const router = useRouter()
 const { notifySuccess, notifyError } = useNotification()
 const { startLoading, stopLoading } = useLoading()
@@ -18,15 +18,15 @@ const appointmentStore = useAppointmentStore()
 const id = Number(route.params.id)
 
 const messageProvider = async () => {
-    const provider = providerStore.providerProfile.provider;
-    router.push({ 
-        path: '/messages', 
-        query: { 
-            provider_id: provider.id,
-            receiver_id: provider.owner_id,
-            shop_name: provider.shop_name
-        } 
-    });
+  const provider = providerStore.providerProfile.provider;
+  router.push({
+    path: '/messages',
+    query: {
+      provider_id: provider.id,
+      receiver_id: provider.owner_id,
+      shop_name: provider.shop_name
+    }
+  });
 }
 
 const activeServiceId = ref<number | null>(null)
@@ -35,7 +35,8 @@ const selectedSlot = ref<string | null>(null)
 const serviceLocationType = ref<"shop" | "home">("shop")
 const customerLat = ref<number | null>(null)
 const customerLng = ref<number | null>(null)
-const lightboxImg = ref<string | null>(null)
+const lightboxImg = ref<string | null>(null)
+
 const confirmDialog = ref(false)
 const pendingBooking = ref<{ serviceId: number; slot: string } | null>(null)
 
@@ -438,7 +439,8 @@ const isPrevDisabled = computed(() => {
                       <div v-for="slot in appointmentStore.slots" :key="slot.start_time" class="slot"
                         :class="{ 'slot-active': selectedSlot === slot.start_time }"
                         @click="selectedSlot = slot.start_time">
-                        <span class="slot-time">{{ formatSlot(slot.start_time) }} - {{ formatTimeOnly(slot.end_time) }}</span>
+                        <span class="slot-time">{{ formatSlot(slot.start_time) }} - {{ formatTimeOnly(slot.end_time)
+                          }}</span>
                       </div>
                     </div>
                     <div v-if="selectedSlot" class="slot-confirm-wrapper">
@@ -490,8 +492,7 @@ const isPrevDisabled = computed(() => {
                           'cal-today': isToday(cell.dateStr) && !isSelected(cell.dateStr),
                         }" @click="selectDay(cell.dateStr)">
                           {{ cell.day }}
-                          <span
-                            v-if="!isPast(cell.dateStr) && isAvailable(cell.dateStr) && !isSelected(cell.dateStr)"
+                          <span v-if="!isPast(cell.dateStr) && isAvailable(cell.dateStr) && !isSelected(cell.dateStr)"
                             class="cal-dot" />
                         </div>
                       </template>
@@ -511,8 +512,7 @@ const isPrevDisabled = computed(() => {
                 </div>
               </div>
 
-              <HomeServiceMapCard
-                v-if="activeServiceId === service.id"
+              <HomeServiceMapCard v-if="activeServiceId === service.id"
                 :show="Boolean(selectedDate && serviceLocationType === 'home' && providerStore.providerProfile.provider.offers_home_service)"
                 :customerLat="customerLat" :customerLng="customerLng" @location-selected="setLocation" />
             </div>
@@ -522,21 +522,22 @@ const isPrevDisabled = computed(() => {
       </div>
     </template>
 
-<Teleport to="body">
+    <Teleport to="body">
       <div v-if="confirmDialog" class="custom-dialog-overlay" @click.self="cancelBooking">
         <div class="custom-dialog">
           <div class="custom-dialog-header">
             <div class="custom-dialog-icon">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                <line x1="12" y1="9" x2="12" y2="13"/>
-                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
               </svg>
             </div>
             <h3 class="custom-dialog-title">Confirm Booking</h3>
             <button class="custom-dialog-close" @click="cancelBooking">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
           </div>
@@ -549,14 +550,14 @@ const isPrevDisabled = computed(() => {
       </div>
     </Teleport>
 
-<Teleport to="body">
+    <Teleport to="body">
       <div v-if="lightboxImg" class="lightbox-overlay" @click="lightboxImg = null">
         <img :src="lightboxImg" class="lightbox-img" @click.stop />
         <button class="lightbox-close" @click="lightboxImg = null">✕</button>
       </div>
     </Teleport>
 
-<div class="bottom-spacer" />
+    <div class="bottom-spacer" />
 
   </div>
 </template>

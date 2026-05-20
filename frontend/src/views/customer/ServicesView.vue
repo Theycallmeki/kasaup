@@ -65,7 +65,8 @@ const {
   providerMap,
   startLoading,
   stopLoading,
-})
+})
+
 watch([selected, showFilters], ([s, f]) => {
   if (s || f) {
     document.body.style.overflow = "hidden"
@@ -144,7 +145,8 @@ const firstImage = (svc: any): string | null => {
             </div>
 
             <div class="filter-wrapper">
-              <button class="filter-btn" :class="{active: showFilters}" @click="showFilters ? cancelFilters() : openFilters()">
+              <button class="filter-btn" :class="{ active: showFilters }"
+                @click="showFilters ? cancelFilters() : openFilters()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
                 </svg>
@@ -153,28 +155,14 @@ const firstImage = (svc: any): string | null => {
             </div>
           </div>
 
-          <ServicesFilterPanel
-            v-show="showFilters"
-            :categories="catStore.categories"
-            :temp-active-cat="tempActiveCat"
-            :temp-sort="tempSort"
-            :temp-min-price="tempMinPrice"
-            :temp-max-price="tempMaxPrice"
-            :temp-min-rating="tempMinRating"
-            :temp-max-distance="tempMaxDistance"
-            :temp-use-location="tempUseLocation"
-            :loc-loading="locLoading"
-            @update:temp-active-cat="tempActiveCat = $event"
-            @update:temp-sort="tempSort = $event"
-            @update:temp-min-price="tempMinPrice = $event"
-            @update:temp-max-price="tempMaxPrice = $event"
-            @update:temp-min-rating="tempMinRating = $event"
-            @update:temp-max-distance="tempMaxDistance = $event"
-            @toggle-location="toggleLocation"
-            @clear="clearFilters"
-            @cancel="cancelFilters"
-            @apply="applyFilters"
-          />
+          <ServicesFilterPanel v-show="showFilters" :categories="catStore.categories" :temp-active-cat="tempActiveCat"
+            :temp-sort="tempSort" :temp-min-price="tempMinPrice" :temp-max-price="tempMaxPrice"
+            :temp-min-rating="tempMinRating" :temp-max-distance="tempMaxDistance" :temp-use-location="tempUseLocation"
+            :loc-loading="locLoading" @update:temp-active-cat="tempActiveCat = $event"
+            @update:temp-sort="tempSort = $event" @update:temp-min-price="tempMinPrice = $event"
+            @update:temp-max-price="tempMaxPrice = $event" @update:temp-min-rating="tempMinRating = $event"
+            @update:temp-max-distance="tempMaxDistance = $event" @toggle-location="toggleLocation" @clear="clearFilters"
+            @cancel="cancelFilters" @apply="applyFilters" />
         </div>
 
         <div v-if="svcStore.loading" class="state">
@@ -234,61 +222,53 @@ const firstImage = (svc: any): string | null => {
     </div>
 
     <Teleport to="body">
-  <div class="ov" :class="{ show: !!selected }" @click.self="selected = null">
-    
-    <div class="modal" v-if="selected" :style="{ '--a': accent(selected.category_id) }">
-      
-      <button class="mc" @click="selected = null">✕</button>
+      <div class="ov" :class="{ show: !!selected }" @click.self="selected = null">
 
-      <div class="modal-scroll">
+        <div class="modal" v-if="selected" :style="{ '--a': accent(selected.category_id) }">
 
-        <div v-if="selected.images?.length" class="modal-carousel">
-          <button v-if="selected.images.length > 1" @click.stop="prevImage" class="carousel-btn prev">‹</button>
-          <div class="modal-carousel-track">
-            <img 
-              :src="imgUrl(selected.images[currentImageIndex].image_url)" 
-              :alt="selected.name"
-              class="modal-carousel-img" 
-              @click="viewingImage = imgUrl(selected.images[currentImageIndex].image_url)" 
-            />
+          <button class="mc" @click="selected = null">✕</button>
+
+          <div class="modal-scroll">
+
+            <div v-if="selected.images?.length" class="modal-carousel">
+              <button v-if="selected.images.length > 1" @click.stop="prevImage" class="carousel-btn prev">‹</button>
+              <div class="modal-carousel-track">
+                <img :src="imgUrl(selected.images[currentImageIndex].image_url)" :alt="selected.name"
+                  class="modal-carousel-img"
+                  @click="viewingImage = imgUrl(selected.images[currentImageIndex].image_url)" />
+              </div>
+              <button v-if="selected.images.length > 1" @click.stop="nextImage" class="carousel-btn next">›</button>
+
+              <div v-if="selected.images.length > 1" class="carousel-dots">
+                <span v-for="(_, i) in selected.images" :key="i" class="carousel-dot"
+                  :class="{ active: Number(i) === currentImageIndex }" @click.stop="currentImageIndex = Number(i)"></span>
+              </div>
+            </div>
+
+            <span class="badge lg">{{ catName(selected.category_id) }}</span>
+            <h2 class="mt">{{ selected.name }}</h2>
+            <p class="mb">{{ shopName(selected.provider_id) }}</p>
+
+            <p v-if="selected.description" class="mdesc">
+              {{ selected.description }}
+            </p>
+
+            <div class="mst">
+              <div><b>₱{{ Number(selected.price).toLocaleString() }}</b><em>Price</em></div>
+              <div><b>{{ selected.duration_minutes }} min</b><em>Duration</em></div>
+              <div><b>{{ catName(selected.category_id) }}</b><em>Category</em></div>
+            </div>
+
+            <button class="mbk" @click="goBook(selected)">
+              Book This Service
+            </button>
+
           </div>
-          <button v-if="selected.images.length > 1" @click.stop="nextImage" class="carousel-btn next">›</button>
 
-          <div v-if="selected.images.length > 1" class="carousel-dots">
-            <span 
-              v-for="(_, i) in selected.images" 
-              :key="i" 
-              class="carousel-dot" 
-              :class="{active: Number(i) === currentImageIndex}" 
-              @click.stop="currentImageIndex = Number(i)"
-            ></span>
-          </div>
         </div>
-
-        <span class="badge lg">{{ catName(selected.category_id) }}</span>
-        <h2 class="mt">{{ selected.name }}</h2>
-        <p class="mb">{{ shopName(selected.provider_id) }}</p>
-
-        <p v-if="selected.description" class="mdesc">
-          {{ selected.description }}
-        </p>
-
-        <div class="mst">
-          <div><b>₱{{ Number(selected.price).toLocaleString() }}</b><em>Price</em></div>
-          <div><b>{{ selected.duration_minutes }} min</b><em>Duration</em></div>
-          <div><b>{{ catName(selected.category_id) }}</b><em>Category</em></div>
-        </div>
-
-        <button class="mbk" @click="goBook(selected)">
-          Book This Service
-        </button>
 
       </div>
-
-</div>
-
-  </div>
-</Teleport>
+    </Teleport>
 
     <Teleport to="body">
       <div v-if="viewingImage" class="img-viewer-ov" @click="viewingImage = null">
@@ -297,7 +277,7 @@ const firstImage = (svc: any): string | null => {
       </div>
     </Teleport>
 
-<div class="bottom-spacer"></div>
+    <div class="bottom-spacer"></div>
 
   </div>
 </template>

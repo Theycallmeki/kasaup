@@ -72,13 +72,16 @@ const steps = [
 .tutorial-page::-webkit-scrollbar {
   width: 6px;
 }
+
 .tutorial-page::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .tutorial-page::-webkit-scrollbar-thumb {
   background: rgba(167, 139, 250, 0.2);
   border-radius: 10px;
 }
+
 .tutorial-page::-webkit-scrollbar-thumb:hover {
   background: rgba(167, 139, 250, 0.4);
 }
@@ -109,7 +112,10 @@ const steps = [
   letter-spacing: -0.02em;
   line-height: 1.1;
 }
-.accent { color: #a78bfa; }
+
+.accent {
+  color: #a78bfa;
+}
 
 .subtitle {
   font-size: 1.15rem;
@@ -193,18 +199,46 @@ const steps = [
 }
 
 @media (max-width: 768px) {
-  .tutorial-page { padding: 60px 24px 140px; }
-  .title { 
-    font-size: 2.2rem; 
+  .tutorial-page {
+    padding: 60px 24px 140px;
+  }
+
+  .title {
+    font-size: 2.2rem;
     line-height: 1.2;
     margin-bottom: 16px;
   }
-  .subtitle { font-size: 1rem; }
-  .section-header { margin-bottom: 40px; }
-  .steps-grid { grid-template-columns: 1fr; gap: 16px; }
-  .step-card { padding: 24px; gap: 16px; }
-  .step-num { font-size: 1.8rem; }
-  .cta-section { margin-top: 60px; }
-  .btn-primary { width: 100%; text-align: center; padding: 16px; }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .section-header {
+    margin-bottom: 40px;
+  }
+
+  .steps-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .step-card {
+    padding: 24px;
+    gap: 16px;
+  }
+
+  .step-num {
+    font-size: 1.8rem;
+  }
+
+  .cta-section {
+    margin-top: 60px;
+  }
+
+  .btn-primary {
+    width: 100%;
+    text-align: center;
+    padding: 16px;
+  }
 }
 </style>
