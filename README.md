@@ -85,7 +85,7 @@ npm run dev
 
 ##  Project Status
 
-This project is complete and fully functional.
+This project is currently in development.
 
 ##  License
 
