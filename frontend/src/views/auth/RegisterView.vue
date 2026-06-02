@@ -49,11 +49,7 @@ const register = async () => {
     })
 
     notifySuccess("Success", "Account created successfully!")
-    if (role.value === "provider") {
-      showPendingMessage.value = true
-    } else {
-      router.push("/login")
-    }
+    showPendingMessage.value = true
   } catch (err: any) {
     const msg = err.response?.data?.detail || "Registration failed."
     notifyError("Error", msg)
@@ -89,7 +85,7 @@ const goGithub = () => {
           </svg>
           <h2 class="pending-title">Application Submitted!</h2>
           <p class="pending-desc">
-            Your provider account is pending admin approval. You'll receive an email at <strong>{{ email }}</strong>
+            Your {{ role }} account is pending admin approval. You'll receive an email at <strong>{{ email }}</strong>
             once your account is approved.
           </p>
           <router-link to="/login" class="btn" style="text-decoration:none;">Go to Login</router-link>
