@@ -14,7 +14,8 @@ from app.routers import (
     appointments,
     provider_availability,
     ratings,
-    messages
+    messages,
+    admin
 )
 from app.core.image_events import init_image_events
 
@@ -55,6 +56,7 @@ app.include_router(appointments.router, prefix="/appointments", tags=["Appointme
 app.include_router(provider_availability.router, prefix="/availability", tags=["Provider Availability"])
 app.include_router(ratings.router, prefix="/ratings", tags=["Ratings"])
 app.include_router(messages.router, prefix="/messages", tags=["Messages"])
+app.include_router(admin.router, prefix="/admin/analytics", tags=["Admin"])
 
 @app.get("/")
 def root():
