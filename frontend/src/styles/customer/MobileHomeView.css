@@ -1,0 +1,417 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500;700&family=Outfit:wght@400;500;600;700&display=swap');
+
+/* ================================
+   BASE
+================================ */
+.mobile-home-page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #09090b;
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(99, 60, 220, 0.15), transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.1), transparent 40%);
+  font-family: 'Outfit', 'DM Sans', sans-serif;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* ================================
+   NAVBAR
+================================ */
+.mobile-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 64px;
+  background: rgba(9, 9, 11, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.nav-brand {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+.nav-brand span {
+  color: #a855f7;
+}
+
+.nav-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ================================
+   BUTTON VARIANTS
+================================ */
+.btn-outline-sm {
+  padding: 7px 14px;
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  white-space: nowrap;
+}
+
+.btn-primary-sm {
+  padding: 7px 14px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+}
+
+.btn-primary-full {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
+  text-decoration: none;
+}
+
+.btn-outline-full {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 14px 24px;
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  text-decoration: none;
+}
+
+/* ================================
+   HERO
+================================ */
+.mobile-hero {
+  padding-top: 88px;
+  padding-bottom: 48px;
+  padding-left: 20px;
+  padding-right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 32px;
+}
+
+.mobile-hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+}
+
+.section-tag {
+  display: inline-block;
+  padding: 6px 14px;
+  background: rgba(168, 85, 247, 0.12);
+  color: #a855f7;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+}
+
+.mobile-hero-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 20px;
+  color: #fff;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.mobile-hero-desc {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.7;
+  max-width: 100%;
+  margin: 0 0 28px;
+}
+
+.mobile-hero-actions {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 12px;
+}
+
+/* ================================
+   HERO CARD
+================================ */
+.mobile-hero-card {
+  width: 100%;
+}
+
+.infographic-card {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 24px 20px;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.mission-title {
+  font-family: "Sora", sans-serif;
+  font-size: 1.3rem;
+  color: #fff;
+  margin: 0 0 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mission-paragraph {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.mission-paragraph strong {
+  font-family: "Sora", sans-serif;
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ================================
+   FEATURES
+================================ */
+.mobile-features {
+  padding: 56px 20px;
+  text-align: center;
+}
+
+.section-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0 0 14px;
+  line-height: 1.3;
+  color: #fff;
+}
+
+.section-subtitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.55);
+  max-width: 400px;
+  margin: 0 auto 36px;
+  line-height: 1.6;
+}
+
+.mobile-features-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.feature-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 24px 20px;
+  text-align: center;
+  transition: border-color 0.3s ease;
+}
+
+.feature-card:hover {
+  border-color: rgba(168, 85, 247, 0.3);
+}
+
+.feature-icon {
+  width: 52px;
+  height: 52px;
+  background: rgba(168, 85, 247, 0.1);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a855f7;
+  margin: 0 auto 16px;
+}
+
+.feature-card h3 {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.1rem;
+  margin: 0 0 10px;
+  color: #fff;
+}
+
+.feature-card p {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ================================
+   HOW IT WORKS
+================================ */
+.mobile-how-it-works {
+  padding: 56px 20px;
+  text-align: center;
+}
+
+.steps-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 32px;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.step-connector {
+  width: 2px;
+  height: 32px;
+  background: linear-gradient(to bottom, rgba(168, 85, 247, 0.6), rgba(168, 85, 247, 0.1));
+  margin-left: 23px;
+}
+
+.step-number {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
+}
+
+.step-text {
+  padding-top: 8px;
+}
+
+.step-text h3 {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.1rem;
+  margin: 0 0 8px;
+  color: #fff;
+}
+
+.step-text p {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ================================
+   CTA
+================================ */
+.mobile-cta {
+  padding: 56px 20px;
+}
+
+.cta-card {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(168, 85, 247, 0.12) 100%);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 24px;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.cta-card h2 {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.8rem;
+  margin: 0 0 14px;
+  color: #fff;
+}
+
+.cta-card p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  margin: 0 0 28px;
+  line-height: 1.6;
+}
+
+/* ================================
+   FOOTER
+================================ */
+.mobile-footer {
+  padding: 28px 20px;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: auto;
+}
+
+.footer-brand {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.footer-brand strong {
+  font-family: 'Sora', sans-serif;
+  color: #fff;
+}
+
+.footer-links {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.35);
+}
