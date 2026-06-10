@@ -42,52 +42,12 @@
 
       <div class="hero-visual animate-fade-in delay-2">
         <div class="infographic-orb"></div>
-        <div class="infographic-card">
-          <div class="info-item">
-            <div class="info-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-              </svg>
-            </div>
-            <div class="info-text">
-              <h4>Active Providers</h4>
-              <p>Ready to help</p>
-            </div>
-            <div class="info-value">12.5k+</div>
-          </div>
-          <div class="info-item">
-            <div class="info-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <polygon
-                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
-                </polygon>
-              </svg>
-            </div>
-            <div class="info-text">
-              <h4>Average Rating</h4>
-              <p>Across all services</p>
-            </div>
-            <div class="info-value">4.9/5</div>
-          </div>
-          <div class="info-item">
-            <div class="info-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                <line x1="8" y1="21" x2="16" y2="21"></line>
-                <line x1="12" y1="17" x2="12" y2="21"></line>
-              </svg>
-            </div>
-            <div class="info-text">
-              <h4>Jobs Completed</h4>
-              <p>Successfully delivered</p>
-            </div>
-            <div class="info-value">850k+</div>
+        <div class="infographic-card mission-card">
+          <div class="mission-content">
+            <h3 class="mission-title">KasaUp</h3>
+            <p class="mission-paragraph">
+              KasaUp is a personal project created by <strong>Kian Jacob L. Laxamana</strong> as part of an upskilling initiative to learn modern web development. The ultimate goal of this platform is to empower and help local blue-collar workers in the Pampanga area find more job opportunities and connect them with clients seamlessly.
+            </p>
           </div>
         </div>
       </div>

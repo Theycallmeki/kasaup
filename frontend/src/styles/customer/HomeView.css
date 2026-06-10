@@ -801,4 +801,32 @@ section {
     font-size: 0.8rem;
   }
 }
-
+
+.mission-card {
+  text-align: left;
+}
+.mission-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.mission-title {
+  font-family: "Sora", sans-serif;
+  font-size: 1.4rem;
+  color: #fff;
+  margin-bottom: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.mission-paragraph {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.6;
+  margin: 0;
+}
+.mission-paragraph strong {
+  font-family: "Sora", sans-serif;
+  color: #fff;
+  font-weight: 700;
+}
+
